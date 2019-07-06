@@ -11,7 +11,7 @@ function include_dependencies {
 
 include_dependencies  # me need to do that via a function to have local scope of my_dir
 
-clr_bold clr_green "Install Powershell Core"
+banner "Install Powershell Core"
 check_wine_prefix
 check_wine_arch
 
@@ -35,9 +35,6 @@ unzip -qq ./powershell.zip -d ${powershell_install_dir}
 clr_green "Test Powershell"
 wine ${powershell_install_dir}/pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"
 
-clr_green "done"
-clr_green "******************************************************************************************************************"
-clr_bold clr_green "FINISHED installing Powershell Core on Wine Machine ${WINEPREFIX}"
-clr_green "******************************************************************************************************************"
+banner "FINISHED installing Powershell Core on Wine Machine ${WINEPREFIX}"
 
 

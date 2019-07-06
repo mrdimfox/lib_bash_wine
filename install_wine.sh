@@ -11,7 +11,7 @@ function include_dependencies {
 
 include_dependencies  # me need to do that via a function to have local scope of my_dir
 linux_codename=$(get_linux_codename)
-clr_bold clr_green "Install WINE on ${linux_codename}"
+banner "Install WINE on ${linux_codename}"
 clr_green "add 386 Architecture"
 retry sudo dpkg --add-architecture i386
 clr_green "add Wine Keys"
@@ -35,7 +35,4 @@ sudo chmod +x /usr/bin/winetricks
 retry sudo winetricks -q --self-update
 clr_green "Install latest Winetricks - done"
 
-clr_green "done"
-clr_green "******************************************************************************************************************"
-clr_bold clr_green "FINISHED installing WINE and WINETRICKS"
-clr_green "******************************************************************************************************************"
+banner "FINISHED installing WINE and WINETRICKS on linux ${linux_codename}${IFS}Wine Release: ${wine_release}${IFS}Wine Version: ${wine_version_number}"

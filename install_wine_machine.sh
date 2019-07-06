@@ -11,14 +11,14 @@ function include_dependencies {
 
 include_dependencies  # we need to do that via a function to have local scope of my_dir
 
-clr_bold clr_green "Install Wine Machine"
+banner "Install Wine Machine"
 check_wine_prefix
 check_wine_arch
 check_wine_windows_version
 check_headless_xvfb
 wine_version_number=$(get_wine_version_number)
 
-clr_bold clr_green "Setup Wine Machine at ${WINEPREFIX}, WINEARCH=${WINEARCH}, wine_windows_version=${wine_windows_version}"
+banner "Setup Wine Machine at ${WINEPREFIX}, WINEARCH=${WINEARCH}, wine_windows_version=${wine_windows_version}"
 mkdir -p ${WINEPREFIX}
 wine_drive_c_dir=${WINEPREFIX}/drive_c
 # xvfb-run --auto-servernum winecfg # fails marshal_object couldnt get IPSFactory buffer for interface ...
@@ -33,18 +33,14 @@ winetricks nocrashdialog
 clr_bold clr_bold clr_green "Set Windows Version to ${wine_windows_version}"
 winetricks -q ${wine_windows_version}
 
-clr_bold clr_green "Install common Packets :"
-clr_bold clr_green "install windowscodecs"
+banner "Install common Packets :"
+banner "install windowscodecs"
 retry winetricks -q windowscodecs
 
-clr_bold clr_bold clr_green "******************************************************************************************************************"
-clr_bold clr_green "install msxml3"
+banner "install msxml3"
 retry winetricks -q msxml3
-clr_bold clr_bold clr_green "******************************************************************************************************************"
-clr_bold clr_green "install msxml6"
+
+banner "install msxml6"
 retry winetricks -q msxml6
-clr_bold clr_bold clr_green "******************************************************************************************************************"
-clr_bold clr_green "done"
-clr_bold clr_green "******************************************************************************************************************"
-clr_bold clr_green "FINISHED installing Wine Machine ${WINEPREFIX}"
-clr_bold clr_green "******************************************************************************************************************"
+
+banner "FINISHED installing Wine Machine ${WINEPREFIX}, "

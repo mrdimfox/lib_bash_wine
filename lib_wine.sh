@@ -19,8 +19,7 @@ function fail {
 function check_wine_release {
     if [[ -z ${wine_release} ]]
         then
-            clr_bold clr_red "WARNING - no wine_release in environment set - set now to default: devel"
-            echo "available Releases: stable, devel, staging"
+            banner_warning "WARNING - no wine_release in environment set - set now to default: devel ${IFS}available Releases: stable, devel, staging"
             export wine_release="devel"
         fi
 }
@@ -29,7 +28,7 @@ function check_wine_prefix {
     ## set wine prefix to ${HOME}/.wine if not given by environment variable
     if [[ -z ${WINEPREFIX} ]]
         then
-            clr_bold clr_red "WARNING - no WINEPREFIX in environment - set now to ${HOME}/.wine"
+            banner_warning "WARNING - no WINEPREFIX in environment - set now to ${HOME}/.wine"
             export WINEPREFIX=${HOME}/.wine
         fi
 }
@@ -37,9 +36,7 @@ function check_wine_prefix {
 function check_wine_arch {
     if [[ -z ${WINEARCH} ]]
         then
-            clr_bold clr_red "WARNING - no WINEARCH in environment - will install 64 Bit Wine"
-            clr_bold clr_red "in Order to install 32Bit You need to set WINEARCH=\"win32\""
-            clr_bold clr_red "in Order to install 64Bit You need to set WINEARCH=\"\""
+            banner_warning "WARNING - no WINEARCH in environment - will install 64 Bit Wine ${IFS}in Order to install 32Bit You need to set WINEARCH=\"win32\" ${IFS}in Order to install 64Bit You need to set WINEARCH=\"\""
         fi
 }
 
@@ -47,15 +44,14 @@ function check_wine_arch {
 function check_wine_windows_version {
     if [[ -z ${wine_windows_version} ]]
         then
-            clr_bold clr_red "WARNING - no wine_windows_version in environment - set now to win10"
-            clr_bold clr_red "available Versions: win10, win2k, win2k3, win2k8, win31, win7, win8, win81, win95, win98, winxp"
+            banner_warning "WARNING - no wine_windows_version in environment - set now to win10 ${IFS}available Versions: win10, win2k, win2k3, win2k8, win31, win7, win8, win81, win95, win98, winxp"
             export wine_windows_version="win10"
         fi
 }
 
 
 function check_headless_xvfb {
-    clr_green "Check if we run headless and xvfb Server is running"
+    banner "Check if we run headless and xvfb Server is running"
     export xvfb_framebuffer_service_active="False"
     systemctl is-active --quiet xvfb && export xvfb_framebuffer_service_active="True"
     # run winetricks with xvfb if needed

@@ -18,7 +18,7 @@ include_dependencies  # we need to do that via a function to have local scope of
 
 # if running headless, the xvfb service needs to run
 
-clr_bold clr_green "Install Python 3.7 on WINE"
+banner "Install Python 3.7 on WINE"
 check_wine_prefix
 check_wine_arch
 
@@ -53,7 +53,4 @@ unzip -qq ${decompress_dir}/binaries_${python_version_short}_wine-master/bin/joi
 prepend_path_to_wine_registry ${add_pythonpath}
 
 
-clr_green "done"
-clr_green "******************************************************************************************************************"
-clr_bold clr_green "FINISHED installing Python 3.7 on Wine Machine ${WINEPREFIX}"
-clr_green "******************************************************************************************************************"
+banner "FINISHED installing Python 3.7 on Wine Machine ${WINEPREFIX}"

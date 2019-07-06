@@ -18,7 +18,7 @@ include_dependencies  # we need to do that via a function to have local scope of
 
 # if running headless, the xvfb service needs to run
 
-clr_bold clr_green "Install Git Portable"
+banner "Install Git Portable"
 check_wine_prefix
 check_wine_arch
 
@@ -48,8 +48,5 @@ unzip -qq ${decompress_dir}/binaries_portable_git-master/bin/joined_PortableGit.
 
 prepend_path_to_wine_registry ${add_git_path}
 
-clr_green "done"
-clr_green "******************************************************************************************************************"
-clr_bold clr_green "FINISHED installing Git Portable on Wine Machine ${WINEPREFIX}"
-clr_green "******************************************************************************************************************"
+banner "FINISHED installing Git Portable on Wine Machine ${WINEPREFIX}"
 
