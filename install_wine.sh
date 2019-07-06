@@ -1,19 +1,8 @@
 #!/bin/bash
 
-echo "************************************ before install lib bash"
-ls -l
-echo "************************************ before install lib bash"
-
-
-./install_lib_bash.sh
-
-echo "************************************ after install lib bash"
-ls -l
-echo "************************************ after install lib bash"
-
-
 function include_dependencies {
     local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
+    source "${my_dir}/install_lib_bash.sh"
     source "${my_dir}/lib_bash/lib_color.sh"
     source "${my_dir}/lib_bash/lib_retry.sh"
     source "${my_dir}/lib_bash/lib_helpers.sh"
