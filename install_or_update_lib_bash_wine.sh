@@ -34,7 +34,6 @@ function install_or_update_lib_bash {
     local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
     local sudo_command=$(get_sudo_command)
     ${sudo_command} chmod -R +x "${my_dir}"/*.sh
-    ${sudo_command} chmod -R +x "${my_dir}"/lib_install/*.sh
     "${my_dir}/install_or_update_lib_bash.sh" "${@}" || exit 0              # exit old instance after updates
 }
 
@@ -42,7 +41,6 @@ function include_dependencies {
     local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
     local sudo_command=$(get_sudo_command)
     ${sudo_command} chmod -R +x "${my_dir}"/*.sh
-    ${sudo_command} chmod -R +x "${my_dir}"/lib_install/*.sh
     source /usr/lib/lib_bash/lib_color.sh
     source /usr/lib/lib_bash/lib_retry.sh
     source /usr/lib/lib_bash/lib_helpers.sh
