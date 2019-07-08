@@ -2,9 +2,9 @@
 
 function include_dependencies {
     local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-    source "${my_dir}/lib_bash/lib_color.sh"
-    source "${my_dir}/lib_bash/lib_retry.sh"
-    source "${my_dir}/lib_bash/lib_helpers.sh"
+    source /usr/lib/lib_bash/lib_color.sh
+    source /usr/lib/lib_bash/lib_retry.sh
+    source /usr/lib/lib_bash/lib_helpers.sh
 }
 
 include_dependencies  # we need to do that via a function to have local scope of my_dir
