@@ -55,7 +55,8 @@ ${sudo_command} apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu
 clr_green "Wine Packages Update"
 retry sudo apt-get update
 clr_green "Wine Packages Install"
-retry ${sudo_command} apt-get install --install-recommends winehq-"${wine_release}"
+# on 19.04 we need apt-get install --install-recommends wine-"${wine_release}"
+retry ${sudo_command} apt-get install --install-recommends winehq-"${wine_release}" || apt-get install --install-recommends wine-"${wine_release}"
 retry ${sudo_command} apt-get install -y cabextract
 retry ${sudo_command} apt-get install -y libxml2
 retry ${sudo_command} apt-get install -y libpng-dev
