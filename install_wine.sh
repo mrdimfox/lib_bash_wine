@@ -49,7 +49,7 @@ banner "Install WINE on ${linux_codename}"
 clr_green "add 386 Architecture"
 retry ${sudo_command} dpkg --add-architecture i386
 clr_green "add Wine Keys"
-retry wget https://dl.winehq.org/wine-builds/winehq.key
+retry ${sudo_command} wget https://dl.winehq.org/wine-builds/winehq.key
 ${sudo_command} apt-key add winehq.key
 ${sudo_command} apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${linux_codename} main"
 clr_green "Wine Packages Update"

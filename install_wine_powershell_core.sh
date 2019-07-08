@@ -24,10 +24,10 @@ cd ${powershell_install_dir}
 if [[ "${WINEARCH}" == "win32" ]]
     then
         clr_green "Download Powershell 32 Bit"
-        wget -nc --no-check-certificate -O powershell.zip https://github.com/PowerShell/PowerShell/releases/download/v6.2.0/PowerShell-6.2.0-win-x86.zip
+        sudo wget -nc --no-check-certificate -O powershell.zip https://github.com/PowerShell/PowerShell/releases/download/v6.2.0/PowerShell-6.2.0-win-x86.zip
     else
         clr_green "Download Powershell 64 Bit"
-        wget -nc --no-check-certificate -O powershell.zip https://github.com/PowerShell/PowerShell/releases/download/v6.2.0/PowerShell-6.2.0-win-x64.zip
+        sudo wget -nc --no-check-certificate -O powershell.zip https://github.com/PowerShell/PowerShell/releases/download/v6.2.0/PowerShell-6.2.0-win-x64.zip
     fi
 
 unzip -qq ./powershell.zip -d ${powershell_install_dir}

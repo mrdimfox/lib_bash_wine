@@ -27,7 +27,7 @@ decompress_dir=${HOME}/bitranox_decompress
 mkdir -p ${decompress_dir}
 
 clr_green "Download Git Portable Binaries"
-retry wget -nc --no-check-certificate -O ${decompress_dir}/binaries_portable_git-master.zip https://github.com/bitranox/binaries_portable_git/archive/master.zip
+retry sudo wget -nc --no-check-certificate -O ${decompress_dir}/binaries_portable_git-master.zip https://github.com/bitranox/binaries_portable_git/archive/master.zip
 
 clr_green "Unzip Git Portable Binaries Master to ${decompress_dir}"
 unzip -nqq ${decompress_dir}/binaries_portable_git-master.zip -d ${decompress_dir}
