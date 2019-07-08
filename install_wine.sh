@@ -38,6 +38,15 @@ function include_dependencies {
     source /usr/lib/lib_bash_wine/lib_bash_wine.sh
 }
 
+function install_libfaudio0_on_disco {
+    local linux_codename=$(get_linux_codename)
+    local sudo_command=$(get_sudo_command)
+    if [[ "${linux_codename}" == "disco" ]]; then
+        ${sudo_command} add-apt-repository ppa:cybermax-dexter/sdl2-backport -y
+    fi
+
+}
+
 
 sudo_command=$(get_sudo_command)
 
@@ -52,11 +61,12 @@ clr_green "add Wine Keys"
 retry ${sudo_command} wget https://dl.winehq.org/wine-builds/winehq.key
 ${sudo_command} apt-key add winehq.key
 ${sudo_command} apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${linux_codename} main"
+install_libfaudio0_on_disco
 clr_green "Wine Packages Update"
 retry sudo apt-get update
 clr_green "Wine Packages Install"
-# on 19.04 we need apt-get install --install-recommends wine-"${wine_release}"
-retry_nofail ${sudo_command} apt-get install --install-recommends winehq-"${wine_release}" || apt-get install --install-recommends wine-"${wine_release}"
+# on 19.04 we need libfaudio0: sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
+retry ${sudo_command} apt-get install --install-recommends winehq-"${wine_release}"
 retry ${sudo_command} apt-get install -y cabextract
 retry ${sudo_command} apt-get install -y libxml2
 retry ${sudo_command} apt-get install -y libpng-dev
