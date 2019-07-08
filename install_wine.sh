@@ -66,10 +66,10 @@ clr_green "Wine Packages Update"
 retry sudo apt-get update
 clr_green "Wine Packages Install"
 # on 19.04 we need libfaudio0: sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
-retry ${sudo_command} apt-get install --install-recommends winehq-"${wine_release}"
-retry ${sudo_command} apt-get install -y cabextract
-retry ${sudo_command} apt-get install -y libxml2
-retry ${sudo_command} apt-get install -y libpng-dev
+retry ${sudo_command} apt-get install --install-recommends winehq-"${wine_release}" -y
+retry ${sudo_command} apt-get install cabextract -y
+retry ${sudo_command} apt-get install libxml2 -y
+retry ${sudo_command} apt-get install libpng-dev -y
 wine_version_number=$(get_wine_version_number)
 clr_green "Wine Version ${wine_version_number} installed on ${linux_codename}"
 
