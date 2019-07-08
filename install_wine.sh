@@ -45,6 +45,7 @@ update_myself ${0} ${@}  # pass own script name and parameters
 include_dependencies  # me need to do that via a function to have local scope of my_dir
 linux_codename=$(get_linux_codename)
 wine_release=$(get_wine_release)
+banner "wine release is ${wine_release}"
 banner "Install WINE on ${linux_codename}"
 clr_green "add 386 Architecture"
 retry ${sudo_command} dpkg --add-architecture i386
