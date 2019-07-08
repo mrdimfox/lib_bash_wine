@@ -19,7 +19,6 @@ function fail {
 function get_wine_release {
     if [[ -z ${wine_release} ]]
         then
-            banner_warning "WARNING - no wine_release in environment set - set now to default: devel ${IFS}available Releases: stable, devel, staging"
             export wine_release="devel"
             echo ${wine_release}
         fi
