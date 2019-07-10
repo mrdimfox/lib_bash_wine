@@ -25,7 +25,7 @@ function install_powershell_core {
     local wine_drive_c_dir=${wine_prefix}/drive_c
     local decompress_dir=${HOME}/bitranox_decompress
     local powershell_install_dir="${wine_drive_c_dir}/Program Files/PowerShell"
-    local powershell_version="6.2.1"
+    local powershell_version="6.2.0"
     local powershell_path_to_add="c:/Program Files/PowerShell"
 
     banner "Installing Powershell Core:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
