@@ -54,7 +54,7 @@ function install_powershell_core {
 
 
         banner "Test Powershell ${powershell_version}"
-        wine ${powershell_install_dir}/pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"
+        wine pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"
         banner "Finished installing Powershell Core:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}powershell_core_version=${powershell_version}"
     )
 
