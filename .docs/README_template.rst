@@ -1,5 +1,5 @@
-Install wine / python on Linux
-==============================
+Install wine / python on wine
+=============================
 
 .. include:: ./badges_project_specific.rst
 

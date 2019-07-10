@@ -1,5 +1,5 @@
-Install wine / python on Linux
-==============================
+Install wine / python on wine
+=============================
 
 |license| |maintenance| |Build Status|
 
