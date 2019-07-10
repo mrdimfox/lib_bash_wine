@@ -24,9 +24,9 @@ function install_powershell_core {
 
     local wine_drive_c_dir=${wine_prefix}/drive_c
     local decompress_dir=${HOME}/bitranox_decompress
-    local powershell_install_dir=${wine_drive_c_dir}/windows/system32
+    local powershell_install_dir="${wine_drive_c_dir}/Program Files/PowerShell"
     local powershell_version="6.2.1"
-    # local powershell_path_to_add="c:/windows/system32/powershell"
+    local powershell_path_to_add="c:/Program Files/PowerShell"
 
     banner "Installing Powershell Core:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
     mkdir -p ${powershell_install_dir}
@@ -49,8 +49,8 @@ function install_powershell_core {
         unzip -oqq ./powershell.zip -d ${powershell_install_dir}
         rm -f ./powershell.zip
 
-        # clr_green "Adding path to wine registry: ${powershell_path_to_add}"
-        # prepend_path_to_wine_registry "${powershell_path_to_add}"
+        clr_green "Adding path to wine registry: ${powershell_path_to_add}"
+        prepend_path_to_wine_registry "${powershell_path_to_add}"
 
 
         banner "Test Powershell ${powershell_version}"
