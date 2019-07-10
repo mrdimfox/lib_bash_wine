@@ -8,6 +8,5 @@ function include_dependencies {
     source /usr/lib/lib_bash_wine/003_900_lib_install_wine_python_preinstalled.sh
 }
 
-include_dependencies  # we need to do that via a function to have local scope of my_dir
 update_myself ${0} ${@}                                                              # pass own script name and parameters
-install_wine_python_preinstalled "python27" "Python 2.7" "c:/Python27"
+install_wine_python_preinstalled "python37" "Python 3.7" "c:/Python37"
