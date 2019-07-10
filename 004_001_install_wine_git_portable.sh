@@ -36,7 +36,7 @@ function install_git_portable {
     retry wget -nc --no-check-certificate -O ${decompress_dir}/binaries_portable_git-master.zip https://github.com/bitranox/binaries_portable_git/archive/master.zip
 
     clr_green "Unzip Git Portable Binaries Master to ${decompress_dir}"
-    unzip -nqq ${decompress_dir}/binaries_portable_git-master.zip -d ${decompress_dir}
+    unzip -oqq ${decompress_dir}/binaries_portable_git-master.zip -d ${decompress_dir}
 
     clr_green "Joining Multipart Zip for ${wine_arch} to ${decompress_dir}/binaries_portable_git-master/bin"
     if [[ "${wine_arch}" == "win32" ]]; then
@@ -48,7 +48,7 @@ function install_git_portable {
     fi
 
     clr_green "Unzip Git Portable Binaries for ${wine_arch} to ${wine_drive_c_dir}"
-    unzip -qq ${decompress_dir}/binaries_portable_git-master/bin/joined_PortableGit.zip -d ${wine_drive_c_dir}
+    unzip -oqq ${decompress_dir}/binaries_portable_git-master/bin/joined_PortableGit.zip -d ${wine_drive_c_dir}
 
     clr_green "Adding path to wine registry: ${git_path_to_add}"
     prepend_path_to_wine_registry "${git_path_to_add}"

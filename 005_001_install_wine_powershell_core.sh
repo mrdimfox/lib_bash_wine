@@ -43,7 +43,7 @@ function install_powershell_core {
                 wget -nc --no-check-certificate -O powershell.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x64.zip
             fi
 
-        unzip -qq ./powershell.zip -d ${powershell_install_dir}
+        unzip -oqq ./powershell.zip -d ${powershell_install_dir}
         rm -f ./powershell.zip
 
         banner "Test Powershell ${powershell_version}"
