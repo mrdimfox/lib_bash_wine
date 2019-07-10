@@ -25,7 +25,7 @@ function install_powershell_core {
     local wine_drive_c_dir=${wine_prefix}/drive_c
     local decompress_dir=${HOME}/bitranox_decompress
     local powershell_install_dir="${wine_drive_c_dir}/Program Files/PowerShell"
-    local powershell_version="6.2.0"
+    local powershell_version="6.2.1"
     local powershell_path_to_add="c:/Program Files/PowerShell"
 
     banner "Installing Powershell Core:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
@@ -38,16 +38,13 @@ function install_powershell_core {
         if [[ "${wine_arch}" == "win32" ]]
             then
                 clr_green "Download Powershell ${powershell_version} 32 Bit"
-                rm -f ./powershell.zip
-                retry wget -nc --no-check-certificate -O powershell.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x86.zip
+                retry wget -nc --no-check-certificate -O powershell_${powershell_version}_${wine_arch}.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x86.zip
             else
                 clr_green "Download Powershell ${powershell_version} 64 Bit"
-                rm -f ./powershell.zip
-                retry wget -nc --no-check-certificate -O powershell.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x64.zip
+                retry wget -nc --no-check-certificate -O powershell_${powershell_version}_${wine_arch}.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x64.zip
             fi
 
-        unzip -oqq ./powershell.zip -d "${powershell_install_dir}"
-        rm -f ./powershell.zip
+        unzip -oqq ./powershell_${powershell_version}_${wine_arch}.zip -d "${powershell_install_dir}"
 
         clr_green "Adding path to wine registry: ${powershell_path_to_add}"
         prepend_path_to_wine_registry "${powershell_path_to_add}"
