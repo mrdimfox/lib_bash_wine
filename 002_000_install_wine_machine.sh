@@ -36,8 +36,9 @@ function install_wine_machine {
     fi
 
     banner "winecfg for Wine Machine, WINEPREFIX=${wine_prefix}, WINEARCH=${wine_arch}, wine_windows_version=${wine_windows_version}"
-    # winecfg
-    DISPLAY= wine pgen.exe
+    winecfg
+    # TODO HEADLESS : but we need to check Gecko and so on ...
+    # DISPLAY= wine pgen.exe
 
     if [[ ${is_xvfb_service_active} == "True" ]]; then
         clr_green " "

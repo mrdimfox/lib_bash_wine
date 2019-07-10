@@ -86,19 +86,16 @@ function prepend_path_to_wine_registry {
     local wine_current_reg_path=""
     clr_green "add Path Settings to Registry"
     wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_SZ | sed 's/^.*REG_SZ\s*//'`"
-    # wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep "_SZ" | sed 's/^.*_SZ\s*//'`"
     clr_green "current Wine Registry Path=${wine_current_reg_path}"
     if [[ "$(get_is_string1_in_string2 ${add_pythonpath} ${wine_current_reg_path})" == "False" ]]; then
         wine_new_reg_path="${add_pythonpath};${wine_current_reg_path}"
         clr_green "new Wine Registry PATH=${wine_new_reg_path}"
         wine reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /t REG_SZ /v PATH /d "${wine_new_reg_path}" /f
         wine_actual_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_SZ | sed 's/^.*REG_SZ\s*//'`"
-        # wine_actual_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep "\_SZ" | sed 's/^.*_SZ\s*//'`"
         clr_green "adding Path done"
     else
         clr_green "Path was already added"
-        wine_actual_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_SZ | sed 's/^.*REG_SZ\s*//'`"
-        # wine_actual_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep "_SZ" | sed 's/^.*_SZ\s*//'`"
+        wine_actual_reg_path=${wine_current_reg_path}
     fi
     clr_green "new Wine Registry PATH=${wine_actual_reg_path}"
 }
