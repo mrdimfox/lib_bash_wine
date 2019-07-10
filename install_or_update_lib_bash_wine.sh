@@ -43,6 +43,8 @@ function install_or_update_lib_bash {
     fi
 }
 
+install_or_update_lib_bash
+
 function include_dependencies {
     source /usr/lib/lib_bash/lib_color.sh
     source /usr/lib/lib_bash/lib_retry.sh
@@ -117,8 +119,6 @@ function restart_calling_script {
     fi
 
 }
-
-install_or_update_lib_bash
 
 if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
     update_lib_bash_wine
