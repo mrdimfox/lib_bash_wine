@@ -19,8 +19,8 @@ include_dependencies  # we need to do that via a function to have local scope of
 # if running headless, the xvfb service needs to run
 
 banner "Install Python 3.7 on WINE"
-check_wine_prefix
-check_wine_arch
+get_and_export_wine_prefix_or_default_to_home_wine  # @lib_bash_wine
+get_and_export_wine_arch_or_default_to_win64        # @lib_bash_wine
 
 
 wine_drive_c_dir=${WINEPREFIX}/drive_c

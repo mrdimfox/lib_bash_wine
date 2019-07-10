@@ -16,53 +16,51 @@ function fail {
 }
 
 
-function get_wine_release {
-    if [[ -z ${wine_release} ]]
-        then
-            export wine_release="devel"
-            echo ${wine_release}
-        fi
+function get_wine_release_from_environment_or_default_to_devel {
+    if [[ -z ${wine_release} ]]; then
+        echo "devel"
+    else
+        echo "${wine_release}"
+    fi
 }
 
-function check_wine_prefix {
+function get_and_export_wine_prefix_or_default_to_home_wine {
     ## set wine prefix to ${HOME}/.wine if not given by environment variable
-    if [[ -z ${WINEPREFIX} ]]
-        then
-            banner_warning "WARNING - no WINEPREFIX in environment - set now to ${HOME}/.wine"
-            export WINEPREFIX=${HOME}/.wine
-        fi
+    if [[ -z ${WINEPREFIX} ]]; then
+        local wine_prefix="${HOME}/.wine"
+    else
+        local wine_prefix="${WINEPREFIX}"
+    fi
+    export WINEPREFIX="${wine_prefix}"
+    echo "${wine_prefix}"
 }
 
-function check_wine_arch {
-    if [[ -z ${WINEARCH} ]]
-        then
-            banner_warning "WARNING - no WINEARCH in environment - will install 64 Bit Wine ${IFS}in Order to install 32Bit You need to set WINEARCH=\"win32\" ${IFS}in Order to install 64Bit You need to set WINEARCH=\"\""
-        fi
-}
-
-
-function check_wine_windows_version {
-    if [[ -z ${wine_windows_version} ]]
-        then
-            banner_warning "WARNING - no wine_windows_version in environment - set now to win10 ${IFS}available Versions: win10, win2k, win2k3, win2k8, win31, win7, win8, win81, win95, win98, winxp"
-            export wine_windows_version="win10"
-        fi
+function get_and_export_wine_arch_or_default_to_win64 {
+    if [[ -z ${WINEARCH} ]]; then
+            local wine_arch="win64"
+    else
+        local wine_arch="${WINEARCH}"
+    fi
+    export WINEARCH="${wine_arch}"
+    echo "${wine_arch}"
 }
 
 
-function check_headless_xvfb {
-    banner "Check if we run headless and xvfb Server is running"
-    export xvfb_framebuffer_service_active="False"
-    systemctl is-active --quiet xvfb && export xvfb_framebuffer_service_active="True"
-    # run winetricks with xvfb if needed
-    if [[ ${xvfb_framebuffer_service_active} == "True" ]]
-        then
-            clr_green "we run headless, xvfb service is running"
+function get_wine_windows_version_or_default_to_win10 {
+    if [[ -z ${wine_windows_version} ]]; then
+            local wine_win_ver=${wine_windows_version}
         else
-            clr_green "we run on normal console, xvfb service is not running"
+            local wine_win_ver="win10"
         fi
+    echo "${wine_win_ver}"
 }
 
+
+function get_is_xvfb_service_active {
+    local is_xvfb_active="False"
+    systemctl is-active --quiet xvfb && is_xvfb_active="True"
+    echo "${is_xvfb_active}"
+}
 
 function get_wine_version_number {
     local wine_version_number=`wine --version`

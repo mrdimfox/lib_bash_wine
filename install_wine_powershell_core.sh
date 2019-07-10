@@ -12,8 +12,8 @@ function include_dependencies {
 include_dependencies  # me need to do that via a function to have local scope of my_dir
 
 banner "Install Powershell Core"
-check_wine_prefix
-check_wine_arch
+get_and_export_wine_prefix_or_default_to_home_wine  # @lib_bash_wine
+get_and_export_wine_arch_or_default_to_win64        # @lib_bash_wine
 
 wine_drive_c_dir=${WINEPREFIX}/drive_c
 powershell_install_dir=${wine_drive_c_dir}/windows/system32/powershell
