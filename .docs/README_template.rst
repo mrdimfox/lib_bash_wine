@@ -110,7 +110,7 @@ The path setting in the registry of the wine machine will be adapted to point to
     # set Wine Prefix for Machine 1 (32 Bit)
     export WINEPREFIX=${HOME}/wine/wine32_machine_01
     # next step is to install python 2.7 on the Wine Machine - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/003_000_install_win_python2_preinstalled.sh
+    /usr/lib/lib_bash_wine/003_000_install_wine_python2_preinstalled.sh
 
     #############################################
     # install python 2.7 64 Bit Version on Machine 2
@@ -118,7 +118,7 @@ The path setting in the registry of the wine machine will be adapted to point to
     # set Wine Prefix for Machine 2 (64 Bit)
     export WINEPREFIX=${HOME}/wine/wine64_machine_02
     # next step is to install python 2.7 on the Wine Machine - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/003_000_install_win_python2_preinstalled.sh
+    /usr/lib/lib_bash_wine/003_000_install_wine_python2_preinstalled.sh
 
 
 
