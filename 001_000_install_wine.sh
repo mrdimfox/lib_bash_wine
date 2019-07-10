@@ -21,25 +21,20 @@ function get_sudo_command {
 }
 
 function update_myself {
-    local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-    local sudo_command=$(get_sudo_command)
-    ${sudo_command} chmod -R +x /usr/lib/lib_bash_wine/*.sh
     /usr/lib/lib_bash_wine/install_or_update_lib_bash_wine.sh "${@}" || exit 0              # exit old instance after updates
 }
 
 
 function include_dependencies {
-    local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-    local sudo_command=$(get_sudo_command)
-    ${sudo_command} chmod -R +x "${my_dir}"/*.sh
     source /usr/lib/lib_bash/lib_color.sh
     source /usr/lib/lib_bash/lib_retry.sh
     source /usr/lib/lib_bash/lib_helpers.sh
     source /usr/lib/lib_bash_wine/lib_bash_wine.sh
 }
+include_dependencies
 
 function install_libfaudio0_on_disco {
-    local linux_codename=$(get_linux_codename)
+    local linux_codename=$(get_linux_codename)          # @lib_bash/bash_helpers
     local sudo_command=$(get_sudo_command)
     if [[ "${linux_codename}" == "disco" ]]; then
         ${sudo_command} add-apt-repository ppa:cybermax-dexter/sdl2-backport -y
@@ -51,9 +46,10 @@ function install_libfaudio0_on_disco {
 sudo_command=$(get_sudo_command)
 
 update_myself ${0} ${@}  # pass own script name and parameters
-include_dependencies  # me need to do that via a function to have local scope of my_dir
-linux_codename=$(get_linux_codename)
-wine_release=$(get_wine_release)
+linux_codename=$(get_linux_codename)            # @lib_bash/bash_helpers
+wine_release=$(get_wine_release)                # @lib_bash_wine
+
+
 banner "Install WINE on ${linux_codename}${IFS}wine release is ${wine_release}"
 clr_green "add 386 Architecture"
 retry ${sudo_command} dpkg --add-architecture i386

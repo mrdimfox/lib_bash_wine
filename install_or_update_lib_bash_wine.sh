@@ -120,7 +120,6 @@ function restart_calling_script {
 
 install_or_update_lib_bash
 
-
 if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
     update_lib_bash_wine
     restart_calling_script  "${@}"  # needs caller name and parameters
