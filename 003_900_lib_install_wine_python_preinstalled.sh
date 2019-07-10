@@ -53,6 +53,9 @@ function install_wine_python_preinstalled {
     clr_green "Adding path to wine registry: ${pythonpath_to_add}"
     prepend_path_to_wine_registry "${pythonpath_to_add}"
 
+    clr_green "Test python"
+    wine pip install --upgrade pip
+
     banner "You might remove the directory ${decompress_dir} if You have space issues${IFS}and dont plan to install some more wine machines"
     banner "Finished installing {$python_version_doc}:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
 

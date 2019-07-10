@@ -53,6 +53,9 @@ function install_git_portable {
     clr_green "Adding path to wine registry: ${git_path_to_add}"
     prepend_path_to_wine_registry "${git_path_to_add}"
 
+    clr_green "Test Git"
+    wine git --version
+
     banner "You might remove the directory ${decompress_dir} if You have space issues${IFS}and dont plan to install some more wine machines"
     banner "Finished installing Git Portable:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
 }
