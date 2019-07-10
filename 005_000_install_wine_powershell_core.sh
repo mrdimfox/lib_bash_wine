@@ -29,11 +29,11 @@ function install_powershell_core {
     local powershell_path_to_add="c:/Program Files/PowerShell"
 
     banner "Installing Powershell Core:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
-    mkdir -p ${powershell_install_dir}
+    mkdir -p "${powershell_install_dir}"
 
     (
         # creating now scope to preserve current directory
-        cd ${powershell_install_dir}
+        cd "${powershell_install_dir}"
 
         if [[ "${wine_arch}" == "win32" ]]
             then
@@ -46,7 +46,7 @@ function install_powershell_core {
                 retry wget -nc --no-check-certificate -O powershell.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x64.zip
             fi
 
-        unzip -oqq ./powershell.zip -d ${powershell_install_dir}
+        unzip -oqq ./powershell.zip -d "${powershell_install_dir}"
         rm -f ./powershell.zip
 
         clr_green "Adding path to wine registry: ${powershell_path_to_add}"
