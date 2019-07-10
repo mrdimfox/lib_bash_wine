@@ -171,7 +171,7 @@ Install GIT on WINE
     # set Architecture to 32 Bit
     export WINEARCH="win32"
     # next step is to install Git 32 Bit on the Wine Machine
-    install_wine_git_portable.sh
+    /usr/lib/lib_bash_wine/004_001_install_wine_git_portable.sh
 
     #############################################
     # install Git 64 Bit Version on Machine 2
