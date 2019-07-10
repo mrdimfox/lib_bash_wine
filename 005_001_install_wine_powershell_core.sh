@@ -44,7 +44,7 @@ function install_powershell_core {
             fi
 
         unzip -qq ./powershell.zip -d ${powershell_install_dir}
-        rm ./powershell.zip
+        rm -f ./powershell.zip
 
         banner "Test Powershell ${powershell_version}"
         wine ${powershell_install_dir}/pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"
