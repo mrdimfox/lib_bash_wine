@@ -79,6 +79,7 @@ function prepend_path_to_wine_registry {
         clr_green "adding Path done"
     else
         clr_green "Path was already added"
+        wine_actual_reg_path=${wine_current_reg_path}
     fi
     clr_bold clr_green "Wine Registry PATH=${wine_actual_reg_path}"
 }
