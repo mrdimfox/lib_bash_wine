@@ -33,7 +33,7 @@ function install_git_portable {
 
     clr_green "Download Git Portable Binaries"
     banner "Downloading Git Portable Binaries from https://github.com/bitranox/binaries_portable_git/archive/master.zip"
-    retry wget -nc --no-check-certificate -O ${decompress_dir}/binaries_portable_git-master.zip https://github.com/bitranox/binaries_portable_git/archive/master.zip
+    retry_nofail wget -nc --no-check-certificate -O ${decompress_dir}/binaries_portable_git-master.zip https://github.com/bitranox/binaries_portable_git/archive/master.zip
 
     clr_green "Unzip Git Portable Binaries Master to ${decompress_dir}"
     unzip -oqq ${decompress_dir}/binaries_portable_git-master.zip -d ${decompress_dir}
