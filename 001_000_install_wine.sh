@@ -25,8 +25,7 @@ function install_libfaudio0_on_disco {
 function fallback_to_mono_bionic_version {
     local sudo_command=$(get_sudo_command)                                                     # @lib_bash/bash_helpers
     echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | ${sudo_command} tee /etc/apt/sources.list.d/mono-official-stable.list
-    retry ${sudo_command} apt-get update
-
+    ${sudo_command} apt-get update
 }
 
 function install_wine {
@@ -61,7 +60,7 @@ function install_wine {
     retry ${sudo_command} apt-get install gnupg ca-certificates
     retry ${sudo_command} apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
     echo "deb https://download.mono-project.com/repo/ubuntu stable-${linux_codename} main" | ${sudo_command} tee /etc/apt/sources.list.d/mono-official-stable.list
-    retry ${sudo_command} apt-get update || fallback_to_mono_bionic_version
+    ${sudo_command} apt-get update || fallback_to_mono_bionic_version
     retry ${sudo_command} apt-get install mono-devel -y
     retry ${sudo_command} apt-get install mono-dbg -y
     retry ${sudo_command} apt-get install mono-xsp4 -y
