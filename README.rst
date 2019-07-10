@@ -177,7 +177,7 @@ Install GIT on WINE
     # set Wine Prefix for Machine 1 (32 Bit)
     export WINEPREFIX=${HOME}/wine/wine32_machine_01
     # next step is to install Git on the Wine Machine - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/004_001_install_wine_git_portable.sh
+    /usr/lib/lib_bash_wine/004_000_install_wine_git_portable.sh
 
     #############################################
     # install Git 64 Bit Version on Machine 2
@@ -185,7 +185,7 @@ Install GIT on WINE
     # set Wine Prefix for Machine 2 (64 Bit)
     export WINEPREFIX=${HOME}/wine/wine64_machine_02
     # next step is to install Git on the Wine Machine - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/004_001_install_wine_git_portable.sh
+    /usr/lib/lib_bash_wine/004_000_install_wine_git_portable.sh
 
 
 Install Powershell Core on WINE
@@ -200,7 +200,7 @@ Install Powershell Core on WINE
     # set Wine Prefix for Machine 1 (32 Bit)
     export WINEPREFIX=${HOME}/wine/wine32_machine_01
     # next step is to install Powershell Core 32 Bit on the Wine Machine  - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/005_001_install_wine_powershell_core.sh
+    /usr/lib/lib_bash_wine/005_000_install_wine_powershell_core.sh
 
     #############################################
     # install Powershell Core 64 Bit Version on Machine 2
@@ -208,7 +208,7 @@ Install Powershell Core on WINE
     # set Wine Prefix for Machine 2 (64 Bit)
     export WINEPREFIX=${HOME}/wine/wine64_machine_02
     # next step is to install Powershell Core 34 Bit on the Wine Machine  - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/005_001_install_wine_powershell_core.sh
+    /usr/lib/lib_bash_wine/005_000_install_wine_powershell_core.sh
 
 
 Running Commands on Wine
