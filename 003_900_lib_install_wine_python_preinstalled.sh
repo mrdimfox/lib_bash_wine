@@ -33,10 +33,11 @@ function install_wine_python_preinstalled {
     banner "Installing {$python_version_doc}:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
     mkdir -p ${decompress_dir}  # here we dont need sudo because its the home directory
 
+
     banner "Downloading ${python_version_doc} Binaries from https://github.com/bitranox/binaries_${python_version_short}_wine/archive/master.zip"
     retry_nofail wget -nc --no-check-certificate -O ${decompress_dir}/binaries_${python_version_short}_wine-master.zip https://github.com/bitranox/binaries_${python_version_short}_wine/archive/master.zip
     clr_green "Unzip ${python_version_doc} Master to ${decompress_dir}"
-    unzip -qq ${decompress_dir}/binaries_${python_version_short}_wine-master.zip -d ${decompress_dir}
+    unzip -oqq ${decompress_dir}/binaries_${python_version_short}_wine-master.zip -d ${decompress_dir}
     clr_green "Joining Multipart Zip for ${wine_arch} to ${decompress_dir}/binaries_${python_version_short}_wine-master/bin"
     if [[ "${wine_arch}" == "win32" ]]; then
         cat ${decompress_dir}/binaries_${python_version_short}_wine-master/bin/python*_wine_32* > ${decompress_dir}/binaries_${python_version_short}_wine-master/bin/joined_${python_version_short}.zip
@@ -47,7 +48,7 @@ function install_wine_python_preinstalled {
     fi
 
     clr_green "Unzip ${python_version_doc} for ${wine_arch} to ${wine_drive_c_dir}"
-    unzip -qq ${decompress_dir}/binaries_${python_version_short}_wine-master/bin/joined_${python_version_short}.zip -d ${wine_drive_c_dir}
+    unzip -oqq ${decompress_dir}/binaries_${python_version_short}_wine-master/bin/joined_${python_version_short}.zip -d ${wine_drive_c_dir}
 
     clr_green "Adding path to wine registry: ${pythonpath_to_add}"
     prepend_path_to_wine_registry "${pythonpath_to_add}"
