@@ -14,8 +14,8 @@ function include_dependencies {
 include_dependencies
 
 function install_libfaudio0_on_disco {
-    local linux_release=$(get_linux_codename)          # @lib_bash/bash_helpers
-    if [[ "${linux_codename}" == "disco" ]]; then
+    local linux_release_name=$(get_linux_release_name)          # @lib_bash/bash_helpers
+    if [[ "${linux_release_name}" == "disco" ]]; then
         $(which sudo) add-apt-repository ppa:cybermax-dexter/sdl2-backport -y
     fi
 
@@ -27,10 +27,10 @@ function fallback_to_mono_bionic_version {
 }
 
 function install_wine {
-    local linux_release=$(get_linux_codename)                                                 # @lib_bash/bash_helpers
+    local linux_release_name=$(get_linux_release_name)                                                 # @lib_bash/bash_helpers
     local wine_release=$(get_wine_release_from_environment_or_default_to_devel)                # @lib_bash_wine
 
-    banner "Installing WINE and WINETRICKS: ${IFS}linux_release=${linux_codename}${IFS}wine_release=${wine_release}"
+    banner "Installing WINE and WINETRICKS: ${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}"
 
     clr_green "add 386 Architecture"
     retry $(which sudo) dpkg --add-architecture i386
@@ -38,7 +38,7 @@ function install_wine {
     clr_green "add Wine Keys"
     retry $(which sudo) wget https://dl.winehq.org/wine-builds/winehq.key
     $(which sudo) apt-key add winehq.key
-    $(which sudo) apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${linux_codename} main"
+    $(which sudo) apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${linux_release_name} main"
     install_libfaudio0_on_disco
 
     clr_green "Wine Packages Update"
@@ -51,12 +51,12 @@ function install_wine {
     retry $(which sudo) apt-get install libxml2 -y
     retry $(which sudo) apt-get install libpng-dev -y
     local wine_version_number=$(get_wine_version_number)
-    clr_green "Wine Version ${wine_version_number} installed on ${linux_codename}"
+    clr_green "Wine Version ${wine_version_number} installed on ${linux_release_name}"
 
     clr_green "Install mono complete"
     retry $(which sudo) apt-get install gnupg ca-certificates
     retry $(which sudo) apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-    echo "deb https://download.mono-project.com/repo/ubuntu stable-${linux_codename} main" | $(which sudo) tee /etc/apt/sources.list.d/mono-official-stable.list
+    echo "deb https://download.mono-project.com/repo/ubuntu stable-${linux_release_name} main" | $(which sudo) tee /etc/apt/sources.list.d/mono-official-stable.list
     $(which sudo) apt-get update || fallback_to_mono_bionic_version
     retry $(which sudo) apt-get install mono-devel -y
     retry $(which sudo) apt-get install mono-dbg -y
@@ -69,7 +69,7 @@ function install_wine {
     $(which sudo) chmod +x /usr/bin/winetricks
     retry $(which sudo) winetricks -q --self-update
 
-    banner "FINISHED installing WINE and WINETRICKS: ${IFS}linux_release=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}"
+    banner "FINISHED installing WINE and WINETRICKS: ${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}"
 }
 
 

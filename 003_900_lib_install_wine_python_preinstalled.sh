@@ -19,7 +19,7 @@ function install_wine_python_preinstalled {
     local python_version_doc="${2}"
     local python_directory_prefix="${3}"
 
-    local linux_release=$(get_linux_codename)                                  # @lib_bash/bash_helpers
+    local linux_release_name=$(get_linux_release_name)                                  # @lib_bash/bash_helpers
     local wine_release=$(get_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
     local wine_prefix=$(get_and_export_wine_prefix_or_default_to_home_wine)     # @lib_bash_wine
     local wine_arch=$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")          # @lib_bash_wine
@@ -30,7 +30,7 @@ function install_wine_python_preinstalled {
 
     local pythonpath_to_add=""
 
-    banner "Installing {$python_version_doc}:${IFS}linux_release=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
+    banner "Installing {$python_version_doc}:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
     mkdir -p ${decompress_dir}  # here we dont need sudo because its the home directory
 
 
@@ -57,6 +57,6 @@ function install_wine_python_preinstalled {
     wine pip install --user --upgrade pip
 
     banner "You might remove the directory ${decompress_dir} if You have space issues${IFS}and dont plan to install some more wine machines"
-    banner "Finished installing {$python_version_doc}:${IFS}linux_release=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
+    banner "Finished installing {$python_version_doc}:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
 
 }
