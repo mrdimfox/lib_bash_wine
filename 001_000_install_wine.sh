@@ -14,7 +14,7 @@ function include_dependencies {
 include_dependencies
 
 function install_libfaudio0_on_disco {
-    local linux_codename=$(get_linux_codename)          # @lib_bash/bash_helpers
+    local linux_release=$(get_linux_codename)          # @lib_bash/bash_helpers
     if [[ "${linux_codename}" == "disco" ]]; then
         $(which sudo) add-apt-repository ppa:cybermax-dexter/sdl2-backport -y
     fi
@@ -27,10 +27,10 @@ function fallback_to_mono_bionic_version {
 }
 
 function install_wine {
-    local linux_codename=$(get_linux_codename)                                                 # @lib_bash/bash_helpers
+    local linux_release=$(get_linux_codename)                                                 # @lib_bash/bash_helpers
     local wine_release=$(get_wine_release_from_environment_or_default_to_devel)                # @lib_bash_wine
 
-    banner "Installing WINE and WINETRICKS: ${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}"
+    banner "Installing WINE and WINETRICKS: ${IFS}linux_release=${linux_codename}${IFS}wine_release=${wine_release}"
 
     clr_green "add 386 Architecture"
     retry $(which sudo) dpkg --add-architecture i386
@@ -69,7 +69,7 @@ function install_wine {
     $(which sudo) chmod +x /usr/bin/winetricks
     retry $(which sudo) winetricks -q --self-update
 
-    banner "FINISHED installing WINE and WINETRICKS: ${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}"
+    banner "FINISHED installing WINE and WINETRICKS: ${IFS}linux_release=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}"
 }
 
 

@@ -17,7 +17,7 @@ include_dependencies  # we need to do that via a function to have local scope of
 
 function install_git_portable {
 
-    local linux_codename=$(get_linux_codename)                                  # @lib_bash/bash_helpers
+    local linux_release=$(get_linux_codename)                                  # @lib_bash/bash_helpers
     local wine_release=$(get_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
     local wine_prefix=$(get_and_export_wine_prefix_or_default_to_home_wine)     # @lib_bash_wine
     local wine_arch=$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")          # @lib_bash_wine
@@ -28,7 +28,7 @@ function install_git_portable {
 
     local git_path_to_add=""
 
-    banner "Installing Git Portable:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
+    banner "Installing Git Portable:${IFS}linux_release=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
     mkdir -p ${decompress_dir}  # here we dont need sudo because its the home directory
 
     clr_green "Download Git Portable Binaries"
@@ -57,7 +57,7 @@ function install_git_portable {
     wine git --version
 
     banner "You might remove the directory ${decompress_dir} if You have space issues${IFS}and dont plan to install some more wine machines"
-    banner "Finished installing Git Portable:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
+    banner "Finished installing Git Portable:${IFS}linux_release=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
 }
 
 

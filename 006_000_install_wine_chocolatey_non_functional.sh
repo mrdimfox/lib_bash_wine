@@ -14,7 +14,7 @@ function include_dependencies {
 
 
 function install_wine_choco {
-    local linux_codename=$(get_linux_codename)                                  # @lib_bash/bash_helpers
+    local linux_release=$(get_linux_codename)                                  # @lib_bash/bash_helpers
     local wine_release=$(get_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
     local wine_prefix=$(get_and_export_wine_prefix_or_default_to_home_wine)     # @lib_bash_wine
     local wine_arch=$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")          # @lib_bash_wine

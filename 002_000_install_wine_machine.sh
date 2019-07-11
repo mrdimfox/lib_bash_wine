@@ -16,7 +16,7 @@ include_dependencies  # we need to do that via a function to have local scope of
 function install_wine_machine {
 
     banner "Install Wine Machine"
-    local linux_codename=$(get_linux_codename)                                  # @lib_bash/bash_helpers
+    local linux_release=$(get_linux_codename)                                  # @lib_bash/bash_helpers
     local wine_release=$(get_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
     local wine_prefix=$(get_and_export_wine_prefix_or_default_to_home_wine)     # @lib_bash_wine
     local wine_arch=$(get_and_export_wine_arch_or_default_to_win64)             # @lib_bash_wine
@@ -24,7 +24,7 @@ function install_wine_machine {
     local is_xvfb_service_active=$(get_is_xvfb_service_active)                  # @lib_bash_wine
     local wine_version_number=$(get_wine_version_number)                        # @lib_bash_wine
 
-    banner "Setup Wine Machine:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}wine_windows_version=${wine_windows_version}"
+    banner "Setup Wine Machine:${IFS}linux_release=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}wine_windows_version=${wine_windows_version}"
     mkdir -p ${wine_prefix}
     wine_drive_c_dir=${wine_prefix}/drive_c
     # xvfb-run --auto-servernum winecfg # fails marshal_object couldnt get IPSFactory buffer for interface ...
@@ -62,7 +62,7 @@ function install_wine_machine {
     banner "install msxml6"
     retry winetricks -q msxml6
 
-    banner "FINISHED installing Wine MachineWine Machine:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}wine_windows_version=${wine_windows_version}"
+    banner "FINISHED installing Wine MachineWine Machine:${IFS}linux_release=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}wine_windows_version=${wine_windows_version}"
 }
 
 
