@@ -13,6 +13,7 @@ function install_or_update_lib_bash {
     if [[ -d "/usr/local/lib_bash" ]]; then
         $(which sudo) /usr/local/lib_bash/install_or_update_lib_bash.sh
     else
+        $(which sudo) git clone https://github.com/bitranox/lib_bash.git /usr/local/lib_bash > /dev/null 2>&1
         $(which sudo) chmod -R 0755 /usr/local/lib_bash
         $(which sudo) chmod -R +x /usr/local/lib_bash/*.sh
         $(which sudo) chown -R root /usr/local/lib_bash || $(which sudo) chown -R ${USER} /usr/local/lib_bash  || echo "giving up set owner" # there is no user root on travis
