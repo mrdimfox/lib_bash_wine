@@ -24,9 +24,9 @@ function install_powershell_core {
 
     local wine_drive_c_dir=${wine_prefix}/drive_c
     local decompress_dir=${HOME}/bitranox_decompress
-    local powershell_install_dir="${wine_drive_c_dir}/Program Files/PowerShell"
-    local powershell_version="6.2.1"
-    local powershell_path_to_add="c:/Program Files/PowerShell"
+    local powershell_install_dir="${wine_drive_c_dir}/Program Files/PowerShell-${wine_arch}"
+    local powershell_version="6.2.0"
+    local powershell_path_to_add="c:/Program Files/PowerShell-${wine_arch}"
 
     banner "Installing Powershell Core:${IFS}linux=${linux_codename}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
     mkdir -p "${powershell_install_dir}"
@@ -34,11 +34,12 @@ function install_powershell_core {
     (
         # creating now scope to preserve current directory
         cd "${powershell_install_dir}"
-
         if [[ "${wine_arch}" == "win32" ]]
             then
                 clr_green "Download Powershell ${powershell_version} 32 Bit"
+
                 retry wget -nc --no-check-certificate -O powershell_${powershell_version}_${wine_arch}.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x86.zip
+
             else
                 clr_green "Download Powershell ${powershell_version} 64 Bit"
                 retry wget -nc --no-check-certificate -O powershell_${powershell_version}_${wine_arch}.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x64.zip
