@@ -1,11 +1,11 @@
 #!/bin/bash
 
 function update_myself {
-    /usr/lib/lib_bash_wine/install_or_update_lib_bash_wine.sh "${@}" || exit 0              # exit old instance after updates
+    /usr/local/lib_bash_wine/install_or_update_lib_bash_wine.sh "${@}" || exit 0              # exit old instance after updates
 }
 
 function include_dependencies {
-    source /usr/lib/lib_bash_wine/003_900_lib_install_wine_python_preinstalled.sh
+    source /usr/local/lib_bash_wine/003_900_lib_install_wine_python_preinstalled.sh
 }
 
 include_dependencies

@@ -53,7 +53,7 @@ Install WINE
     export wine_release="staging"    # for wine release staging, the newest version, might be unstable
 
     # next step will install wine - after that You will be able to set up 32 and 64 Bit Wine Machines
-    /usr/lib/lib_bash_wine/001_000_install_wine.sh
+    /usr/local/lib_bash_wine/001_000_install_wine.sh
 
 
 Set up Wine Machine
@@ -78,7 +78,7 @@ The WINEPREFIX is the path to the Wine machine, defaults to /home/<user>/.wine
     # possible values: win10, win2k, win2k3, win2k8, win31, win7, win8, win81, win95, win98, winxp
     export wine_windows_version="win10"
     # next step is to set up the wine machine
-    /usr/lib/lib_bash_wine/002_000_install_wine_machine.sh
+    /usr/local/lib_bash_wine/002_000_install_wine_machine.sh
 
     #############################################
     # Install Wine Machine 2 (64 Bit)
@@ -91,7 +91,7 @@ The WINEPREFIX is the path to the Wine machine, defaults to /home/<user>/.wine
     # possible values: win10, win2k, win2k3, win2k8, win31, win7, win8, win81, win95, win98, winxp
     export wine_windows_version="win10"
     # next step is to set up the wine machine
-    /usr/lib/lib_bash_wine/002_000_install_wine_machine.sh
+    /usr/local/lib_bash_wine/002_000_install_wine_machine.sh
 
 
 Install latest Python 2.7 on WINE
@@ -110,7 +110,7 @@ The path setting in the registry of the wine machine will be adapted to point to
     # set Wine Prefix for Machine 1 (32 Bit)
     export WINEPREFIX=${HOME}/wine/wine32_machine_01
     # next step is to install python 2.7 on the Wine Machine - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/003_000_install_wine_python2_preinstalled.sh
+    /usr/local/lib_bash_wine/003_000_install_wine_python2_preinstalled.sh
 
     #############################################
     # install python 2.7 64 Bit Version on Machine 2
@@ -118,7 +118,7 @@ The path setting in the registry of the wine machine will be adapted to point to
     # set Wine Prefix for Machine 2 (64 Bit)
     export WINEPREFIX=${HOME}/wine/wine64_machine_02
     # next step is to install python 2.7 on the Wine Machine - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/003_000_install_wine_python2_preinstalled.sh
+    /usr/local/lib_bash_wine/003_000_install_wine_python2_preinstalled.sh
 
 
 
@@ -138,7 +138,7 @@ You CAN install Python 2.7 and 3.7 on the same WINE Machine, although the paths 
     # set Wine Prefix for Machine 1 (32 Bit)
     export WINEPREFIX=${HOME}/wine/wine32_machine_01
     # next step is to install python 3.7 on the Wine Machine - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/003_001_install_wine_python3_preinstalled.sh
+    /usr/local/lib_bash_wine/003_001_install_wine_python3_preinstalled.sh
 
     #############################################
     # install python 3.7 64 Bit Version on Machine 2
@@ -146,7 +146,7 @@ You CAN install Python 2.7 and 3.7 on the same WINE Machine, although the paths 
     # set Wine Prefix for Machine 2 (64 Bit)
     export WINEPREFIX=${HOME}/wine/wine64_machine_02
     # next step is to install python 3.7 on the Wine Machine - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/003_001_install_wine_python3_preinstalled.sh
+    /usr/local/lib_bash_wine/003_001_install_wine_python3_preinstalled.sh
 
 
 Install GIT on WINE
@@ -161,7 +161,7 @@ Install GIT on WINE
     # set Wine Prefix for Machine 1 (32 Bit)
     export WINEPREFIX=${HOME}/wine/wine32_machine_01
     # next step is to install Git on the Wine Machine - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/004_000_install_wine_git_portable.sh
+    /usr/local/lib_bash_wine/004_000_install_wine_git_portable.sh
 
     #############################################
     # install Git 64 Bit Version on Machine 2
@@ -169,7 +169,7 @@ Install GIT on WINE
     # set Wine Prefix for Machine 2 (64 Bit)
     export WINEPREFIX=${HOME}/wine/wine64_machine_02
     # next step is to install Git on the Wine Machine - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/004_000_install_wine_git_portable.sh
+    /usr/local/lib_bash_wine/004_000_install_wine_git_portable.sh
 
 
 Install Powershell Core on WINE
@@ -184,7 +184,7 @@ Install Powershell Core on WINE
     # set Wine Prefix for Machine 1 (32 Bit)
     export WINEPREFIX=${HOME}/wine/wine32_machine_01
     # next step is to install Powershell Core 32 Bit on the Wine Machine  - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/005_000_install_wine_powershell_core.sh
+    /usr/local/lib_bash_wine/005_000_install_wine_powershell_core.sh
 
     #############################################
     # install Powershell Core 64 Bit Version on Machine 2
@@ -192,7 +192,7 @@ Install Powershell Core on WINE
     # set Wine Prefix for Machine 2 (64 Bit)
     export WINEPREFIX=${HOME}/wine/wine64_machine_02
     # next step is to install Powershell Core 34 Bit on the Wine Machine  - WINEARCH is detected automatically
-    /usr/lib/lib_bash_wine/005_000_install_wine_powershell_core.sh
+    /usr/local/lib_bash_wine/005_000_install_wine_powershell_core.sh
 
 
 Running Commands on Wine

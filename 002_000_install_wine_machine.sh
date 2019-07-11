@@ -1,14 +1,14 @@
 #!/bin/bash
 
 function update_myself {
-    /usr/lib/lib_bash_wine/install_or_update_lib_bash_wine.sh "${@}" || exit 0              # exit old instance after updates
+    /usr/local/lib_bash_wine/install_or_update_lib_bash_wine.sh "${@}" || exit 0              # exit old instance after updates
 }
 
 function include_dependencies {
-    source /usr/lib/lib_bash/lib_color.sh
-    source /usr/lib/lib_bash/lib_retry.sh
-    source /usr/lib/lib_bash/lib_helpers.sh
-    source /usr/lib/lib_bash_wine/900_000_lib_bash_wine.sh
+    source /usr/local/lib_bash/lib_color.sh
+    source /usr/local/lib_bash/lib_retry.sh
+    source /usr/local/lib_bash/lib_helpers.sh
+    source /usr/local/lib_bash_wine/900_000_lib_bash_wine.sh
 }
 
 include_dependencies  # we need to do that via a function to have local scope of my_dir
@@ -16,7 +16,6 @@ include_dependencies  # we need to do that via a function to have local scope of
 function install_wine_machine {
 
     banner "Install Wine Machine"
-    local sudo_command=$(get_sudo_command)                                      # @lib_bash/bash_helpers
     local linux_codename=$(get_linux_codename)                                  # @lib_bash/bash_helpers
     local wine_release=$(get_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
     local wine_prefix=$(get_and_export_wine_prefix_or_default_to_home_wine)     # @lib_bash_wine
@@ -32,7 +31,7 @@ function install_wine_machine {
 
     if [[ ${is_xvfb_service_active} == "True" ]]; then
         clr_green "Stopping xvfb because winecfg crashes if it is enabled"
-        ${sudo_command} service xvfb stop
+        $(which sudo) service xvfb stop
     fi
 
     banner "winecfg for Wine Machine, WINEPREFIX=${wine_prefix}, WINEARCH=${wine_arch}, wine_windows_version=${wine_windows_version}"
@@ -43,7 +42,7 @@ function install_wine_machine {
     if [[ ${is_xvfb_service_active} == "True" ]]; then
         clr_green " "
         clr_green "restarting xvfb"
-        ${sudo_command} service xvfb start
+        $(which sudo) service xvfb start
     fi
 
     banner "Disable GUI Crash Dialogs"

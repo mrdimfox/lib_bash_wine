@@ -1,10 +1,10 @@
 #!/bin/bash
 
 function include_dependencies {
-    source /usr/lib/lib_bash/lib_color.sh
-    source /usr/lib/lib_bash/lib_retry.sh
-    source /usr/lib/lib_bash/lib_helpers.sh
-    source /usr/lib/lib_bash_wine/900_000_lib_bash_wine.sh
+    source /usr/local/lib_bash/lib_color.sh
+    source /usr/local/lib_bash/lib_retry.sh
+    source /usr/local/lib_bash/lib_helpers.sh
+    source /usr/local/lib_bash_wine/900_000_lib_bash_wine.sh
 }
 
 include_dependencies  # we need to do that via a function to have local scope of my_dir
