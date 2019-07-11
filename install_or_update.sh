@@ -10,9 +10,10 @@
 # include_dependencies  # we need to do that via a function to have local scope of my_dir
 
 function install_or_update_lib_bash {
-    if [[ -d "/usr/local/lib_bash" ]]; then
-        $(which sudo) /usr/local/lib_bash/install_or_update_lib_bash.sh
+    if [[ -f "/usr/local/lib_bash/install_or_update.sh" ]]; then
+        $(which sudo) /usr/local/lib_bash/install_or_update.sh
     else
+        $(which sudo) rm -fR /usr/local/lib_bash
         $(which sudo) git clone https://github.com/bitranox/lib_bash.git /usr/local/lib_bash > /dev/null 2>&1
         $(which sudo) chmod -R 0755 /usr/local/lib_bash
         $(which sudo) chmod -R +x /usr/local/lib_bash/*.sh
@@ -40,7 +41,7 @@ function set_lib_bash_wine_permissions {
 }
 
 function is_lib_bash_wine_installed {
-        if [[ -f "/usr/local/lib_bash_wine/install_or_update_lib_bash_wine.sh" ]]; then
+        if [[ -f "/usr/local/lib_bash_wine/install_or_update.sh" ]]; then
             echo "True"
         else
             echo "False"
