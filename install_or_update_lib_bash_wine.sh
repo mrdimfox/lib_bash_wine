@@ -40,7 +40,7 @@ function set_lib_bash_wine_permissions {
 }
 
 function is_lib_bash_wine_installed {
-        if [[ -d "/usr/local/lib_bash_wine" ]]; then
+        if [[ -f "/usr/local/lib_bash_wine/install_or_update_lib_bash_wine.sh" ]]; then
             echo "True"
         else
             echo "False"
@@ -60,6 +60,7 @@ function is_lib_bash_wine_to_update {
 
 function install_lib_bash_wine {
     clr_green "installing lib_bash_wine"
+    $(which sudo) rm -fR /usr/local/lib_bash_wine
     $(which sudo) git clone https://github.com/bitranox/lib_bash_wine.git /usr/local/lib_bash_wine > /dev/null 2>&1
     set_lib_bash_wine_permissions
 }
