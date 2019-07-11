@@ -13,9 +13,8 @@ function include_dependencies {
 }
 include_dependencies
 
-function install_libfaudio0_on_disco {
-    local linux_release_name=$(get_linux_release_name)          # @lib_bash/bash_helpers
-    if [[ "${linux_release_name}" == "disco" ]]; then
+function install_libfaudio0_if_not_installed {
+    if [[ "$(get_is_package_installed libfaudio0)" == "False" ]]; then
         $(which sudo) add-apt-repository ppa:cybermax-dexter/sdl2-backport -y
     fi
 
@@ -39,13 +38,12 @@ function install_wine {
     retry $(which sudo) wget https://dl.winehq.org/wine-builds/winehq.key
     $(which sudo) apt-key add winehq.key
     $(which sudo) apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${linux_release_name} main"
-    install_libfaudio0_on_disco
+    install_libfaudio0_if_not_installed
 
     clr_green "Wine Packages Update"
     retry sudo apt-get update
 
     clr_green "Wine Packages Install"
-    # on 19.04 we need libfaudio0: sudo add-apt-repository ppa:cybermax-dexter/sdl2-backport
     retry $(which sudo) apt-get install --install-recommends winehq-"${wine_release}" -y
     retry $(which sudo) apt-get install cabextract -y
     retry $(which sudo) apt-get install libxml2 -y
