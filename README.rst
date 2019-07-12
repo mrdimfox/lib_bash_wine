@@ -26,7 +26,6 @@ Tested under `Linux xenial, bionic, disco <https://travis-ci.org/bitranox/instal
 - `Installation and Prerequisites`_
 - `Install WINE`_
 - `Set up Wine Machine`_
-- `Install latest Python 2.7 on WINE`_
 - `Install latest Python 3.7 on WINE`_
 - `Install GIT on WINE`_
 - `Install Powershell Core on WINE`_
@@ -110,41 +109,13 @@ The WINEPREFIX is the path to the Wine machine, defaults to /home/<user>/.wine
     /usr/local/lib_bash_wine/002_000_install_wine_machine.sh
 
 
-Install latest Python 2.7 on WINE
-=================================
-
-you should install a 32 Bit Python on a 32 Bit Wine Machine, and 64 Bit Python on a 64 Bit Wine Machine.
-Other combinations will probably not work.
-The path setting in the registry of the wine machine will be adapted to point to the python 2.7 directories
-
-
-.. code-block:: bash
-
-    #############################################
-    # install python 2.7 32 Bit Version on Machine 1
-    #############################################
-    # set Wine Prefix for Machine 1 (32 Bit)
-    export WINEPREFIX=${HOME}/wine/wine32_machine_01
-    # next step is to install python 2.7 on the Wine Machine - WINEARCH is detected automatically
-    /usr/local/lib_bash_wine/003_000_install_wine_python2_preinstalled.sh
-
-    #############################################
-    # install python 2.7 64 Bit Version on Machine 2
-    #############################################
-    # set Wine Prefix for Machine 2 (64 Bit)
-    export WINEPREFIX=${HOME}/wine/wine64_machine_02
-    # next step is to install python 2.7 on the Wine Machine - WINEARCH is detected automatically
-    /usr/local/lib_bash_wine/003_000_install_wine_python2_preinstalled.sh
-
-
-
 Install latest Python 3.7 on WINE
 =================================
 
 you should install a 32 Bit Python on a 32 Bit Wine Machine, and 64 Bit Python on a 64 Bit Wine Machine.
 Other combinations will probably not work.
 The path setting in the registry of the wine machine will be adapted to point to the python 3.7 directories
-You CAN install Python 2.7 and 3.7 on the same WINE Machine, although the paths will point to the version installed at last.
+You CAN install different Python Versions on the same WINE Machine, although the paths will point to the version installed at last.
 
 .. code-block:: bash
 
@@ -154,7 +125,7 @@ You CAN install Python 2.7 and 3.7 on the same WINE Machine, although the paths 
     # set Wine Prefix for Machine 1 (32 Bit)
     export WINEPREFIX=${HOME}/wine/wine32_machine_01
     # next step is to install python 3.7 on the Wine Machine - WINEARCH is detected automatically
-    /usr/local/lib_bash_wine/003_001_install_wine_python3_preinstalled.sh
+    /usr/local/lib_bash_wine/003_000_install_wine_python3_preinstalled.sh
 
     #############################################
     # install python 3.7 64 Bit Version on Machine 2
@@ -162,7 +133,7 @@ You CAN install Python 2.7 and 3.7 on the same WINE Machine, although the paths 
     # set Wine Prefix for Machine 2 (64 Bit)
     export WINEPREFIX=${HOME}/wine/wine64_machine_02
     # next step is to install python 3.7 on the Wine Machine - WINEARCH is detected automatically
-    /usr/local/lib_bash_wine/003_001_install_wine_python3_preinstalled.sh
+    /usr/local/lib_bash_wine/003_000_install_wine_python3_preinstalled.sh
 
 
 Install GIT on WINE

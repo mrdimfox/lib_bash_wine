@@ -10,9 +10,9 @@ function include_dependencies {
 include_dependencies  # we need to do that via a function to have local scope of my_dir
 
 function install_wine_python_preinstalled {
-    # $1: python_version_short, eg. "python27", "python37"
-    # $2: python_version_doc, eg. "Python 2.7", "Python 3.7"
-    # $3: python_directory_prefix, eg. "c:/Python27", "c:/Python37" - will become "c:/Python27-32", "c:/Python27-64", "c:/Python37-32", "c:/Python37-64" depending on the Wine Arch
+    # $1: python_version_short, eg. "python37"
+    # $2: python_version_doc, eg. "Python 3.7"
+    # $3: python_directory_prefix, eg. "c:/Python37" - will become "c:/Python37-32", "c:/Python37-64" depending on the Wine Arch
     # these values can not be set freely, because they depend on the repositories to download the preinstalled python versions - change with care !
 
     local python_version_short="${1}"
