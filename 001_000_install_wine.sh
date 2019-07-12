@@ -56,9 +56,9 @@ function install_wine {
     retry $(which sudo) apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
     echo "deb https://download.mono-project.com/repo/ubuntu stable-${linux_release_name} main" | $(which sudo) tee /etc/apt/sources.list.d/mono-official-stable.list
     $(which sudo) apt-get update || fallback_to_mono_bionic_version
-    retry $(which sudo) apt-get install mono-devel -y
-    retry $(which sudo) apt-get install mono-dbg -y
-    retry $(which sudo) apt-get install mono-xsp4 -y
+    # retry $(which sudo) apt-get install mono-devel -y
+    # retry $(which sudo) apt-get install mono-dbg -y
+    # retry $(which sudo) apt-get install mono-xsp4 -y
     linux_update   # @lib_bash/bash_helpers
 
     clr_green "Install latest Winetricks"
