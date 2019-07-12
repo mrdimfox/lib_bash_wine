@@ -51,15 +51,15 @@ function install_wine {
     local wine_version_number=$(get_wine_version_number)
     clr_green "Wine Version ${wine_version_number} installed on ${linux_release_name}"
 
-    clr_green "Install mono complete"
-    retry $(which sudo) apt-get install gnupg ca-certificates
-    retry $(which sudo) apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-    echo "deb https://download.mono-project.com/repo/ubuntu stable-${linux_release_name} main" | $(which sudo) tee /etc/apt/sources.list.d/mono-official-stable.list
-    $(which sudo) apt-get update || fallback_to_mono_bionic_version
+    # clr_green "Install mono complete"
+    # retry $(which sudo) apt-get install gnupg ca-certificates
+    # retry $(which sudo) apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+    # echo "deb https://download.mono-project.com/repo/ubuntu stable-${linux_release_name} main" | $(which sudo) tee /etc/apt/sources.list.d/mono-official-stable.list
+    # $(which sudo) apt-get update || fallback_to_mono_bionic_version
     # retry $(which sudo) apt-get install mono-devel -y
     # retry $(which sudo) apt-get install mono-dbg -y
     # retry $(which sudo) apt-get install mono-xsp4 -y
-    linux_update   # @lib_bash/bash_helpers
+    # linux_update   # @lib_bash/bash_helpers
 
     clr_green "Install latest Winetricks"
     $(which sudo) rm -f /usr/bin/winetricks
