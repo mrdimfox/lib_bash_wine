@@ -16,7 +16,7 @@ include_dependencies  # we need to do that via a function to have local scope of
 function install_wine_machine {
 
     banner "Install Wine Machine"
-    local linux_release_name=$(get_linux_release_name)                                  # @lib_bash/bash_helpers
+    local linux_release_name=$(get_linux_release_name)                          # @lib_bash/bash_helpers
     local wine_release=$(get_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
     local wine_prefix=$(get_and_export_wine_prefix_or_default_to_home_wine)     # @lib_bash_wine
     local wine_arch=$(get_and_export_wine_arch_or_default_to_win64)             # @lib_bash_wine
