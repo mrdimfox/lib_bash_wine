@@ -95,6 +95,7 @@ function update_lib_bash_wine {
             set_lib_bash_wine_permissions
         )
         clr_green "lib_bash_wine update complete"
+        exit 0
     else
         clr_green "lib_bash_wine is up to date"
     fi
