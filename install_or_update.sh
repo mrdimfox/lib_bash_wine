@@ -81,7 +81,6 @@ function update_lib_bash_wine {
         clr_green "lib_bash_wine update complete"
     else
         clr_green "lib_bash_wine is up to date"
-        exit 0
     fi
 }
 
