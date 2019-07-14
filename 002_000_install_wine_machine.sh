@@ -12,6 +12,8 @@ else
 fi
 
 
+
+
 function include_dependencies {
     source /usr/local/lib_bash/lib_color.sh
     source /usr/local/lib_bash/lib_retry.sh
