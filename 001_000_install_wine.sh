@@ -1,8 +1,12 @@
 #!/bin/bash
 
+
 function update_myself {
     /usr/local/lib_bash_wine/install_or_update.sh "${@}" || exit 0              # exit old instance after updates
 }
+
+
+update_myself ${0} ${@}  > /dev/null 2>&1  # suppress messages here, not to spoil up answers from functions  when called verbatim
 
 
 function include_dependencies {
@@ -70,6 +74,4 @@ function install_wine {
     banner "FINISHED installing WINE and WINETRICKS: ${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}"
 }
 
-
-update_myself ${0} ${@}                                                              # pass own script name and parameters
 install_wine
