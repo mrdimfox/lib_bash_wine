@@ -24,7 +24,6 @@ function include_dependencies {
 include_dependencies  # we need to do that via a function to have local scope of my_dir
 
 function install_wine_machine {
-
     banner "Install Wine Machine"
     local linux_release_name=$(get_linux_release_name)                          # @lib_bash/bash_helpers
     local wine_release=$(get_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
@@ -36,8 +35,12 @@ function install_wine_machine {
 
     banner "Setup Wine Machine:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}wine_windows_version=${wine_windows_version}"
 
-    banner_warning "Erase the old Wineprefix"
-    $(which sudo) rm -Rf ${wine_prefix}
+
+    if [[ "${automatic_erase_old_wine_machines}" == True ]]; then
+        banner_warning "Erase the old Wineprefix"
+        $(which sudo) rm -Rf ${wine_prefix}
+    fi
+
     mkdir -p ${wine_prefix}
     wine_drive_c_dir=${wine_prefix}/drive_c
     # xvfb-run --auto-servernum winecfg # fails marshal_object couldnt get IPSFactory buffer for interface ...

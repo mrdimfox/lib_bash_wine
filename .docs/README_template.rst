@@ -66,6 +66,10 @@ The WINEPREFIX is the path to the Wine machine, defaults to /home/<user>/.wine
 
 .. code-block:: bash
 
+    # you can automatically overwrite old wineprefix (the old wine machine) by setting :
+    # export automatic_erase_old_wine_machines="True"
+    # handle with care !
+
     #############################################
     # Install Wine Machine 1 (32 Bit)
     #############################################
