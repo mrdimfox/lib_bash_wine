@@ -94,7 +94,7 @@ function get_and_export_wine_arch_from_wine_prefix {
 
 function get_is_wine_path_reg_sz_set {
     local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep -c REG_SZ`"
-    if [[ -z "${wine_current_reg_path}" ]]; then
+    if [[ "${wine_current_reg_path}" == "0" ]]; then
         echo "False"
     else
         echo "True"
@@ -103,7 +103,7 @@ function get_is_wine_path_reg_sz_set {
 
 function get_is_wine_path_reg_expand_sz_set {
     local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_EXPAND_SZ | sed 's/^.*REG_EXPAND_SZ\s*//'`"
-    if [[ -z "${wine_current_reg_path}" ]]; then
+    if [[ "${wine_current_reg_path}" == "0" ]]; then
         echo "False"
     else
         echo "True"
