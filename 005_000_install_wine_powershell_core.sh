@@ -43,11 +43,11 @@ function install_powershell_core {
             then
                 clr_green "Download Powershell ${powershell_version} 32 Bit"
 
-                retry wget -nc --no-check-certificate -O powershell_${powershell_version}_${wine_arch}.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x86.zip
+                retry_nofail wget -nc --no-check-certificate -O powershell_${powershell_version}_${wine_arch}.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x86.zip
 
             else
                 clr_green "Download Powershell ${powershell_version} 64 Bit"
-                retry wget -nc --no-check-certificate -O powershell_${powershell_version}_${wine_arch}.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x64.zip
+                retry_nofail wget -nc --no-check-certificate -O powershell_${powershell_version}_${wine_arch}.zip https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/PowerShell-${powershell_version}-win-x64.zip
             fi
 
         unzip -oqq ./powershell_${powershell_version}_${wine_arch}.zip -d "${powershell_install_dir}"
