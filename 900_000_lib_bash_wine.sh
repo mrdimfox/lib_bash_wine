@@ -87,25 +87,84 @@ function get_and_export_wine_arch_from_wine_prefix {
 }
 
 
-function prepend_path_to_wine_registry {
-    local add_pythonpath="${1}"
-    local wine_new_reg_path=""
-    local wine_actual_reg_path=""
-    local wine_current_reg_path=""
-    clr_green "add Path Settings to Registry"
-    wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_SZ | sed 's/^.*REG_SZ\s*//'`"
-    clr_green "current Wine Registry Path=${wine_current_reg_path}"
-    if [[ "$(get_is_string1_in_string2 ${add_pythonpath} ${wine_current_reg_path})" == "False" ]]; then
-        wine_new_reg_path="${add_pythonpath};${wine_current_reg_path}"
-        clr_green "new Wine Registry PATH=${wine_new_reg_path}"
-        wine reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /t REG_SZ /v PATH /d "${wine_new_reg_path}" /f
-        wine_actual_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_SZ | sed 's/^.*REG_SZ\s*//'`"
-        clr_green "adding Path done"
+function get_is_wine_path_reg_sz_set {
+    local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_SZ | sed 's/^.*REG_SZ\s*//'`"
+    if [[ -z wine_current_reg_path ]]; then
+        echo "False"
     else
-        clr_green "Path was already added"
-        wine_actual_reg_path=${wine_current_reg_path}
+        echo "True"
     fi
-    clr_green "new Wine Registry PATH=${wine_actual_reg_path}"
+}
+
+function get_is_wine_path_reg_expand_sz_set {
+    local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_EXPAND_SZ | sed 's/^.*REG_EXPAND_SZ\s*//'`"
+    if [[ -z wine_current_reg_path ]]; then
+        echo "False"
+    else
+        echo "True"
+    fi
+}
+
+function get_wine_path_reg_sz {
+    local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_SZ | sed 's/^.*REG_SZ\s*//'`"
+    echo "${wine_current_reg_path}"
+}
+
+function get_wine_path_reg_expand_sz {
+    local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_EXPAND_SZ | sed 's/^.*REG_EXPAND_SZ\s*//'`"
+    echo "${wine_current_reg_path}"
+}
+
+
+function set_wine_path_reg_sz {
+    # $1: new_wine_path
+    local new_wine_path="${1}"
+    wine reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /t REG_SZ /v PATH /d "${new_wine_path}" /f
+}
+
+
+function set_wine_path_reg_expand_sz {
+    # $1: new_wine_path
+    local new_wine_path="${1}"
+    wine reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /t REG_EXPAND_SZ /v PATH /d "${new_wine_path}" /f
+}
+
+
+function get_prepended_path {
+    # $1: path_to_add
+    # $2: current_path
+    local path_to_add="${1}"
+    local current_path="${2}"
+    local prepended_path="${current_path}"
+    if [[ "$(get_is_string1_in_string2 ${path_to_add} ${current_path})" == "False" ]]; then
+        prepended_path="${path_to_add};${current_path}"
+    fi
+    echo "${prepended_path}"
+}
+
+
+function prepend_path_to_wine_registry {
+    local add_path="${1}"
+    local current_path_reg_sz=""
+    local new_path_reg_sz=""
+    local current_path_reg_expand_sz=""
+    local new_path_reg_expand_sz=""
+
+
+    if [[ $(get_is_wine_path_reg_sz_set) == "True" ]]; then
+        clr_green "add path_reg_sz to Wine Registry"
+        current_path_reg_sz="$(get_wine_path_reg_sz)"
+        new_path_reg_sz="$(get_prepended_path ${add_path} ${current_path_reg_sz})"
+        set_wine_path_reg_sz "${new_path_reg_sz}"
+    fi
+
+    if [[ $(get_is_wine_path_reg_expand_sz_set) == "True" ]]; then
+        clr_green "add path_reg_expand_sz to Wine Registry"
+        current_path_reg_expand_sz="$(get_wine_path_reg_expand_sz)"
+        new_path_reg_expand_sz="$(get_prepended_path ${add_path} ${current_path_reg_sz})"
+        set_wine_path_reg_sz "${new_path_reg_expand_sz}"
+    fi
+    banner "Adding wine paths done:${IFS}path_reg_sz : ${current_path_reg_sz} --> ${new_path_reg_sz}${IFS}{IFS}path_reg_expand_sz : ${current_path_reg_expand_sz} --> ${new_path_reg_expand_sz}"
 }
 
 
