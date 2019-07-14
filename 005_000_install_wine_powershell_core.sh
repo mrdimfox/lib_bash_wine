@@ -31,7 +31,7 @@ function install_powershell_core {
     local powershell_install_dir="${wine_drive_c_dir}/PowerShell-${wine_arch}"
     local powershell_version="6.2.0"
     # local powershell_path_to_add="c:\\Program Files\\PowerShell-${wine_arch}"
-    local powershell_path_to_add="c:\\PowerShell-${wine_arch}"
+    local powershell_path_to_add="C:\\PowerShell-${wine_arch}"
 
     banner "Installing Powershell Core:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
     mkdir -p "${powershell_install_dir}"
