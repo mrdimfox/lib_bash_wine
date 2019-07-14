@@ -53,13 +53,14 @@ function install_powershell_core {
         clr_green "Adding path to wine registry: ${powershell_path_to_add}"
         prepend_path_to_wine_registry "${powershell_path_to_add}"
 
+        $(which sudo) chmod -r 0755 "${powershell_install_dir}"
 
         banner "Test Powershell ${powershell_version}"
         wine pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"
         banner "Finished installing Powershell Core:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}powershell_core_version=${powershell_version}"
     )
 
-    $(which sudo) chmod -r 0755 "${powershell_install_dir}"
+
 
 }
 
