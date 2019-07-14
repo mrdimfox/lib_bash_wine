@@ -42,10 +42,10 @@ function install_wine_python_preinstalled {
     clr_green "Joining Multipart Zip for ${wine_arch} to ${decompress_dir}/binaries_${python_version_short}_wine-master/bin"
     if [[ "${wine_arch}" == "win32" ]]; then
         cat ${decompress_dir}/binaries_${python_version_short}_wine-master/bin/python*_wine_32* > ${decompress_dir}/binaries_${python_version_short}_wine-master/bin/joined_${python_version_short}.zip
-        pythonpath_to_add="${python_directory_prefix}-32;${python_directory_prefix}-32/Scripts"
+        pythonpath_to_add="${python_directory_prefix}-32;${python_directory_prefix}-32\\Scripts"
     else
         cat ${decompress_dir}/binaries_${python_version_short}_wine-master/bin/python*_wine_64* > ${decompress_dir}/binaries_${python_version_short}_wine-master/bin/joined_${python_version_short}.zip
-        pythonpath_to_add="${python_directory_prefix}-64;${python_directory_prefix}-64/Scripts"
+        pythonpath_to_add="${python_directory_prefix}-64;${python_directory_prefix}-64\\Scripts"
     fi
 
     clr_green "Unzip ${python_version_doc} for ${wine_arch} to ${wine_drive_c_dir}"

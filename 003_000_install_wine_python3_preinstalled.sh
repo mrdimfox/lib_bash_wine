@@ -18,4 +18,4 @@ function include_dependencies {
 include_dependencies
 
 
-install_wine_python_preinstalled "python37" "Python 3.7" "c:/Python37"
+install_wine_python_preinstalled "python37" "Python 3.7" "c:\\Python37"
