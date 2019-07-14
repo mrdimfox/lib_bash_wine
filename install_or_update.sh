@@ -11,7 +11,8 @@
 
 function install_or_update_lib_bash {
     if [[ -f "/usr/local/lib_bash/install_or_update.sh" ]]; then
-        $(which sudo) /usr/local/lib_bash/install_or_update.sh
+        # $(which sudo) /usr/local/lib_bash/install_or_update.sh
+        echo "lib_bash already installed"
     else
         $(which sudo) rm -fR /usr/local/lib_bash
         $(which sudo) git clone https://github.com/bitranox/lib_bash.git /usr/local/lib_bash > /dev/null 2>&1
