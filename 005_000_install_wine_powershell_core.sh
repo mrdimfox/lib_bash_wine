@@ -27,9 +27,11 @@ function install_powershell_core {
 
     local wine_drive_c_dir=${wine_prefix}/drive_c
     local decompress_dir=${HOME}/bitranox_decompress
-    local powershell_install_dir="${wine_drive_c_dir}/Program Files/PowerShell-${wine_arch}"
+    # local powershell_install_dir="${wine_drive_c_dir}/Program Files/PowerShell-${wine_arch}"
+    local powershell_install_dir="${wine_drive_c_dir}/PowerShell-${wine_arch}"
     local powershell_version="6.2.0"
-    local powershell_path_to_add="c:\\Program Files\\PowerShell-${wine_arch}"
+    # local powershell_path_to_add="c:\\Program Files\\PowerShell-${wine_arch}"
+    local powershell_path_to_add="c:\\PowerShell-${wine_arch}"
 
     banner "Installing Powershell Core:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
     mkdir -p "${powershell_install_dir}"
@@ -53,7 +55,7 @@ function install_powershell_core {
         clr_green "Adding path to wine registry: ${powershell_path_to_add}"
         prepend_path_to_wine_registry "${powershell_path_to_add}"
 
-        $(which sudo) chmod -r 0755 "${powershell_install_dir}"
+        $(which sudo) chmod -R 0755 "${powershell_install_dir}"
 
         banner "Test Powershell ${powershell_version}"
         wine pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"

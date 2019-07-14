@@ -129,7 +129,7 @@ function get_prepended_path {
     local path_to_add="${1}"
     local current_path="${2}"
     local prepended_path="${current_path}"
-    if [[ "$(get_is_string1_in_string2 ${path_to_add} ${current_path})" == "False" ]]; then
+    if [[ "$(get_is_string1_in_string2 \"${path_to_add}\" \"${current_path}\")" == "False" ]]; then
         prepended_path="${path_to_add};${current_path}"
     fi
     echo "${prepended_path}"
@@ -147,14 +147,14 @@ function prepend_path_to_wine_registry {
     if [[ $(get_is_wine_path_reg_sz_set) == "True" ]]; then
         clr_green "add path_reg_sz to Wine Registry"
         current_path_reg_sz="$(get_wine_path_reg_sz)"
-        new_path_reg_sz="$(get_prepended_path ${add_path} ${current_path_reg_sz})"
+        new_path_reg_sz="$(get_prepended_path \"${add_path}\" \"${current_path_reg_sz}\")"
         set_wine_path_reg_sz "${new_path_reg_sz}"
     fi
 
     if [[ $(get_is_wine_path_reg_expand_sz_set) == "True" ]]; then
         clr_green "add path_reg_expand_sz to Wine Registry"
         current_path_reg_expand_sz="$(get_wine_path_reg_expand_sz)"
-        new_path_reg_expand_sz="$(get_prepended_path ${add_path} ${current_path_reg_expand_sz})"
+        new_path_reg_expand_sz="$(get_prepended_path \"${add_path}\" \"${current_path_reg_expand_sz}\")"
         set_wine_path_reg_expand_sz "${new_path_reg_expand_sz}"
     fi
     banner "Adding wine paths done:${IFS}original path_reg_sz: ${current_path_reg_sz}${IFS}     new path_reg_sz: ${new_path_reg_sz}${IFS}original path_reg_expand_sz: ${current_path_reg_expand_sz}${IFS}     new path_reg_expand_sz: ${new_path_reg_expand_sz}"
