@@ -6,7 +6,11 @@ function update_myself {
 }
 
 
-update_myself ${0} ${@}  > /dev/null 2>&1  # suppress messages here, not to spoil up answers from functions  when called verbatim
+if [[ -z "${@}" ]]; then
+    update_myself ${0}
+else
+    update_myself ${0} ${@}  > /dev/null 2>&1  # suppress messages here, not to spoil up answers from functions  when called verbatim
+fi
 
 
 function include_dependencies {
@@ -89,8 +93,8 @@ function get_and_export_wine_arch_from_wine_prefix {
 
 
 function get_is_wine_path_reg_sz_set {
-    local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_SZ | sed 's/^.*REG_SZ\s*//'`"
-    if [[ -z wine_current_reg_path ]]; then
+    local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep -c REG_SZ`"
+    if [[ -z "${wine_current_reg_path}" ]]; then
         echo "False"
     else
         echo "True"
@@ -99,7 +103,7 @@ function get_is_wine_path_reg_sz_set {
 
 function get_is_wine_path_reg_expand_sz_set {
     local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_EXPAND_SZ | sed 's/^.*REG_EXPAND_SZ\s*//'`"
-    if [[ -z wine_current_reg_path ]]; then
+    if [[ -z "${wine_current_reg_path}" ]]; then
         echo "False"
     else
         echo "True"
@@ -165,7 +169,7 @@ function prepend_path_to_wine_registry {
         new_path_reg_expand_sz="$(get_prepended_path ${add_path} ${current_path_reg_sz})"
         set_wine_path_reg_sz "${new_path_reg_expand_sz}"
     fi
-    banner "Adding wine paths done:${IFS}path_reg_sz : ${current_path_reg_sz} --> ${new_path_reg_sz}${IFS}{IFS}path_reg_expand_sz : ${current_path_reg_expand_sz} --> ${new_path_reg_expand_sz}"
+    banner "Adding wine paths done:${IFS}path_reg_sz : ${current_path_reg_sz} --> ${new_path_reg_sz}${IFS}path_reg_expand_sz : ${current_path_reg_expand_sz} --> ${new_path_reg_expand_sz}"
 }
 
 
