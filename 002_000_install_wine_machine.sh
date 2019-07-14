@@ -30,6 +30,9 @@ function install_wine_machine {
     local wine_version_number=$(get_wine_version_number)                        # @lib_bash_wine
 
     banner "Setup Wine Machine:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}wine_windows_version=${wine_windows_version}"
+
+    banner_warning "Erase the old Wineprefix"
+    $(which sudo) rm -Rf ${wine_prefix}
     mkdir -p ${wine_prefix}
     wine_drive_c_dir=${wine_prefix}/drive_c
     # xvfb-run --auto-servernum winecfg # fails marshal_object couldnt get IPSFactory buffer for interface ...
