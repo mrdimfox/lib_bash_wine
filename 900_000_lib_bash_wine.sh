@@ -1,18 +1,6 @@
 #!/bin/bash
 
 
-function update_myself {
-    /usr/local/lib_bash_wine/install_or_update.sh "${@}" || exit 0              # exit old instance after updates
-}
-
-
-if [[ ! -z "$1" ]] && declare -f "${1}" ; then
-    update_myself ${0}
-else
-    update_myself ${0} ${@}  > /dev/null 2>&1  # suppress messages here, not to spoil up answers from functions  when called verbatim
-fi
-
-
 function include_dependencies {
     local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
     source /usr/local/lib_bash/lib_color.sh
