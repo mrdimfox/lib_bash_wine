@@ -169,7 +169,7 @@ function prepend_path_to_wine_registry {
         new_path_reg_expand_sz="$(get_prepended_path ${add_path} ${current_path_reg_sz})"
         set_wine_path_reg_sz "${new_path_reg_expand_sz}"
     fi
-    banner "Adding wine paths done:${IFS}path_reg_sz : ${current_path_reg_sz} --> ${new_path_reg_sz}${IFS}path_reg_expand_sz : ${current_path_reg_expand_sz} --> ${new_path_reg_expand_sz}"
+    banner "Adding wine paths done:${IFS}original path_reg_sz: ${current_path_reg_sz}${IFS}     new path_reg_sz: ${new_path_reg_sz}${IFS}original path_reg_expand_sz: ${current_path_reg_expand_sz}${IFS}     new path_reg_expand_sz: ${new_path_reg_expand_sz}"
 }
 
 
