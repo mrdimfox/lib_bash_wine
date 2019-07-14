@@ -40,25 +40,29 @@ function install_wine_machine {
     wine_drive_c_dir=${wine_prefix}/drive_c
     # xvfb-run --auto-servernum winecfg # fails marshal_object couldnt get IPSFactory buffer for interface ...
 
-    if [[ ${is_xvfb_service_active} == "True" ]]; then
-        clr_green "Stopping xvfb because winecfg crashes if it is enabled"
-        $(which sudo) service xvfb stop
-    fi
+
+    ####  when we use winecfg we need to switch off xvfb
+    # if [[ ${is_xvfb_service_active} == "True" ]]; then
+    #     clr_green "Stopping xvfb because winecfg crashes if it is enabled"
+    #     $(which sudo) service xvfb stop
+    # fi
 
     banner "winecfg for Wine Machine, WINEPREFIX=${wine_prefix}, WINEARCH=${wine_arch}, wine_windows_version=${wine_windows_version}"
 
 
-    winecfg
-    # TODO HEADLESS : but we need to check Gecko and so on ... (???)
-    # DISPLAY= wine pgen.exe
+    #### winecfg
+    # are we sure that Gecko etc. is installed ??? dunno, it works ...
+    DISPLAY= wine pgen.exe
+    # gecko 2.47 is installed ... looks good.
 
     fix_wine_permissions
 
-    if [[ ${is_xvfb_service_active} == "True" ]]; then
-        clr_green " "
-        clr_green "restarting xvfb"
-        $(which sudo) service xvfb start
-    fi
+    ####  when we use winecfg we need to switch off xvfb
+    # if [[ ${is_xvfb_service_active} == "True" ]]; then
+    #    clr_green " "
+    #    clr_green "restarting xvfb"
+    #    $(which sudo) service xvfb start
+    #fi
 
     banner "Disable GUI Crash Dialogs"
     winetricks nocrashdialog
