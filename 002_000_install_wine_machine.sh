@@ -38,6 +38,7 @@ function install_wine_machine {
     winecfg
     # TODO HEADLESS : but we need to check Gecko and so on ...
     # DISPLAY= wine pgen.exe
+    fix_wine_permissions
 
     if [[ ${is_xvfb_service_active} == "True" ]]; then
         clr_green " "

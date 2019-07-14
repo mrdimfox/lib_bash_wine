@@ -116,3 +116,9 @@ if [[ ! -z "$1" ]]
           fail "\"${function_name}\" is not a known function name of \"${library_name}\""
         fi
 	fi
+
+
+function fix_wine_permissions {
+    $(which sudo) chown -R ${USER} ${WINEPREFIX}
+    $(which sudo) chgrp -R ${USER} ${WINEPREFIX}
+}
