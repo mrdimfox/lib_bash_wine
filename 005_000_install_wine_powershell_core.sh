@@ -29,7 +29,7 @@ function install_powershell_core {
     local decompress_dir=${HOME}/bitranox_decompress
     local powershell_install_dir="${wine_drive_c_dir}/Program Files/PowerShell-${wine_arch}"
     local powershell_version="6.2.0"
-    local powershell_path_to_add="c:/Program Files/PowerShell-${wine_arch}"
+    local powershell_path_to_add="c:\\Program Files\\PowerShell-${wine_arch}"
 
     banner "Installing Powershell Core:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
     mkdir -p "${powershell_install_dir}"
@@ -58,6 +58,8 @@ function install_powershell_core {
         wine pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"
         banner "Finished installing Powershell Core:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}powershell_core_version=${powershell_version}"
     )
+
+    $(which sudo) chmod -r 0755 "${powershell_install_dir}"
 
 }
 
