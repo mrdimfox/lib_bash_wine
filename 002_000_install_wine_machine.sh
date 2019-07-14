@@ -48,9 +48,9 @@ function install_wine_machine {
     banner "winecfg for Wine Machine, WINEPREFIX=${wine_prefix}, WINEARCH=${wine_arch}, wine_windows_version=${wine_windows_version}"
 
 
-    winecfg
+    # winecfg
     # TODO HEADLESS : but we need to check Gecko and so on ... (???)
-    # DISPLAY= wine pgen.exe
+    DISPLAY= wine pgen.exe
 
     fix_wine_permissions
 
