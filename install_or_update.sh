@@ -68,6 +68,22 @@ function install_lib_bash_wine {
 }
 
 
+function restart_calling_script {
+    local caller_command=("$@")
+    if [ ${#caller_command[@]} -eq 0 ]; then
+        echo "lib_bash_wine: no caller command - exit 0"
+        # no parameters passed
+        exit 0
+    else
+        # parameters passed, running the new Version of the calling script
+        echo "lib_bash_wine: calling command : $@ - exit 100"
+        "${caller_command[@]}"
+        # exit this old instance with error code 100
+        exit 100
+    fi
+}
+
+
 function update_lib_bash_wine {
     if [[ $(is_lib_bash_wine_to_update) == "True" ]]; then
         clr_green "lib_bash_wine needs to update"
@@ -84,23 +100,10 @@ function update_lib_bash_wine {
     fi
 }
 
-function restart_calling_script {
-    local caller_command=("$@")
-    if [ ${#caller_command[@]} -eq 0 ]; then
-        # no parameters passed
-        exit 0
-    else
-        # parameters passed, running the new Version of the calling script
-        "${caller_command[@]}"
-        # exit this old instance with error code 100
-        exit 100
-    fi
-
-}
 
 if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
     update_lib_bash_wine
-    restart_calling_script  "${@}"  # needs caller name and parameters
+    restart_calling_script  "${@}" || exit 0 # needs caller name and parameters
 else
     install_lib_bash_wine
 fi
