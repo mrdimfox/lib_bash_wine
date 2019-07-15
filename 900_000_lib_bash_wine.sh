@@ -175,6 +175,9 @@ function get_prepended_path {
     echo "${prepended_path}"
 }
 
+function test_get_prepended_path {
+    assert "get_prepended_path \"c:/test test\" \"c:/test test;\"" "\"c:/test test;\""
+}
 
 function prepend_path_to_wine_registry {
     local add_path="${1}"
@@ -230,7 +233,7 @@ function fix_wine_permissions {
 }
 
 function tests {
-	clr_green "no tests in ${0}"
+	test_get_prepended_path
 }
 
 
