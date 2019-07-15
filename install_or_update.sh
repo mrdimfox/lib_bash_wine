@@ -2,7 +2,7 @@
 
 
 # export bitranox_debug_global=False
-export debug_lib_bash_wine="True"
+export debug_lib_bash_wine="False"
 
 
 function install_or_update_lib_bash {
