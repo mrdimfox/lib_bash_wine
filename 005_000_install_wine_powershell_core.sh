@@ -51,7 +51,6 @@ function install_powershell_core {
 
     retry_nofail wget -nc --no-check-certificate -O "${decompress_dir}/${zip_file_name}" "https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/${zip_file_name}"
 
-
     unzip -oqq "${decompress_dir}/${zip_file_name}" -d "${powershell_install_dir}"
 
     clr_green "Adding path to wine registry: ${powershell_path_to_add}"
