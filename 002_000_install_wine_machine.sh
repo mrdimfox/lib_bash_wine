@@ -103,7 +103,7 @@ function tests {
 	clr_green "no tests in ${my_dir}"
 }
 
-if [[ "${0}" != "${BASH_SOURCE}" ]]; then    # if the script is not sourced
+if [[ "${0}" == "${BASH_SOURCE}" ]]; then    # if the script is not sourced
     install_wine_machine
 fi
 

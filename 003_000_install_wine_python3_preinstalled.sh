@@ -22,6 +22,6 @@ function tests {
 	clr_green "no tests in ${my_dir}"
 }
 
-if [[ "${0}" != "${BASH_SOURCE}" ]]; then    # if the script is not sourced
+if [[ "${0}" == "${BASH_SOURCE}" ]]; then    # if the script is not sourced
     install_wine_python_preinstalled "python37" "Python 3.7" "c:\\Python37"
 fi

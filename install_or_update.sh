@@ -100,7 +100,7 @@ function tests {
 }
 
 
-if [[ "${0}" != "${BASH_SOURCE}" ]]; then    # if the script is not sourced
+if [[ "${0}" == "${BASH_SOURCE}" ]]; then    # if the script is not sourced
     if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
         if [[ $(is_lib_bash_wine_up_to_date) == "False" ]]; then
             debug "${debug_lib_bash_wine}" "lib_bash_wine is not up to date"
