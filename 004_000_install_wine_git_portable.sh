@@ -145,6 +145,6 @@ function tests {
 	clr_green "no tests in ${my_dir}"
 }
 
-if [[ $(is_script_sourced "${0}" "${BASH_SOURCE}") == "False" ]]; then
+if [[ "${0}" != "${BASH_SOURCE}" ]]; then    # if the script is not sourced
     install_git_portable
 fi
