@@ -71,7 +71,7 @@ function get_wine_version_number {
 function get_and_export_wine_arch_from_wine_prefix {
     # $1: wine_prefix
     local wine_prefix="${1}"
-    local wine_arch=$( cat "${wine_prefix}/system.reg" | grep "#arch=" | cut -d "=" -f 2 )
+    local wine_arch="$(cat ${wine_prefix}/system.reg | grep "#arch=" | cut -d "=" -f 2)"
     if [[ "${wine_arch}" != "win32" ]] && [[ "${wine_arch}" != "win64" ]]; then
         fail "get_and_export_wine_arch_from_wine_prefix: WINEARCH for WINEPREFIX=${wine_prefix} can not be determined, wine_arch=${wine_arch}"
     fi
