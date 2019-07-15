@@ -15,6 +15,8 @@ function include_dependencies {
     source /usr/local/lib_bash_wine/900_000_lib_bash_wine.sh
 }
 
+include_dependencies
+
 
 function install_wine_choco {
     local linux_release_name=$(get_linux_release_name)                                  # @lib_bash/bash_helpers
