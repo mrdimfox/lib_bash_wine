@@ -48,7 +48,7 @@ function install_git_portable {
     cat ${decompress_dir}/binaries_portable_git-master/bin/PortableGit${str_32_or_64_bit}* > ${decompress_dir}/binaries_portable_git-master/bin/joined_PortableGit${str_32_or_64_bit}.zip
 
     clr_green "Unzip Git Portable Binaries for ${wine_arch} to ${git_install_dir}"
-    unzip -oqq ${decompress_dir}/binaries_portable_git-master/bin/joined_PortableGit${str_32_or_64_bit}.zip -d -d "${git_install_dir}"
+    unzip -oqq ${decompress_dir}/binaries_portable_git-master/bin/joined_PortableGit${str_32_or_64_bit}.zip -d "${git_install_dir}"
 
     clr_green "Adding path to wine registry: ${git_path_to_add}"
     prepend_path_to_wine_registry "${git_path_to_add}"
