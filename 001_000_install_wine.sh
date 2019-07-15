@@ -79,6 +79,6 @@ function tests {
 }
 
 
-if [[ "${0}" != "${BASH_SOURCE}" ]]; then    # if the script is not sourced
+if [[ "${0}" != "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
     install_wine
 fi
