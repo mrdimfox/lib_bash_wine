@@ -247,11 +247,5 @@ if [[ ! -z "$1" ]]
 	fi
 
 
-function get_overwrite_existing_wine_machine {
-    local overwrite_existing_wine_machine=${automatic_overwrite_existing_wine_machine}
-    if [[ "${overwrite_existing_wine_machine}" == "True" ]]; then
-        echo "True"
-    else
-        echo "False"
-    fi
-}
+## make it possible to call functions without source include
+call_function_from_commandline "${0}" "${1}" "${@}"
