@@ -64,4 +64,4 @@ function install_wine_python_preinstalled {
 
 
 ## make it possible to call functions without source include
-call_function_from_commandline "${0}" "${1}" "${@}"
+call_function_from_commandline "${0}" "${1}"
