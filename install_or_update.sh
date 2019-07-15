@@ -114,8 +114,3 @@ if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
 else
     install_lib_bash_wine
 fi
-
-
-## make it possible to call functions without source include
-call_function_from_commandline "${0}" "${@}"
-
