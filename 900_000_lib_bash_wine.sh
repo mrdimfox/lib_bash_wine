@@ -84,7 +84,7 @@ function get_str_32_or_64_from_wine_prefix {
     # $1: wine_prefix
     # returns "32" or "64" for the given wine_prefix
     local wine_prefix="${1}"
-    local wine_arch="$(get_and_export_wine_arch_from_wine_prefix \"${wine_prefix}\")"
+    local wine_arch=$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")
     if [[ ${wine_arch} == "win32" ]]; then
         echo "32"
     elif [[ ${wine_arch} == "win64" ]]; then
@@ -99,7 +99,7 @@ function get_str_x86_or_x64_from_wine_prefix {
     # $1: wine_prefix
     # returns "x86" or "x64" for the given wine_prefix
     local wine_prefix="${1}"
-    local wine_arch="$(get_and_export_wine_arch_from_wine_prefix \"${wine_prefix}\")"
+    local wine_arch=$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")
     if [[ ${wine_arch} == "win32" ]]; then
         echo "x86"
     elif [[ ${wine_arch} == "win64" ]]; then
