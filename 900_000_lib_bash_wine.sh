@@ -184,11 +184,14 @@ function prepend_path_to_wine_registry {
     local new_path_reg_expand_sz=""
 
 
+    if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then clr_blue "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: add_path=${add_path}, caller=${0}"; fi
+
     if [[ $(get_is_wine_path_reg_sz_set) == "True" ]]; then
         clr_green "add path_reg_sz to Wine Registry"
         current_path_reg_sz="$(get_wine_path_reg_sz)"
+        if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then clr_blue "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: current_path_reg_sz=${current_path_reg_sz}, caller=${0}"; fi
         new_path_reg_sz="$(get_prepended_path \"${add_path}\" \"${current_path_reg_sz}\")"
-        if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then clr_blue "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: new_path_reg_sz=${new_path_reg_sz}"; fi
+        if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then clr_blue "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: new_path_reg_sz=${new_path_reg_sz}, caller=${0}"; fi
         set_wine_path_reg_sz "${new_path_reg_sz}"
     fi
 
@@ -196,7 +199,7 @@ function prepend_path_to_wine_registry {
         clr_green "add path_reg_expand_sz to Wine Registry"
         current_path_reg_expand_sz="$(get_wine_path_reg_expand_sz)"
         new_path_reg_expand_sz="$(get_prepended_path \"${add_path}\" \"${current_path_reg_expand_sz}\")"
-        if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then clr_blue "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: new_path_reg_expand_sz=${new_path_reg_expand_sz}"; fi
+        if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then clr_blue "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: new_path_reg_expand_sz=${new_path_reg_expand_sz}, caller=${0}"; fi
         set_wine_path_reg_expand_sz "${new_path_reg_expand_sz}"
     fi
     banner "Adding wine paths done:${IFS}original path_reg_sz: ${current_path_reg_sz}${IFS}     new path_reg_sz: ${new_path_reg_sz}${IFS}original path_reg_expand_sz: ${current_path_reg_expand_sz}${IFS}     new path_reg_expand_sz: ${new_path_reg_expand_sz}"
