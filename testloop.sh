@@ -31,6 +31,19 @@ function test_loop {
     done
 }
 
+    my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
+    files_to_test=( )
+    actual_file_to_test=""
 
 
-test_loop
+    while [[ 1=1 ]]; do
+        files_to_test=( $(sudo ls "${my_dir}"/*.sh ) )
+        for actual_file_to_test in "${files_to_test[@]}"
+        do
+            source ${actual_file_to_test}
+            tests
+        done
+    done
+
+
+
