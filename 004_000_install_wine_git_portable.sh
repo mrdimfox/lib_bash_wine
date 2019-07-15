@@ -1,6 +1,19 @@
 #!/bin/bash
 
 
+# export bitranox_debug_bash_global="True"
+export bitranox_debug_install_wine_git_portable="False"
+
+if [[ "${bitranox_debug_bash_global}" == "True" ]]; then
+    export bitranox_debug_install_wine_git_portable="True"
+fi
+
+#
+# if [[ "${bitranox_debug_install_wine_git_portable}" == "True" ]]; then clr_blue "lib_bash_wine\004_000_install_wine_git_portable.sh@restart_calling_script${IFS}\
+# Caller: ${@}\
+# "; fi
+
+
 function update_myself {
     /usr/local/lib_bash_wine/install_or_update.sh "${@}" || exit 0              # exit old instance after updates
 }
@@ -45,7 +58,7 @@ function get_portable_git_version {
     local decompress_dir="${1}"
     local str_32_or_64_bit="${2}"
     local portable_git_filename=$(get_portable_git_filename ${decompress_dir} ${str_32_or_64_bit})
-    local portable_git_version=$(cat ${portable_git_filename} | cut -d "-" -f 2)
+    local portable_git_version=$(echo ${portable_git_filename} | cut -d "-" -f 2)
     echo ${portable_git_version}
 }
 
@@ -59,6 +72,7 @@ function get_latest_download_link_for_git_portable {
     local portable_git_filename=$(get_portable_git_filename ${decompress_dir} ${str_32_or_64_bit})
     local portable_git_version=$(get_portable_git_version ${decompress_dir} ${str_32_or_64_bit})
     local download_link="https://github.com/git-for-windows/git/releases/download/v${portable_git_version}.windows.1/${portable_git_filename}"
+    echo "${download_link}"
 }
 
 
