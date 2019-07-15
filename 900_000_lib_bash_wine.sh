@@ -80,6 +80,38 @@ function get_and_export_wine_arch_from_wine_prefix {
 }
 
 
+function get_str_32_or_64_from_wine_prefix {
+    # $1: wine_prefix
+    # returns "32" or "64" for the given wine_prefix
+    local wine_prefix="${1}"
+    local wine_arch=$(get_and_export_wine_arch_from_wine_prefix)
+    if [[ ${wine_arch} == "win32" ]]; then
+        echo "32"
+    elif [[ ${wine_arch} == "win64" ]]; then
+        echo "64"
+    else
+        fail "get_str_32_or_64_from_wine_prefix: can not determine architecture for wine_prefix=${wine_prefix}, wine_arch=${wine_arch}"
+    fi
+}
+
+
+function get_str_x86_or_x64_from_wine_prefix {
+    # $1: wine_prefix
+    # returns "x86" or "x64" for the given wine_prefix
+    local wine_prefix="${1}"
+    local wine_arch=$(get_and_export_wine_arch_from_wine_prefix)
+    if [[ ${wine_arch} == "win32" ]]; then
+        echo "x86"
+    elif [[ ${wine_arch} == "win64" ]]; then
+        echo "x64"
+    else
+        fail "get_str_x86_or_x64_from_wine_prefix: can not determine architecture for wine_prefix=${wine_prefix}, wine_arch=${wine_arch}"
+    fi
+}
+
+
+
+
 function get_is_wine_path_reg_sz_set {
     local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep -c REG_SZ`"
     if [[ "${wine_current_reg_path}" == "0" ]]; then
@@ -199,3 +231,13 @@ if [[ ! -z "$1" ]]
           fail "\"${function_name}\" is not a known function name of \"${library_name}\""
         fi
 	fi
+
+
+function get_overwrite_existing_wine_machine {
+    local overwrite_existing_wine_machine=${automatic_overwrite_existing_wine_machine}
+    if [[ "${overwrite_existing_wine_machine}" == "True" ]]; then
+        echo "True"
+    else
+        echo "False"
+    fi
+}

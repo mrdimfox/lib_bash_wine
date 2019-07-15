@@ -20,19 +20,27 @@ include_dependencies  # we need to do that via a function to have local scope of
 
 function install_wine_machine {
     banner "Install Wine Machine"
-    local linux_release_name=$(get_linux_release_name)                          # @lib_bash/bash_helpers
-    local wine_release=$(get_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
-    local wine_prefix=$(get_and_export_wine_prefix_or_default_to_home_wine)     # @lib_bash_wine
-    local wine_arch=$(get_and_export_wine_arch_or_default_to_win64)             # @lib_bash_wine
-    local wine_windows_version=$(get_wine_windows_version_or_default_to_win10)  # @lib_bash_wine
-    local is_xvfb_service_active=$(get_is_xvfb_service_active)                  # @lib_bash_wine
-    local wine_version_number=$(get_wine_version_number)                        # @lib_bash_wine
+    local linux_release_name=$(get_linux_release_name)                                  # @lib_bash/bash_helpers
+    local wine_release=$(get_wine_release_from_environment_or_default_to_devel)         # @lib_bash_wine
+    local wine_prefix=$(get_and_export_wine_prefix_or_default_to_home_wine)             # @lib_bash_wine
+    local wine_arch=$(get_and_export_wine_arch_or_default_to_win64)                     #@lib_bash_wine
+    local wine_windows_version=$(get_wine_windows_version_or_default_to_win10)          # @lib_bash_wine
+    local is_xvfb_service_active=$(get_is_xvfb_service_active)                          # @lib_bash_wine
+    local wine_version_number=$(get_wine_version_number)                                # @lib_bash_wine
+    local automatic_overwrite_existing_wine_machine=$(get_overwrite_existing_wine_machine)    # @lib_bash_wine
 
-    banner "Setup Wine Machine:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}wine_windows_version=${wine_windows_version}"
+    banner "Setup Wine Machine:${IFS}\
+            linux_release_name=${linux_release_name}${IFS}\
+            wine_release=${wine_release}${IFS}\
+            wine_version=${wine_version_number}${IFS}\
+            WINEPREFIX=${wine_prefix}${IFS}\
+            WINEARCH=${wine_arch}${IFS}\
+            wine_windows_version=${wine_windows_version}${IFS}\
+            automatic_overwrite_existing_wine_machine=${automatic_overwrite_existing_wine_machine}"
 
 
-    if [[ "${automatic_erase_old_wine_machines}" == True ]]; then
-        banner_warning "Erase the old Wineprefix"
+    if [[ "$(get_overwrite_existing_wine_machine)" == True ]]; then
+        banner_warning "Overwrite the old Wineprefix"
         $(which sudo) rm -Rf ${wine_prefix}
     fi
 
@@ -81,7 +89,13 @@ function install_wine_machine {
     banner "install msxml6"
     retry winetricks -q msxml6
 
-    banner "FINISHED installing Wine MachineWine Machine:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}wine_windows_version=${wine_windows_version}"
+    banner "FINISHED installing Wine MachineWine Machine:${IFS}\
+            linux_release_name=${linux_release_name}${IFS}\
+            wine_release=${wine_release}${IFS}\
+            wine_version=${wine_version_number}${IFS}\
+            WINEPREFIX=${wine_prefix}${IFS}\
+            WINEARCH=${wine_arch}${IFS}\
+            wine_windows_version=${wine_windows_version}"
 }
 
 
