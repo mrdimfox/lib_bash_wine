@@ -18,8 +18,8 @@ function include_dependencies {
 include_dependencies
 
 function tests {
-	clr_green "no tests in ${0}"
-	exit 0
+	local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
+	clr_green "no tests in ${my_dir}"
 }
 
 if [[ $(is_script_sourced "${0}" "${BASH_SOURCE}") == "False" ]]; then
