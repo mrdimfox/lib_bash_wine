@@ -233,7 +233,7 @@ function fix_wine_permissions {
 }
 
 function tests {
-	clr_green "no tests in ${0}"
+	test_get_prepended_path
 	exit 0
 }
 
