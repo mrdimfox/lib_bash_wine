@@ -112,7 +112,7 @@ function install_git_portable {
     clr_green "Unzip Git Portable Binaries Master to ${git_path_to_add}"
 
     $(which sudo) rm -Rf "${git_install_dir}"
-    7z e ${decompress_dir}/${portable_git_filename} -o "${git_install_dir}" -y
+    7z e ${decompress_dir}/${portable_git_filename} -o"\"${git_install_dir}\"" -y
     $(which sudo) chmod -R 0755 "${git_install_dir}"
 
     clr_green "Adding path to wine registry: ${git_path_to_add}"
