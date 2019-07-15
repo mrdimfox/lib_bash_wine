@@ -7,6 +7,7 @@ function update_myself {
 
 update_myself ${0}
 
+
 function include_dependencies {
     source /usr/local/lib_bash/lib_color.sh
     source /usr/local/lib_bash/lib_retry.sh
@@ -44,6 +45,5 @@ function tests {
 
 ## make it possible to call functions without source include
 call_function_from_commandline "${0}" "${@}"
-
 
 install_wine_choco
