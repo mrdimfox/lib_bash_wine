@@ -28,8 +28,11 @@ function install_git_portable {
 
     local wine_drive_c_dir=${wine_prefix}/drive_c
     local decompress_dir=${HOME}/bitranox_decompress
+    local str_32_or_64_bit=$(get_str_32_or_64_from_wine_prefix ${wine_prefix})          # returns "32" oder "64"
+    local str_x86_or_x64=$(get_str_x86_or_x64_from_wine_prefix ${wine_prefix})      # returns "x86" oder "x64"
+    local git_path_to_add="c:/Program Files/PortableGit${str_32_or_64_bit}/cmd"
+    local git_install_dir="${wine_drive_c_dir}/Program Files/PortableGit${str_32_or_64_bit}"
 
-    local git_path_to_add=""
 
     banner "Installing Git Portable:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
     mkdir -p ${decompress_dir}  # here we dont need sudo because its the home directory
@@ -42,16 +45,10 @@ function install_git_portable {
     unzip -oqq ${decompress_dir}/binaries_portable_git-master.zip -d ${decompress_dir}
 
     clr_green "Joining Multipart Zip for ${wine_arch} to ${decompress_dir}/binaries_portable_git-master/bin"
-    if [[ "${wine_arch}" == "win32" ]]; then
-        cat ${decompress_dir}/binaries_portable_git-master/bin/PortableGit32* > ${decompress_dir}/binaries_portable_git-master/bin/joined_PortableGit.zip
-        git_path_to_add="c:/PortableGit32/cmd"
-    else
-        cat ${decompress_dir}/binaries_portable_git-master/bin/PortableGit64* > ${decompress_dir}/binaries_portable_git-master/bin/joined_PortableGit.zip
-        git_path_to_add="c:/PortableGit64/cmd"
-    fi
+    cat ${decompress_dir}/binaries_portable_git-master/bin/PortableGit${str_32_or_64_bit}* > ${decompress_dir}/binaries_portable_git-master/bin/joined_PortableGit${str_32_or_64_bit}.zip
 
-    clr_green "Unzip Git Portable Binaries for ${wine_arch} to ${wine_drive_c_dir}"
-    unzip -oqq ${decompress_dir}/binaries_portable_git-master/bin/joined_PortableGit.zip -d ${wine_drive_c_dir}
+    clr_green "Unzip Git Portable Binaries for ${wine_arch} to ${git_install_dir}"
+    unzip -oqq ${decompress_dir}/binaries_portable_git-master/bin/joined_PortableGit${str_32_or_64_bit}.zip -d -d "${git_install_dir}"
 
     clr_green "Adding path to wine registry: ${git_path_to_add}"
     prepend_path_to_wine_registry "${git_path_to_add}"
