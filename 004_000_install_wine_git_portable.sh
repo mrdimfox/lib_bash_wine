@@ -31,7 +31,7 @@ function install_git_portable {
     local str_32_or_64_bit=$(get_str_32_or_64_from_wine_prefix ${wine_prefix})          # returns "32" oder "64"
     local str_x86_or_x64=$(get_str_x86_or_x64_from_wine_prefix ${wine_prefix})      # returns "x86" oder "x64"
     local git_path_to_add="c:/Program Files/PortableGit${str_32_or_64_bit}/cmd"
-    local git_install_dir="${wine_drive_c_dir}/Program Files/PortableGit${str_32_or_64_bit}"
+    local git_install_dir="${wine_drive_c_dir}/Program Files"
 
 
     banner "Installing Git Portable:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
