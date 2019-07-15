@@ -78,7 +78,6 @@ function tests {
 	exit 0
 }
 
-## make it possible to call functions without source include
-call_function_from_commandline "${0}" "${@}"
-
-install_wine
+if [[ $(is_script_sourced) == "False" ]]; then
+    install_wine
+fi

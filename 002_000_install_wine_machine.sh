@@ -102,8 +102,9 @@ function tests {
 	clr_green "no tests in ${0}"
 	exit 0
 }
-## make it possible to call functions without source include
-call_function_from_commandline "${0}" "${@}"
+
+if [[ $(is_script_sourced) == "False" ]]; then
+    install_wine_machine
+fi
 
 
-install_wine_machine

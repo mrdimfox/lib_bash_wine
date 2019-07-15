@@ -95,17 +95,19 @@ function update_lib_bash_wine {
 }
 
 
-if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
-    if [[ $(is_lib_bash_wine_up_to_date) == "False" ]]; then
-        debug "${debug_lib_bash_wine}" "lib_bash_wine is not up to date"
-        update_lib_bash_wine
-        debug "${debug_lib_bash_wine}" "call restart_calling_script ${@}"
-        restart_calling_script  "${@}"
-        debug "${debug_lib_bash_wine}" "call restart_calling_script ${@} returned ${?}"
-    else
-        debug "${debug_lib_bash_wine}" "lib_bash_wine is up to date"
-    fi
+if [[ $(is_script_sourced) == "False" ]]; then
+    if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
+        if [[ $(is_lib_bash_wine_up_to_date) == "False" ]]; then
+            debug "${debug_lib_bash_wine}" "lib_bash_wine is not up to date"
+            update_lib_bash_wine
+            debug "${debug_lib_bash_wine}" "call restart_calling_script ${@}"
+            restart_calling_script  "${@}"
+            debug "${debug_lib_bash_wine}" "call restart_calling_script ${@} returned ${?}"
+        else
+            debug "${debug_lib_bash_wine}" "lib_bash_wine is up to date"
+        fi
 
-else
-    install_lib_bash_wine
+    else
+        install_lib_bash_wine
+    fi
 fi
