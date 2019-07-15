@@ -94,12 +94,6 @@ function update_lib_bash_wine {
 }
 
 
-function tests {
-	clr_green "no tests in ${0}"
-	exit 0
-}
-
-
 if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
     if [[ $(is_lib_bash_wine_up_to_date) == "False" ]]; then
         if [[ "${bitranox_debug}" == "True" ]]; then clr_blue "lib_bash_wine\install_or_update.sh@main: lib_bash_wine is not up to date"; fi
