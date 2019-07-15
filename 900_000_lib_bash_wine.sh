@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export bitranox_debug_lib_bash_wine="True"
+export bitranox_debug_lib_bash_wine="False"
 
 function include_dependencies {
     local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
@@ -176,7 +176,7 @@ function get_prepended_path {
 }
 
 function test_get_prepended_path {
-    assert "get_prepended_path \"c:/test test\" \"c:/test test;\"" "\"c:/test test;\""
+    assert_equal "get_prepended_path \"c:/test test\" \"c:/test test;\"" "\"c:/test test;\""
 }
 
 function prepend_path_to_wine_registry {
