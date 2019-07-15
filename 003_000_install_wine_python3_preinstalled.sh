@@ -17,5 +17,9 @@ function include_dependencies {
 
 include_dependencies
 
+function tests {
+	clr_green "no tests in ${0}"
+}
+
 
 install_wine_python_preinstalled "python37" "Python 3.7" "c:\\Python37"

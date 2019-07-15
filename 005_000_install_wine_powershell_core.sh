@@ -67,4 +67,8 @@ function install_powershell_core {
 
 }
 
+function tests {
+	clr_green "no tests in ${0}"
+}
+
 install_powershell_core

@@ -60,6 +60,10 @@ function install_git_portable {
     banner "Finished installing Git Portable:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
 }
 
+function tests {
+	clr_green "no tests in ${0}"
+}
+
 
 install_git_portable
 

@@ -38,4 +38,8 @@ function install_wine_choco {
 
 }
 
+function tests {
+	clr_green "no tests in ${0}"
+}
+
 install_wine_choco

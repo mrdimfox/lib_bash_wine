@@ -62,6 +62,10 @@ function install_wine_python_preinstalled {
 
 }
 
+function tests {
+	clr_green "no tests in ${0}"
+}
+
 
 ## make it possible to call functions without source include
 call_function_from_commandline "${0}" "${1}"

@@ -98,5 +98,9 @@ function install_wine_machine {
             wine_windows_version=${wine_windows_version}"
 }
 
+function tests {
+	clr_green "no tests in ${0}"
+}
+
 
 install_wine_machine

@@ -73,4 +73,9 @@ function install_wine {
     banner "FINISHED installing WINE and WINETRICKS: ${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}"
 }
 
+function tests {
+	clr_green "no tests in ${0}"
+}
+
+
 install_wine
