@@ -65,7 +65,7 @@ function tests {
 	exit 0
 }
 
-if [[ $(is_script_sourced) == "False" ]]; then
+if [[ $(is_script_sourced "${0}" "${BASH_SOURCE}") == "False" ]]; then
     install_git_portable
 fi
 

@@ -95,7 +95,7 @@ function update_lib_bash_wine {
 }
 
 
-if [[ $(is_script_sourced) == "False" ]]; then
+if [[ $(is_script_sourced "${0}" "${BASH_SOURCE}") == "False" ]]; then
     if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
         if [[ $(is_lib_bash_wine_up_to_date) == "False" ]]; then
             debug "${debug_lib_bash_wine}" "lib_bash_wine is not up to date"

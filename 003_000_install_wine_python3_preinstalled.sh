@@ -22,6 +22,6 @@ function tests {
 	exit 0
 }
 
-if [[ $(is_script_sourced) == "False" ]]; then
+if [[ $(is_script_sourced "${0}" "${BASH_SOURCE}") == "False" ]]; then
     install_wine_python_preinstalled "python37" "Python 3.7" "c:\\Python37"
 fi
