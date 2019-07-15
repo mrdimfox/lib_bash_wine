@@ -52,16 +52,16 @@ function install_powershell_core {
     retry_nofail wget -nc --no-check-certificate -O "${decompress_dir}/${zip_file_name}" "https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/${zip_file_name}"
 
 
-        unzip -oqq "${decompress_dir}/${zip_file_name}" -d "${powershell_install_dir}"
+    unzip -oqq "${decompress_dir}/${zip_file_name}" -d "${powershell_install_dir}"
 
-        clr_green "Adding path to wine registry: ${powershell_path_to_add}"
-        prepend_path_to_wine_registry "${powershell_path_to_add}"
+    clr_green "Adding path to wine registry: ${powershell_path_to_add}"
+    prepend_path_to_wine_registry "${powershell_path_to_add}"
 
-        $(which sudo) chmod -R 0755 "${powershell_install_dir}"
+    $(which sudo) chmod -R 0755 "${powershell_install_dir}"
 
-        banner "Test Powershell ${powershell_version}"
-        wine pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"
-        banner "Finished installing Powershell Core:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}powershell_core_version=${powershell_version}"
+    banner "Test Powershell ${powershell_version}"
+    wine pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"
+    banner "Finished installing Powershell Core:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}powershell_core_version=${powershell_version}"
 
 
 

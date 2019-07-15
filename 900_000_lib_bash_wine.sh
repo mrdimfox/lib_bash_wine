@@ -1,5 +1,6 @@
 #!/bin/bash
 
+export bitranox_debug_lib_bash_wine="True"
 
 function include_dependencies {
     local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
@@ -187,6 +188,7 @@ function prepend_path_to_wine_registry {
         clr_green "add path_reg_sz to Wine Registry"
         current_path_reg_sz="$(get_wine_path_reg_sz)"
         new_path_reg_sz="$(get_prepended_path \"${add_path}\" \"${current_path_reg_sz}\")"
+        if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then echo "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: new_path_reg_sz=${new_path_reg_sz}"; fi
         set_wine_path_reg_sz "${new_path_reg_sz}"
     fi
 
@@ -194,6 +196,7 @@ function prepend_path_to_wine_registry {
         clr_green "add path_reg_expand_sz to Wine Registry"
         current_path_reg_expand_sz="$(get_wine_path_reg_expand_sz)"
         new_path_reg_expand_sz="$(get_prepended_path \"${add_path}\" \"${current_path_reg_expand_sz}\")"
+        if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then echo "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: new_path_reg_expand_sz=${new_path_reg_expand_sz}"; fi
         set_wine_path_reg_expand_sz "${new_path_reg_expand_sz}"
     fi
     banner "Adding wine paths done:${IFS}original path_reg_sz: ${current_path_reg_sz}${IFS}     new path_reg_sz: ${new_path_reg_sz}${IFS}original path_reg_expand_sz: ${current_path_reg_expand_sz}${IFS}     new path_reg_expand_sz: ${new_path_reg_expand_sz}"
