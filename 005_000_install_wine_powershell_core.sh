@@ -40,7 +40,9 @@ function install_powershell_core {
             wine_release=${wine_release}${IFS}\
             wine_version=${wine_version_number}${IFS}\
             WINEPREFIX=${wine_prefix}${IFS}\
-            WINEARCH=${wine_arch}"
+            WINEARCH=${wine_arch}${IFS}\
+            ZIP=${zip_file_name}
+            "
 
     $(which sudo) rm -Rf "${powershell_install_dir}"
     mkdir -p "${powershell_install_dir}"
