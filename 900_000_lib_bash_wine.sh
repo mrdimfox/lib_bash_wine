@@ -73,7 +73,10 @@ function get_and_export_wine_arch_from_wine_prefix {
     local wine_prefix="${1}"
     local wine_arch=$(cat ${wine_prefix}/system.reg | grep "#arch=" | cut -d "=" -f 2)
     if [[ "${wine_arch}" != "win32" ]] && [[ "${wine_arch}" != "win64" ]]; then
-        fail "get_and_export_wine_arch_from_wine_prefix: WINEARCH for WINEPREFIX=${wine_prefix} can not be determined, wine_arch=${wine_arch}, caller ${0}"
+        fail "FAILED: get_and_export_wine_arch_from_wine_prefix{IFS}\
+              CALLER: ${0}{IFS}\
+              ERROR : WINEARCH for WINEPREFIX=${wine_prefix} can not be determined{IFS}\
+              wine_arch=${wine_arch}"
     fi
     export WINEARCH="${wine_arch}"
     echo "${wine_arch}"
@@ -90,7 +93,11 @@ function get_str_32_or_64_from_wine_prefix {
     elif [[ ${wine_arch} == "win64" ]]; then
         echo "64"
     else
-        fail "get_str_32_or_64_from_wine_prefix: can not determine architecture for wine_prefix=${wine_prefix}, wine_arch=${wine_arch}"
+        fail "FAILED: get_str_32_or_64_from_wine_prefix{IFS}\
+              CALLER: ${0}{IFS}\
+              ERROR : str_32_or_64 can not be determined{IFS}\
+              wine_prefix=${wine_prefix}{IFS}\
+              wine_arch=${wine_arch}"
     fi
 }
 

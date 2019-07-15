@@ -30,12 +30,12 @@ function install_powershell_core {
     local powershell_install_dir="${wine_drive_c_dir}/Program Files/PowerShell"
     local powershell_version="6.0.4"        # 2019-07-15 - that is the last version that is working actually, V6.1.x and V6.2.x does not work
     local powershell_path_to_add="C:/Program Files/PowerShell"
-    local str_32_or_64_bit="$(get_str_32_or_64_from_wine_prefix \"${wine_prefix}\")"          # returns "32" oder "64"
-    local str_x86_or_x64="$(get_str_x86_or_x64_from_wine_prefix \"${wine_prefix}\")"      # returns "x86" oder "x64"
+    local str_32_or_64_bit=$(get_str_32_or_64_from_wine_prefix ${wine_prefix})          # returns "32" oder "64"
+    local str_x86_or_x64=$(get_str_x86_or_x64_from_wine_prefix ${wine_prefix})      # returns "x86" oder "x64"
 
     local zip_file_name="PowerShell-${powershell_version}-win-${str_x86_or_x64}.zip"
 
-    banner "Installing Powershell Core Version ${powershell_version}:\
+    banner "Installing Powershell Core Version ${powershell_version}:${IFS}\
             ${IFS}linux_release_name=${linux_release_name}${IFS}\
             wine_release=${wine_release}${IFS}\
             wine_version=${wine_version_number}${IFS}\
