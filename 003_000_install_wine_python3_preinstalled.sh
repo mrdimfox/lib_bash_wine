@@ -19,6 +19,7 @@ include_dependencies
 
 function tests {
 	clr_green "no tests in ${0}"
+	exit 0
 }
 
 ## make it possible to call functions without source include

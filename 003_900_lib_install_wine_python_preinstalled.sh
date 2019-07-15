@@ -64,6 +64,7 @@ function install_wine_python_preinstalled {
 
 function tests {
 	clr_green "no tests in ${0}"
+	exit 0
 }
 
 

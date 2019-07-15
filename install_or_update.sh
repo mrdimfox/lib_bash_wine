@@ -96,11 +96,8 @@ function update_lib_bash_wine {
 
 function tests {
 	clr_green "no tests in ${0}"
+	exit 0
 }
-
-
-## make it possible to call functions without source include
-# call_function_from_commandline "${0}" "${@}"
 
 
 if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
@@ -117,4 +114,8 @@ if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
 else
     install_lib_bash_wine
 fi
+
+
+## make it possible to call functions without source include
+call_function_from_commandline "${0}" "${@}"
 
