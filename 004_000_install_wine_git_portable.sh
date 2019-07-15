@@ -1,16 +1,26 @@
 #!/bin/bash
 
 
-# export bitranox_debug_bash_global="True"
-export bitranox_debug_install_wine_git_portable="False"
+# export bitranox_debug_global="False"
+# export bitranox_debug_lib_bash_wine="False"
+export bitranox_debug_lib_bash_wine_git_portable="False"
 
-if [[ "${bitranox_debug_bash_global}" == "True" ]]; then
-    export bitranox_debug_install_wine_git_portable="True"
+if [[ "${bitranox_debug_global}" == "True" ]]; then
+    export bitranox_debug_lib_bash_wine="True"
 fi
 
-#
-# if [[ "${bitranox_debug_install_wine_git_portable}" == "True" ]]; then clr_blue "lib_bash_wine\004_000_install_wine_git_portable.sh@restart_calling_script${IFS}\
-# Caller: ${@}\
+if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then
+    export bitranox_debug_lib_bash_wine_git_portable="True"
+fi
+
+
+#### sample Debug Message Template
+# if [[ "${bitranox_debug_install_wine_git_portable}" == "True" ]]; then clr_blue "\
+# File          : ${0}${IFS}\
+# Function      : restart_calling_script${IFS}\
+# Caller        : ${@}${IFS}\
+# Debug Message : None${IFS}\
+# **************************************************************************************************************
 # "; fi
 
 
