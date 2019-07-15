@@ -107,13 +107,17 @@ function install_git_portable {
     mkdir -p ${decompress_dir}  # here we dont need sudo because its the home directory
 
     banner "Downloading latest Git Portable Binaries from ${latest_download_link_for_git_portable}"
-    retry_nofail wget -nc --no-check-certificate -O ${decompress_dir}/${portable_git_filename} ${latest_download_link_for_git_portable}
+    if [[ ! -f ${decompress_dir}/${portable_git_filename} ]]; then
+        retry wget -nc --no-check-certificate -O ${decompress_dir}/${portable_git_filename} ${latest_download_link_for_git_portable}
+    else
+        clr_green "file ${decompress_dir}/${portable_git_filename} does already exist"
+    fi
 
     clr_green "Unzip Git Portable Binaries Master to ${git_path_to_add}"
 
     $(which sudo) rm -Rf "${git_install_dir}"
     # see : https://sevenzip.osdn.jp/chm/cmdline/switches/index.htm
-    7z e ${decompress_dir}/${portable_git_filename} -o"\"${git_install_dir}\"" -y -bb0 -bd
+    7z e ${decompress_dir}/${portable_git_filename} -o"${git_install_dir}" -y -bb0 -bd
     $(which sudo) chmod -R 0755 "${git_install_dir}"
 
     clr_green "Adding path to wine registry: ${git_path_to_add}"
