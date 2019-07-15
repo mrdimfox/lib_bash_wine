@@ -56,7 +56,7 @@ function install_powershell_core {
 
     clr_green "Adding path to wine registry: ${powershell_path_to_add}"
     # prepend_path_to_wine_registry "\"${powershell_path_to_add}\""
-    prepend_path_to_wine_registry "C:/Program%20Files/PowerShell"
+    prepend_path_to_wine_registry "C:/Program Files/PowerShell"
 
     $(which sudo) chmod -R 0755 "${powershell_install_dir}"
 
