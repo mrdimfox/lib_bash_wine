@@ -1,16 +1,15 @@
 #!/bin/bash
 
 
-export bitranox_debug="True"
+# export bitranox_debug_global=False
+export debug_lib_bash_wine="True"
 
 
 function install_or_update_lib_bash {
     if [[ -f "/usr/local/lib_bash/install_or_update.sh" ]]; then
         source /usr/local/lib_bash/lib_color.sh
-        if [[ "${bitranox_debug}" == "True" ]]; then clr_blue "lib_bash_wine\install_or_update.sh@install_or_update_lib_bash: lib bash already installed, calling /usr/local/lib_bash/install_or_update.sh"; fi
         $(which sudo) /usr/local/lib_bash/install_or_update.sh
     else
-        if [[ "${bitranox_debug}" == "True" ]]; then echo "lib_bash_wine\install_or_update.sh@install_or_update_lib_bash: installing lib_bash"; fi
         $(which sudo) rm -fR /usr/local/lib_bash
         $(which sudo) git clone https://github.com/bitranox/lib_bash.git /usr/local/lib_bash > /dev/null 2>&1
         $(which sudo) chmod -R 0755 /usr/local/lib_bash
@@ -68,21 +67,22 @@ function install_lib_bash_wine {
 function restart_calling_script {
     local caller_command=("${@}")
     if [[ ${#caller_command[@]} -eq 0 ]]; then
-        if [[ "${bitranox_debug}" == "True" ]]; then clr_blue "lib_bash_install\install_or_update.sh@restart_calling_script: no caller command - exit 0"; fi
+        debug "${debug_lib_bash_wine}" "no caller command - exit 0"
         # no parameters passed
         exit 0
     else
         # parameters passed, running the new Version of the calling script
-        if [[ "${bitranox_debug}" == "True" ]]; then clr_blue "lib_bash_install\install_or_update.sh@restart_calling_script: calling command : ${@}"; fi
+        debug "${debug_lib_bash_wine}" "calling command : ${@}"
+
         eval "${caller_command[@]}"
-        if [[ "${bitranox_debug}" == "True" ]]; then clr_blue "lib_bash_install\install_or_update.sh@restart_calling_script: after calling command : ${@} - exiting with 100"; fi
+        debug "${debug_lib_bash_wine}" "after calling command ${@} : exiting with 100"
         exit 100
     fi
 }
 
 
 function update_lib_bash_wine {
-    if [[ "${bitranox_debug}" == "True" ]]; then clr_blue "lib_bash_wine\install_or_update.sh@update_lib_bash_wine: updating lib_bash_wine"; fi
+    debug "${debug_lib_bash_wine}" "updating lib_bash_wine"
         (
             # create a subshell to preserve current directory
             cd /usr/local/lib_bash_wine
@@ -90,19 +90,20 @@ function update_lib_bash_wine {
             $(which sudo) git reset --hard origin/master  > /dev/null 2>&1
             set_lib_bash_wine_permissions
         )
-    if [[ "${bitranox_debug}" == "True" ]]; then clr_blue "lib_bash_wine\install_or_update.sh@update_lib_bash_wine: lib_bash_wine update complete"; fi
+    debug "${debug_lib_bash_wine}" "lib_bash_wine update complete"
+
 }
 
 
 if [[ $(is_lib_bash_wine_installed) == "True" ]]; then
     if [[ $(is_lib_bash_wine_up_to_date) == "False" ]]; then
-        if [[ "${bitranox_debug}" == "True" ]]; then clr_blue "lib_bash_wine\install_or_update.sh@main: lib_bash_wine is not up to date"; fi
+        debug "${debug_lib_bash_wine}" "lib_bash_wine is not up to date"
         update_lib_bash_wine
-        if [[ "${bitranox_debug}" == "True" ]]; then clr_blue "lib_bash_wine\install_or_update.sh@main: call restart_calling_script ${@}"; fi
+        debug "${debug_lib_bash_wine}" "call restart_calling_script ${@}"
         restart_calling_script  "${@}"
-        if [[ "${bitranox_debug}" == "True" ]]; then clr_blue "lib_bash_wine\install_or_update.sh@main: call restart_calling_script ${@} returned ${?}"; fi
+        debug "${debug_lib_bash_wine}" "call restart_calling_script ${@} returned ${?}"
     else
-        if [[ "${bitranox_debug}" == "True" ]]; then clr_blue "lib_bash_wine\install_or_update.sh@main: lib_bash_wine is up to date"; fi
+        debug "${debug_lib_bash_wine}" "lib_bash_wine is up to date"
     fi
 
 else
