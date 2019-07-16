@@ -228,8 +228,8 @@ if [[ ! -z "$1" ]]
 
 
 function fix_wine_permissions {
-    $(which sudo) chown -R ${USER} ${WINEPREFIX}
-    $(which sudo) chgrp -R ${USER} ${WINEPREFIX}
+    $(get_sudo) chown -R ${USER} ${WINEPREFIX}
+    $(get_sudo) chgrp -R ${USER} ${WINEPREFIX}
 }
 
 function tests {

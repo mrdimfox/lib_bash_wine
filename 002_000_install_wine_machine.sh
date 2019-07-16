@@ -41,7 +41,7 @@ function install_wine_machine {
 
     if [[ "$(get_overwrite_existing_wine_machine)" == True ]]; then
         banner_warning "Overwrite the old Wineprefix"
-        $(which sudo) rm -Rf ${wine_prefix}
+        $(get_sudo) rm -Rf ${wine_prefix}
     fi
 
     mkdir -p ${wine_prefix}
@@ -52,7 +52,7 @@ function install_wine_machine {
     ####  when we use winecfg we need to switch off xvfb
     # if [[ ${is_xvfb_service_active} == "True" ]]; then
     #     clr_green "Stopping xvfb because winecfg crashes if it is enabled"
-    #     $(which sudo) service xvfb stop
+    #     $(get_sudo) service xvfb stop
     # fi
 
     banner "winecfg for Wine Machine, WINEPREFIX=${wine_prefix}, WINEARCH=${wine_arch}, wine_windows_version=${wine_windows_version}"
@@ -69,7 +69,7 @@ function install_wine_machine {
     # if [[ ${is_xvfb_service_active} == "True" ]]; then
     #    clr_green " "
     #    clr_green "restarting xvfb"
-    #    $(which sudo) service xvfb start
+    #    $(get_sudo) service xvfb start
     #fi
 
     banner "Disable GUI Crash Dialogs"

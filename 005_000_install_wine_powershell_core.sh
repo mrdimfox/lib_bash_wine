@@ -44,7 +44,7 @@ function install_powershell_core {
             ZIP=${zip_file_name}
             "
 
-    $(which sudo) rm -Rf "${powershell_install_dir}"
+    $(get_sudo) rm -Rf "${powershell_install_dir}"
     mkdir -p "${powershell_install_dir}"
 
     clr_green "Download Powershell ${powershell_version} ${str_32_or_64_bit} Bit"
@@ -57,7 +57,7 @@ function install_powershell_core {
     # prepend_path_to_wine_registry "\"${powershell_path_to_add}\""
     prepend_path_to_wine_registry "C:/Program Files/PowerShell"
 
-    $(which sudo) chmod -R 0755 "${powershell_install_dir}"
+    $(get_sudo) chmod -R 0755 "${powershell_install_dir}"
 
     banner "Test Powershell ${powershell_version}"
     wine pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"

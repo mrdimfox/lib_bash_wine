@@ -8,14 +8,14 @@ export debug_lib_bash_wine="False"
 function install_or_update_lib_bash {
     if [[ -f "/usr/local/lib_bash/install_or_update.sh" ]]; then
         source /usr/local/lib_bash/lib_color.sh
-        $(which sudo) /usr/local/lib_bash/install_or_update.sh
+        $(command -v sudo 2>/dev/null) /usr/local/lib_bash/install_or_update.sh
     else
-        $(which sudo) rm -fR /usr/local/lib_bash
-        $(which sudo) git clone https://github.com/bitranox/lib_bash.git /usr/local/lib_bash > /dev/null 2>&1
-        $(which sudo) chmod -R 0755 /usr/local/lib_bash
-        $(which sudo) chmod -R +x /usr/local/lib_bash/*.sh
-        $(which sudo) chown -R root /usr/local/lib_bash || $(which sudo) chown -R ${USER} /usr/local/lib_bash  || echo "giving up set owner" # there is no user root on travis
-        $(which sudo) chgrp -R root /usr/local/lib_bash || $(which sudo) chgrp -R ${USER} /usr/local/lib_bash  || echo "giving up set group" # there is no user root on travis
+        $(command -v sudo 2>/dev/null) rm -fR /usr/local/lib_bash
+        $(command -v sudo 2>/dev/null) git clone https://github.com/bitranox/lib_bash.git /usr/local/lib_bash > /dev/null 2>&1
+        $(command -v sudo 2>/dev/null) chmod -R 0755 /usr/local/lib_bash
+        $(command -v sudo 2>/dev/null) chmod -R +x /usr/local/lib_bash/*.sh
+        $(command -v sudo 2>/dev/null) chown -R root /usr/local/lib_bash || $(command -v sudo 2>/dev/null) chown -R ${USER} /usr/local/lib_bash  || echo "giving up set owner" # there is no user root on travis
+        $(command -v sudo 2>/dev/null) chgrp -R root /usr/local/lib_bash || $(command -v sudo 2>/dev/null) chgrp -R ${USER} /usr/local/lib_bash  || echo "giving up set group" # there is no user root on travis
     fi
 }
 
@@ -31,10 +31,10 @@ include_dependencies
 
 
 function set_lib_bash_wine_permissions {
-    $(which sudo) chmod -R 0755 /usr/local/lib_bash_wine
-    $(which sudo) chmod -R +x /usr/local/lib_bash_wine/*.sh
-    $(which sudo) chown -R root /usr/local/lib_bash_wine || $(which sudo) chown -R ${USER} /usr/local/lib_bash_wine || echo "giving up set owner" # there is no user root on travis
-    $(which sudo) chgrp -R root /usr/local/lib_bash_wine || $(which sudo) chgrp -R ${USER} /usr/local/lib_bash_wine || echo "giving up set group" # there is no user root on travis
+    $(get_sudo) chmod -R 0755 /usr/local/lib_bash_wine
+    $(get_sudo) chmod -R +x /usr/local/lib_bash_wine/*.sh
+    $(get_sudo) chown -R root /usr/local/lib_bash_wine || $(get_sudo) chown -R ${USER} /usr/local/lib_bash_wine || echo "giving up set owner" # there is no user root on travis
+    $(get_sudo) chgrp -R root /usr/local/lib_bash_wine || $(get_sudo) chgrp -R ${USER} /usr/local/lib_bash_wine || echo "giving up set group" # there is no user root on travis
 }
 
 function is_lib_bash_wine_installed {
@@ -48,7 +48,7 @@ function is_lib_bash_wine_installed {
 
 function is_lib_bash_wine_up_to_date {
     local git_remote_hash=$(git --no-pager ls-remote --quiet https://github.com/bitranox/lib_bash_wine.git | grep HEAD | awk '{print $1;}' )
-    local git_local_hash=$( $(which sudo) cat /usr/local/lib_bash_wine/.git/refs/heads/master)
+    local git_local_hash=$( $(get_sudo) cat /usr/local/lib_bash_wine/.git/refs/heads/master)
     if [[ "${git_remote_hash}" == "${git_local_hash}" ]]; then
         echo "True"
     else
@@ -58,8 +58,8 @@ function is_lib_bash_wine_up_to_date {
 
 function install_lib_bash_wine {
     clr_green "installing lib_bash_wine"
-    $(which sudo) rm -fR /usr/local/lib_bash_wine
-    $(which sudo) git clone https://github.com/bitranox/lib_bash_wine.git /usr/local/lib_bash_wine > /dev/null 2>&1
+    $(get_sudo) rm -fR /usr/local/lib_bash_wine
+    $(get_sudo) git clone https://github.com/bitranox/lib_bash_wine.git /usr/local/lib_bash_wine > /dev/null 2>&1
     set_lib_bash_wine_permissions
 }
 
@@ -86,8 +86,8 @@ function update_lib_bash_wine {
         (
             # create a subshell to preserve current directory
             cd /usr/local/lib_bash_wine
-            $(which sudo) git fetch --all  > /dev/null 2>&1
-            $(which sudo) git reset --hard origin/master  > /dev/null 2>&1
+            $(get_sudo) git fetch --all  > /dev/null 2>&1
+            $(get_sudo) git reset --hard origin/master  > /dev/null 2>&1
             set_lib_bash_wine_permissions
         )
     debug "${debug_lib_bash_wine}" "lib_bash_wine update complete"
