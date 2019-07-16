@@ -19,7 +19,7 @@ include_dependencies
 
 function tests {
 	local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-	clr_green "no tests in ${my_dir}"
+	debug "${debug_lib_bash_wine}" "no tests"
 }
 
 if [[ "${0}" == "${BASH_SOURCE}" ]]; then    # if the script is not sourced

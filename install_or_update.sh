@@ -82,7 +82,7 @@ function restart_calling_script {
 
 
 function update_lib_bash_wine {
-    debug "${debug_lib_bash_wine}" "updating lib_bash_wine"
+    clr_green "updating lib_bash_wine"
         (
             # create a subshell to preserve current directory
             cd /usr/local/lib_bash_wine
@@ -96,7 +96,7 @@ function update_lib_bash_wine {
 
 function tests {
 	local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-	clr_green "no tests in ${my_dir}"
+	debug "${debug_lib_bash_wine}" "no tests"
 }
 
 
