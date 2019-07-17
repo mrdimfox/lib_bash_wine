@@ -48,6 +48,7 @@ function install_wine {
     retry "$(get_sudo)" dpkg --add-architecture i386
 
     clr_green "add Wine Keys"
+    "$(get_sudo)" rm -f ./winehq.key*
     retry "$(get_sudo)" wget https://dl.winehq.org/wine-builds/winehq.key
     "$(get_sudo)" apt-key add winehq.key
     "$(get_sudo)" apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${linux_release_name} main"

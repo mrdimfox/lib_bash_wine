@@ -24,12 +24,14 @@ function set_environment_for_64_bit_wine_machine {
 
 function install_32_bit_wine_machine {
     set_environment_for_32_bit_wine_machine
+    source ../900_000_lib_bash_wine.sh # we need to source here or our environment variables get lost
     source ../002_000_install_wine_machine.sh # we need to source here or our environment variables get lost
     install_wine_machine
 }
 
 function install_64_bit_wine_machine {
     set_environment_for_64_bit_wine_machine
+    source ../900_000_lib_bash_wine.sh # we need to source here or our environment variables get lost
     source ../002_000_install_wine_machine.sh  # we need to source here or our environment variables get lost
     install_wine_machine
 }
@@ -41,6 +43,9 @@ function test {
     # make sure lib_bash is properly included
     assert_equal "get_sudo" "/usr/bin/sudo"
 	assert_pass "is_package_installed apt"
+
+    # update libraries
+    "$(get_sudo)" ../install_or_update.sh
 
 	set_environment_for_32_bit_wine_machine
 	assert_equal "get_and_export_wine_prefix_or_default_to_home_wine" "/home/consul/wine/wine32_machine_01"

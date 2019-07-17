@@ -58,9 +58,9 @@ function is_overwrite_existing_wine_machine {
     local automatic_overwrite_existing_wine_machine
     automatic_overwrite_existing_wine_machine="$(printenv automatic_overwrite_existing_wine_machine)"
     if [[ "${automatic_overwrite_existing_wine_machine}" == "True" ]]; then
-        return 1
-    else
         return 0
+    else
+        return 1
     fi
 }
 
