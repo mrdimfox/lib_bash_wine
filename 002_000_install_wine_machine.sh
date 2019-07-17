@@ -15,24 +15,29 @@ if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${
 
 
 function include_dependencies {
-    source /usr/local/lib_bash/lib_color.sh
-    source /usr/local/lib_bash/lib_retry.sh
+    local my_dir
+    # shellcheck disable=SC2164
+    my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
     source /usr/local/lib_bash/lib_helpers.sh
-    source /usr/local/lib_bash_wine/900_000_lib_bash_wine.sh
+    source "${my_dir}/900_000_lib_bash_wine.sh"
 }
 
-include_dependencies  # we need to do that via a function to have local scope of my_dir
+include_dependencies
 
 function install_wine_machine {
+    local linux_release_name wine_release wine_prefix wine_arch wine_windows_version is_xvfb_service_active wine_version_number automatic_overwrite_existing_wine_machine
+
     banner "Install Wine Machine"
-    local linux_release_name=$(get_linux_release_name)                                  # @lib_bash/bash_helpers
-    local wine_release=$(get_wine_release_from_environment_or_default_to_devel)         # @lib_bash_wine
-    local wine_prefix=$(get_and_export_wine_prefix_or_default_to_home_wine)             # @lib_bash_wine
-    local wine_arch=$(get_and_export_wine_arch_or_default_to_win64)                     #@lib_bash_wine
-    local wine_windows_version=$(get_wine_windows_version_or_default_to_win10)          # @lib_bash_wine
-    local is_xvfb_service_active=$(get_is_xvfb_service_active)                          # @lib_bash_wine
-    local wine_version_number=$(get_wine_version_number)                                # @lib_bash_wine
-    local automatic_overwrite_existing_wine_machine=$(get_overwrite_existing_wine_machine)    # @lib_bash_wine
+
+    linux_release_name="$(get_linux_release_name)"
+    wine_release="$(get_wine_release_from_environment_or_default_to_devel)"
+    wine_prefix="$(get_and_export_wine_prefix_or_default_to_home_wine)"
+    wine_arch="$(get_and_export_wine_arch_or_default_to_win64)"
+    wine_windows_version="$(get_wine_windows_version_or_default_to_win10)"
+    # shellcheck disable=SC2034  # seems to be unused, we keep it for documentation
+    is_xvfb_service_active="$(get_is_xvfb_service_active)"
+    wine_version_number="$(get_wine_version_number)"
+    automatic_overwrite_existing_wine_machine="$(get_overwrite_existing_wine_machine)"
 
     banner "Setup Wine Machine:${IFS}\
             linux_release_name=${linux_release_name}${IFS}\
@@ -46,11 +51,10 @@ function install_wine_machine {
 
     if [[ "$(get_overwrite_existing_wine_machine)" == True ]]; then
         banner_warning "Overwrite the old Wineprefix"
-        $(get_sudo) rm -Rf ${wine_prefix}
+        $(get_sudo) rm -Rf "${wine_prefix}"
     fi
 
-    mkdir -p ${wine_prefix}
-    wine_drive_c_dir=${wine_prefix}/drive_c
+    mkdir -p "${wine_prefix}"
     # xvfb-run --auto-servernum winecfg # fails marshal_object couldnt get IPSFactory buffer for interface ...
 
 
@@ -65,6 +69,8 @@ function install_wine_machine {
 
     #### winecfg
     # are we sure that Gecko etc. is installed ??? dunno, it works ...
+
+    # shellcheck disable=SC1007  # we really set DISPLAY to an empty value
     DISPLAY= wine pgen.exe
     # gecko 2.47 is installed ... looks good.
 
@@ -81,7 +87,7 @@ function install_wine_machine {
     winetricks nocrashdialog
 
     banner "Set Windows Version to ${wine_windows_version}"
-    winetricks -q ${wine_windows_version}
+    winetricks -q "${wine_windows_version}"
 
     banner "Install common Packages"
 
@@ -103,13 +109,7 @@ function install_wine_machine {
             wine_windows_version=${wine_windows_version}"
 }
 
-function tests {
-    # shellcheck disable=SC2164
-	local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-	debug "${debug_lib_bash_wine}" "no tests"
-}
-
-if [[ "${0}" == "${BASH_SOURCE}" ]]; then    # if the script is not sourced
+if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
     install_wine_machine
 fi
 
