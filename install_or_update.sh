@@ -9,7 +9,7 @@ export debug_lib_bash_wine="${debug_lib_bash_wine}"  # set to True for Debug in 
 
 
 function set_lib_bash_permissions {
-    local user mydir
+    local user
     user="$(printenv USER)"
     $(command -v sudo 2>/dev/null) chmod -R 0755 "/usr/local/lib_bash"
     $(command -v sudo 2>/dev/null) chmod -R +x /usr/local/lib_bash/*.sh
@@ -47,7 +47,7 @@ include_dependencies
 
 
 function set_lib_bash_wine_permissions {
-    local user mydir
+    local user
     user="$(printenv USER)"
     $(get_sudo) chmod -R 0755 /usr/local/lib_bash_wine
     $(get_sudo) chmod -R +x /usr/local/lib_bash_wine/*.sh

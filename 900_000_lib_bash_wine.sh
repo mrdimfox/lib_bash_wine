@@ -13,7 +13,7 @@ if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${
 
 function include_dependencies {
     local my_dir
-    # shellcheck disable=SC2164
+    # shellcheck disable=SC2164,SC2034  # SC2034=unused
     my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
     source /usr/local/lib_bash/lib_helpers.sh
 }
@@ -21,49 +21,36 @@ function include_dependencies {
 include_dependencies  # we need to do that via a function to have local scope of my_dir
 
 
-function fail {
-  clr_bold clr_red "${1}" >&2
-  exit 1
-}
-
-
 function get_wine_release_from_environment_or_default_to_devel {
-    if [[ -z ${wine_release} ]]; then
-        echo "devel"
-    else
-        echo "${wine_release}"
-    fi
+    local wine_release
+    wine_release="$(printenv wine_release)"
+    if [[ -z "${wine_release}" ]]; then wine_release="devel"; fi
+    echo "${wine_release}"
 }
 
 function get_and_export_wine_prefix_or_default_to_home_wine {
     ## set wine prefix to ${HOME}/.wine if not given by environment variable
-    if [[ -z ${WINEPREFIX} ]]; then
-        local wine_prefix="${HOME}/.wine"
-    else
-        local wine_prefix="${WINEPREFIX}"
-    fi
+    local wine_prefix
+    wine_prefix="$(printenv WINEPREFIX)"
+    if [[ -z "${wine_prefix}" ]]; then wine_prefix="${HOME}/.wine"; fi
     export WINEPREFIX="${wine_prefix}"
     echo "${wine_prefix}"
 }
 
 function get_and_export_wine_arch_or_default_to_win64 {
-    if [[ -z ${WINEARCH} ]]; then
-            local wine_arch="win64"
-    else
-        local wine_arch="${WINEARCH}"
-    fi
+    local wine_arch
+    wine_arch="$(printenv WINEARCH)"
+    if [[ -z ${wine_arch} ]]; then wine_arch="win64"; fi
     export WINEARCH="${wine_arch}"
     echo "${wine_arch}"
 }
 
 
 function get_wine_windows_version_or_default_to_win10 {
-    if [[ -z ${wine_windows_version} ]]; then
-            local wine_win_ver=${wine_windows_version}
-        else
-            local wine_win_ver="win10"
-        fi
-    echo "${wine_win_ver}"
+    local wine_windows_version
+    wine_windows_version="$(printenv wine_windows_version)"
+    if [[ -z "${wine_windows_version}" ]]; then wine_windows_version="win10"; fi
+    echo "${wine_windows_version}"
 }
 
 
@@ -74,19 +61,20 @@ function get_is_xvfb_service_active {
 }
 
 function get_wine_version_number {
-    local wine_version_number=`wine --version`
-    echo "${wine_version_number}"
+    wine --version
 }
 
 function get_and_export_wine_arch_from_wine_prefix {
     # $1: wine_prefix
-    local wine_prefix="${1}"
-    local wine_arch=$(cat ${wine_prefix}/system.reg | grep "#arch=" | cut -d "=" -f 2)
+    local wine_prefix wine_arch
+    wine_prefix="${1}"
+    wine_arch="$( grep "#arch=" "${wine_prefix}/system.reg" | cut -d "=" -f 2)"
     if [[ "${wine_arch}" != "win32" ]] && [[ "${wine_arch}" != "win64" ]]; then
-        fail "FAILED: get_and_export_wine_arch_from_wine_prefix{IFS}\
-              CALLER: ${0}{IFS}\
-              ERROR : WINEARCH for WINEPREFIX=${wine_prefix} can not be determined{IFS}\
-              wine_arch=${wine_arch}"
+        fail "\
+FAILED: get_and_export_wine_arch_from_wine_prefix{IFS}\
+CALLER: ${0}{IFS}\
+ERROR : WINEARCH for WINEPREFIX=${wine_prefix} can not be determined{IFS}\
+wine_arch=${wine_arch}"
     fi
     export WINEARCH="${wine_arch}"
     echo "${wine_arch}"
@@ -96,8 +84,9 @@ function get_and_export_wine_arch_from_wine_prefix {
 function get_str_32_or_64_from_wine_prefix {
     # $1: wine_prefix
     # returns "32" or "64" for the given wine_prefix
-    local wine_prefix="${1}"
-    local wine_arch=$(get_and_export_wine_arch_from_wine_prefix ${wine_prefix})
+    local wine_prefix wine_arch
+    wine_prefix="${1}"
+    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
     if [[ ${wine_arch} == "win32" ]]; then
         echo "32"
     elif [[ ${wine_arch} == "win64" ]]; then
@@ -115,8 +104,10 @@ function get_str_32_or_64_from_wine_prefix {
 function get_str_x86_or_x64_from_wine_prefix {
     # $1: wine_prefix
     # returns "x86" or "x64" for the given wine_prefix
-    local wine_prefix="${1}"
-    local wine_arch=$(get_and_export_wine_arch_from_wine_prefix ${wine_prefix})
+    local wine_prefix wine_arch
+
+    wine_prefix="${1}"
+    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
     if [[ ${wine_arch} == "win32" ]]; then
         echo "x86"
     elif [[ ${wine_arch} == "win64" ]]; then
@@ -130,7 +121,8 @@ function get_str_x86_or_x64_from_wine_prefix {
 
 
 function get_is_wine_path_reg_sz_set {
-    local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep -c REG_SZ`"
+    local wine_current_reg_path
+    wine_current_reg_path="$(wine reg QUERY "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /v PATH | grep -c REG_SZ)"
     if [[ "${wine_current_reg_path}" == "0" ]]; then
         echo "False"
     else
@@ -139,7 +131,8 @@ function get_is_wine_path_reg_sz_set {
 }
 
 function get_is_wine_path_reg_expand_sz_set {
-    local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_EXPAND_SZ | sed 's/^.*REG_EXPAND_SZ\s*//'`"
+    local wine_current_reg_path
+    wine_current_reg_path="$(wine reg QUERY "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /v PATH | grep REG_EXPAND_SZ | sed 's/^.*REG_EXPAND_SZ\s*//')"
     if [[ "${wine_current_reg_path}" == "0" ]]; then
         echo "False"
     else
@@ -148,74 +141,75 @@ function get_is_wine_path_reg_expand_sz_set {
 }
 
 function get_wine_path_reg_sz {
-    local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_SZ | sed 's/^.*REG_SZ\s*//'`"
+    local wine_current_reg_path
+    wine_current_reg_path="$(wine reg QUERY "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /v PATH | grep REG_SZ | sed 's/^.*REG_SZ\s*//')"
     echo "${wine_current_reg_path}"
 }
 
 function get_wine_path_reg_expand_sz {
-    local wine_current_reg_path="`wine reg QUERY \"HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment\" /v PATH | grep REG_EXPAND_SZ | sed 's/^.*REG_EXPAND_SZ\s*//'`"
+    local wine_current_reg_path
+    wine_current_reg_path="$(wine reg QUERY "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /v PATH | grep REG_EXPAND_SZ | sed 's/^.*REG_EXPAND_SZ\s*//')"
     echo "${wine_current_reg_path}"
 }
 
 
 function set_wine_path_reg_sz {
     # $1: new_wine_path
-    local new_wine_path="${1}"
-    wine reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /t REG_SZ /v PATH /d "${new_wine_path}" /f
+    local new_wine_path
+    new_wine_path="${1}"
+    wine reg add "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /t REG_SZ /v PATH /d "${new_wine_path}" /f
 }
 
 
 function set_wine_path_reg_expand_sz {
     # $1: new_wine_path
-    local new_wine_path="${1}"
-    wine reg add "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /t REG_EXPAND_SZ /v PATH /d "${new_wine_path}" /f
+    local new_wine_path
+    new_wine_path="${1}"
+    wine reg add "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /t REG_EXPAND_SZ /v PATH /d "${new_wine_path}" /f
 }
 
 
 function get_prepended_path {
     # $1: path_to_add
     # $2: current_path
-    local path_to_add="${1}"
-    local current_path="${2}"
-    local prepended_path="${current_path}"
+    local path_to_add current_path prepended_path
+    path_to_add="${1}"
+    current_path="${2}"
+    prepended_path="${current_path}"
     if is_str1_in_str2 "\"${path_to_add}\" \"${current_path}\""; then
         prepended_path="${path_to_add};${current_path}"
     fi
     echo "${prepended_path}"
 }
 
-function test_get_prepended_path {
-    assert_equal "get_prepended_path \"c:/test test\" \"c:/test test;\"" "\"c:/test test;\""
-}
 
 function prepend_path_to_wine_registry {
-    local add_path="${1}"
-    local current_path_reg_sz=""
-    local new_path_reg_sz=""
-    local current_path_reg_expand_sz=""
-    local new_path_reg_expand_sz=""
-
-
-    if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then clr_blue "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: add_path=${add_path}, caller=${0}"; fi
+    local add_path current_path_reg_sz new_path_reg_sz current_path_reg_expand_sz new_path_reg_expand_sz
+    add_path="${1}"
+    current_path_reg_sz=""
+    new_path_reg_sz=""
+    current_path_reg_expand_sz=""
+    new_path_reg_expand_sz=""
 
     if [[ $(get_is_wine_path_reg_sz_set) == "True" ]]; then
         clr_green "add path_reg_sz to Wine Registry"
         current_path_reg_sz="$(get_wine_path_reg_sz)"
-        if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then clr_blue "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: current_path_reg_sz=${current_path_reg_sz}, caller=${0}"; fi
         new_path_reg_sz=$(get_prepended_path "${add_path}" "${current_path_reg_sz}")
-        if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then clr_blue "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: new_path_reg_sz=${new_path_reg_sz}, caller=${0}"; fi
         set_wine_path_reg_sz "${new_path_reg_sz}"
     fi
 
     if [[ $(get_is_wine_path_reg_expand_sz_set) == "True" ]]; then
         clr_green "add path_reg_expand_sz to Wine Registry"
         current_path_reg_expand_sz="$(get_wine_path_reg_expand_sz)"
-        if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then clr_blue "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: current_path_reg_expand_sz=${current_path_reg_expand_sz}, caller=${0}"; fi
         new_path_reg_expand_sz=$(get_prepended_path "${add_path}" "${current_path_reg_expand_sz}")
-        if [[ "${bitranox_debug_lib_bash_wine}" == "True" ]]; then clr_blue "lib_bash_wine\900_000_lib_bash_wine.sh@prepend_path_to_wine_registry: new_path_reg_expand_sz=${new_path_reg_expand_sz}, caller=${0}"; fi
         set_wine_path_reg_expand_sz "${new_path_reg_expand_sz}"
     fi
-    banner "Adding wine paths done:${IFS}original path_reg_sz: ${current_path_reg_sz}${IFS}     new path_reg_sz: ${new_path_reg_sz}${IFS}original path_reg_expand_sz: ${current_path_reg_expand_sz}${IFS}     new path_reg_expand_sz: ${new_path_reg_expand_sz}"
+    banner "\
+Adding wine paths done:${IFS}\
+original path_reg_sz: ${current_path_reg_sz}${IFS}\
+     new path_reg_sz: ${new_path_reg_sz}${IFS}\
+     original path_reg_expand_sz: ${current_path_reg_expand_sz}${IFS}\
+          new path_reg_expand_sz: ${new_path_reg_expand_sz}"
 }
 
 
@@ -237,8 +231,10 @@ if [[ ! -z "$1" ]]
 
 
 function fix_wine_permissions {
-    $(get_sudo) chown -R ${USER} ${WINEPREFIX}
-    $(get_sudo) chgrp -R ${USER} ${WINEPREFIX}
+    local user
+    user="$(printenv USER)"
+    "$(get_sudo)" chown -R "${user}" "${WINEPREFIX}"
+    "$(get_sudo)" chgrp -R "${user}" "${WINEPREFIX}"
 }
 
 function tests {
