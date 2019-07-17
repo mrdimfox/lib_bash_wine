@@ -27,9 +27,11 @@ function install_lib_bash {
 
 function install_or_update_lib_bash {
     if [[ -f "/usr/local/lib_bash/install_or_update.sh" ]]; then
-        install_lib_bash
+        # file exists - so update
+        $(command -v sudo 2>/dev/null) /usr/local/lib_bash/install_or_update.sh
     else
-        $(get_sudo) /usr/local/lib_bash/install_or_update.sh
+        install_lib_bash
+
     fi
 }
 
