@@ -54,11 +54,16 @@ function get_wine_windows_version_or_default_to_win10 {
 }
 
 
-function get_is_xvfb_service_active {
-    local is_xvfb_active="False"
-    systemctl is-active --quiet xvfb && is_xvfb_active="True"
-    echo "${is_xvfb_active}"
+function is_overwrite_existing_wine_machine {
+    local automatic_overwrite_existing_wine_machine
+    automatic_overwrite_existing_wine_machine="$(printenv automatic_overwrite_existing_wine_machine)"
+    if [[ "${automatic_overwrite_existing_wine_machine}" == "True" ]]; then
+        return 1
+    else
+        return 0
+    fi
 }
+
 
 function get_wine_version_number {
     wine --version
@@ -120,30 +125,30 @@ function get_str_x86_or_x64_from_wine_prefix {
 
 function wine_query_reg_value {
     # $1 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
-    # $2 : the reg_value like "PATH"
+    # $2 : the reg_subkey like "PATH"
     local reg_key reg_value result
-    result=
+    result=""
 
 }
 
 
-function get_is_wine_path_reg_sz_set {
+function is_wine_path_reg_sz_set {
     local wine_current_reg_path
     wine_current_reg_path="$(wine reg QUERY "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /v PATH | grep -c REG_SZ)"
     if [[ "${wine_current_reg_path}" == "0" ]]; then
-        echo "False"
+        return 1
     else
-        echo "True"
+        return 0
     fi
 }
 
-function get_is_wine_path_reg_expand_sz_set {
+function is_wine_path_reg_expand_sz_set {
     local wine_current_reg_path
     wine_current_reg_path="$(wine reg QUERY "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /v PATH | grep REG_EXPAND_SZ | sed 's/^.*REG_EXPAND_SZ\s*//')"
     if [[ "${wine_current_reg_path}" == "0" ]]; then
-        echo "False"
+        return 1
     else
-        echo "True"
+        return 0
     fi
 }
 
@@ -198,14 +203,14 @@ function prepend_path_to_wine_registry {
     current_path_reg_expand_sz=""
     new_path_reg_expand_sz=""
 
-    if [[ $(get_is_wine_path_reg_sz_set) == "True" ]]; then
+    if is_wine_path_reg_sz_set; then
         clr_green "add path_reg_sz to Wine Registry"
         current_path_reg_sz="$(get_wine_path_reg_sz)"
         new_path_reg_sz=$(get_prepended_path "${add_path}" "${current_path_reg_sz}")
         set_wine_path_reg_sz "${new_path_reg_sz}"
     fi
 
-    if [[ $(get_is_wine_path_reg_expand_sz_set) == "True" ]]; then
+    if is_wine_path_reg_expand_sz_set; then
         clr_green "add path_reg_expand_sz to Wine Registry"
         current_path_reg_expand_sz="$(get_wine_path_reg_expand_sz)"
         new_path_reg_expand_sz=$(get_prepended_path "${add_path}" "${current_path_reg_expand_sz}")

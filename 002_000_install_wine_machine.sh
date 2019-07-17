@@ -26,7 +26,7 @@ include_dependencies
 
 
 function install_wine_machine {
-    local linux_release_name wine_release wine_prefix wine_arch wine_windows_version is_xvfb_service_active wine_version_number automatic_overwrite_existing_wine_machine
+    local linux_release_name wine_release wine_prefix wine_arch wine_windows_version wine_version_number automatic_overwrite_existing_wine_machine
 
     banner "Install Wine Machine"
 
@@ -35,10 +35,8 @@ function install_wine_machine {
     wine_prefix="$(get_and_export_wine_prefix_or_default_to_home_wine)"
     wine_arch="$(get_and_export_wine_arch_or_default_to_win64)"
     wine_windows_version="$(get_wine_windows_version_or_default_to_win10)"
-    # shellcheck disable=SC2034  # seems to be unused, we keep it for documentation
-    is_xvfb_service_active="$(get_is_xvfb_service_active)"
     wine_version_number="$(get_wine_version_number)"
-    automatic_overwrite_existing_wine_machine="$(get_overwrite_existing_wine_machine)"
+    automatic_overwrite_existing_wine_machine="$(printenv automatic_overwrite_existing_wine_machine)"
 
     banner "Setup Wine Machine:${IFS}\
             linux_release_name=${linux_release_name}${IFS}\
@@ -47,10 +45,14 @@ function install_wine_machine {
             WINEPREFIX=${wine_prefix}${IFS}\
             WINEARCH=${wine_arch}${IFS}\
             wine_windows_version=${wine_windows_version}${IFS}\
+
+            # this is only for display - otherwise use function is_overwrite_existing_wine_machine
             automatic_overwrite_existing_wine_machine=${automatic_overwrite_existing_wine_machine}"
+            if [[ "${automatic_overwrite_existing_wine_machine}" != "True" ]]; then
+                 automatic_overwrite_existing_wine_machine="False"
+            fi
 
-
-    if [[ "$(get_overwrite_existing_wine_machine)" == True ]]; then
+    if is_overwrite_existing_wine_machine; then
         banner_warning "Overwrite the old Wineprefix"
         $(get_sudo) rm -Rf "${wine_prefix}"
     fi
