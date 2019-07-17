@@ -22,9 +22,12 @@ function get_my_dir {
 
 
 function include_dependencies {
+    local mydir
+    mydir=$(if [[ -d "${BASH_SOURCE%/*}" ]]; then echo "${BASH_SOURCE%/*}"; else echo "${PWD}"; fi)
     source /usr/local/lib_bash/lib_helpers.sh
-    source "$(get_my_dir)/900_000_lib_bash_wine.sh"
+    source "${mydir}"/900_000_lib_bash_wine.sh
 }
+
 include_dependencies
 
 function install_libfaudio0_if_not_installed {
