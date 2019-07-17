@@ -1,6 +1,7 @@
 #!/bin/bash
 
-export SUDO_ASKPASS="$(command -v ssh-askpass)"
+sudo_askpass="$(command -v ssh-askpass)"
+export SUDO_ASKPASS="${sudo_askpass}"
 export NO_AT_BRIDGE=1  # get rid of (ssh-askpass:25930): dbind-WARNING **: 18:46:12.019: Couldn't register with accessibility bus: Did not receive a reply.
 
 export bitranox_debug_global="${bitranox_debug_global}"  # set to True for global Debug
@@ -101,7 +102,7 @@ function update_lib_bash_wine {
 
 
 
-if [[ "${0}" == "${BASH_SOURCE}" ]]; then    # if the script is not sourced
+if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
     if ! is_lib_bash_wine_installed; then install_lib_bash_wine ; fi
 
     if ! is_lib_bash_wine_up_to_date; then
