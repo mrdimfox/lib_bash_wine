@@ -85,6 +85,5 @@ function install_wine {
 
 
 if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
-    # install_wine
-    echo "debug-install wine"
+    install_wine
 fi
