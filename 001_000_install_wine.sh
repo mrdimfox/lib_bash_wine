@@ -18,7 +18,7 @@ include_dependencies
 
 function install_libfaudio0_if_not_installed {
     # from linux > 18.x we need libfaudio0
-    if [[ "$(get_linux_release_number_major)" -ge 18 ]] && [[ "$(get_is_package_installed libfaudio0)" == "False" ]]; then
+    if [[ "$(get_linux_release_number_major)" -ge 18 ]] && [[ ! "$(is_package_installed libfaudio0)" ]]; then
         $(get_sudo) apt-get install libfaudio0 -y || $(get_sudo) add-apt-repository ppa:cybermax-dexter/sdl2-backport -y
     fi
 

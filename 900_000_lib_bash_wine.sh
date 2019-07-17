@@ -169,7 +169,7 @@ function get_prepended_path {
     local path_to_add="${1}"
     local current_path="${2}"
     local prepended_path="${current_path}"
-    if [[ "$(is_str1_in_str2 \"${path_to_add}\" \"${current_path}\")" == "False" ]]; then
+    if [[ ! "$(is_str1_in_str2 \"${path_to_add}\" \"${current_path}\")" ]]; then
         prepended_path="${path_to_add};${current_path}"
     fi
     echo "${prepended_path}"
