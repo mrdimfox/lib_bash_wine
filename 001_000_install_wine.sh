@@ -18,7 +18,7 @@ include_dependencies
 
 function install_libfaudio0_if_not_installed {
     if [[ "$(get_is_package_installed libfaudio0)" == "False" ]]; then
-        $(get_sudo) add-apt-repository ppa:cybermax-dexter/sdl2-backport -y
+        $(get_sudo) apt-get install libfaudio0 -y || $(get_sudo) add-apt-repository ppa:cybermax-dexter/sdl2-backport -y
     fi
 
 }
