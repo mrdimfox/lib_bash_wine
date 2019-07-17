@@ -8,6 +8,7 @@ source ../900_000_lib_bash_wine.sh
 
 
 function test_loop {
+    # shellcheck disable=SC2164
     # local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
     local files_to_test actual_file_to_test user
 

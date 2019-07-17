@@ -129,6 +129,7 @@ function install_git_portable {
 }
 
 function tests {
+    # shellcheck disable=SC2164
 	local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
 	debug "${debug_lib_bash_wine}" "no tests"
 }

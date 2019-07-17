@@ -12,9 +12,9 @@ if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${
 
 
 function include_dependencies {
-    local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-    source /usr/local/lib_bash/lib_color.sh
-    source /usr/local/lib_bash/lib_retry.sh
+    local my_dir
+    # shellcheck disable=SC2164
+    my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
     source /usr/local/lib_bash/lib_helpers.sh
 }
 
@@ -242,6 +242,7 @@ function fix_wine_permissions {
 }
 
 function tests {
+    # shellcheck disable=SC2164
 	# local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
 	# debug "${debug_lib_bash_wine}" "no tests"
 	test_get_prepended_path
