@@ -12,22 +12,21 @@ export debug_lib_bash_wine="${debug_lib_bash_wine}"  # set to True for Debug in 
 if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${BASH_SOURCE%/*}"/install_or_update.sh else "${PWD}"/install_or_update.sh ; fi
 
 
-
-
 function include_dependencies {
-    source /usr/local/lib_bash_wine/003_900_lib_install_wine_python_preinstalled.sh
+    local my_dir
+    # shellcheck disable=SC2164
+    my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
+    source /usr/local/lib_bash/lib_helpers.sh
+    source "${my_dir}/900_000_lib_bash_wine.sh"
+    source "${my_dir}/003_900_lib_install_wine_python_preinstalled.sh"
 }
-
-
 
 include_dependencies
 
-function tests {
-    # shellcheck disable=SC2164
-	local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-	debug "${debug_lib_bash_wine}" "no tests"
-}
 
-if [[ "${0}" == "${BASH_SOURCE}" ]]; then    # if the script is not sourced
+
+
+if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
     install_wine_python_preinstalled "python37" "Python 3.7" "c:\\Python37"
 fi
+

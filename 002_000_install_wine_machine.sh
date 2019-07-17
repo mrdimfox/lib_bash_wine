@@ -24,6 +24,7 @@ function include_dependencies {
 
 include_dependencies
 
+
 function install_wine_machine {
     local linux_release_name wine_release wine_prefix wine_arch wine_windows_version is_xvfb_service_active wine_version_number automatic_overwrite_existing_wine_machine
 
