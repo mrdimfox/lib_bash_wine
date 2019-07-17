@@ -1,42 +1,56 @@
 #!/bin/bash
 
 
-# export bitranox_debug_global=False
+export bitranox_debug_global="${bitranox_debug_global}"  # set to True for global Debug
 export debug_lib_bash_wine="False"
+
+
+function set_lib_bash_permissions {
+    local user mydir
+    user="$(printenv USER)"
+    $(command -v sudo 2>/dev/null) chmod -R 0755 "/usr/local/lib_bash"
+    $(command -v sudo 2>/dev/null) chmod -R +x /usr/local/lib_bash/*.sh
+    $(command -v sudo 2>/dev/null) chown -R root /usr/local/lib_bash || "$(command -v sudo 2>/dev/null)" chown -R "${user}" /usr/local/lib_bash || echo "giving up set owner" # there is no user root on travis
+    $(command -v sudo 2>/dev/null) chgrp -R root /usr/local/lib_bash || "$(command -v sudo 2>/dev/null)" chgrp -R "${user}" /usr/local/lib_bash || echo "giving up set group" # there is no user root on travis
+}
+
+
+function install_lib_bash {
+    echo "installing lib_bash"
+    $(command -v sudo 2>/dev/null) rm -fR /usr/local/lib_bash
+    $(command -v sudo 2>/dev/null) git clone https://github.com/bitranox/lib_bash.git /usr/local/lib_bash > /dev/null 2>&1
+    set_lib_bash_permissions
+}
 
 
 function install_or_update_lib_bash {
     if [[ -f "/usr/local/lib_bash/install_or_update.sh" ]]; then
-        source /usr/local/lib_bash/lib_color.sh
-        $(command -v sudo 2>/dev/null) /usr/local/lib_bash/install_or_update.sh
+        install_lib_bash
     else
-        $(command -v sudo 2>/dev/null) rm -fR /usr/local/lib_bash
-        $(command -v sudo 2>/dev/null) git clone https://github.com/bitranox/lib_bash.git /usr/local/lib_bash > /dev/null 2>&1
-        $(command -v sudo 2>/dev/null) chmod -R 0755 /usr/local/lib_bash
-        $(command -v sudo 2>/dev/null) chmod -R +x /usr/local/lib_bash/*.sh
-        $(command -v sudo 2>/dev/null) chown -R root /usr/local/lib_bash || $(command -v sudo 2>/dev/null) chown -R ${USER} /usr/local/lib_bash  || echo "giving up set owner" # there is no user root on travis
-        $(command -v sudo 2>/dev/null) chgrp -R root /usr/local/lib_bash || $(command -v sudo 2>/dev/null) chgrp -R ${USER} /usr/local/lib_bash  || echo "giving up set group" # there is no user root on travis
+        $(get_sudo) /usr/local/lib_bash/install_or_update.sh
     fi
 }
 
 install_or_update_lib_bash
 
+
 function include_dependencies {
-    source /usr/local/lib_bash/lib_color.sh
-    source /usr/local/lib_bash/lib_retry.sh
     source /usr/local/lib_bash/lib_helpers.sh
 }
-
 include_dependencies
 
 
+
 function set_lib_bash_wine_permissions {
+    local user mydir
+    user="$(printenv USER)"
     $(get_sudo) chmod -R 0755 /usr/local/lib_bash_wine
     $(get_sudo) chmod -R +x /usr/local/lib_bash_wine/*.sh
-    $(get_sudo) chown -R root /usr/local/lib_bash_wine || $(get_sudo) chown -R ${USER} /usr/local/lib_bash_wine || echo "giving up set owner" # there is no user root on travis
-    $(get_sudo) chgrp -R root /usr/local/lib_bash_wine || $(get_sudo) chgrp -R ${USER} /usr/local/lib_bash_wine || echo "giving up set group" # there is no user root on travis
+    $(get_sudo) chown -R root /usr/local/lib_bash_wine || $(get_sudo) chown -R "${user}" /usr/local/lib_bash_wine || echo "giving up set owner" # there is no user root on travis
+    $(get_sudo) chgrp -R root /usr/local/lib_bash_wine || $(get_sudo) chgrp -R "${user}" /usr/local/lib_bash_wine || echo "giving up set group" # there is no user root on travis
 }
 
+# if it is not installed on the right place, we install it on /usr/local/bin
 function is_lib_bash_wine_installed {
         if [[ -f "/usr/local/lib_bash_wine/install_or_update.sh" ]]; then
             return 0
@@ -46,9 +60,12 @@ function is_lib_bash_wine_installed {
 }
 
 
+# this checks the install directory version - but it might be installed for testing somewere else - that will not be updated.
 function is_lib_bash_wine_up_to_date {
-    local git_remote_hash=$(git --no-pager ls-remote --quiet https://github.com/bitranox/lib_bash_wine.git | grep HEAD | awk '{print $1;}' )
-    local git_local_hash=$( $(get_sudo) cat /usr/local/lib_bash_wine/.git/refs/heads/master)
+    local git_remote_hash=""
+    local git_local_hash=""
+    git_remote_hash=$(git --no-pager ls-remote --quiet https://github.com/bitranox/lib_bash_wine.git | grep HEAD | awk '{print $1;}' )
+    git_local_hash=$( $(command -v sudo 2>/dev/null) cat /usr/local/lib_bash_wine/.git/refs/heads/master)
     if [[ "${git_remote_hash}" == "${git_local_hash}" ]]; then
         return 0
     else
@@ -64,28 +81,12 @@ function install_lib_bash_wine {
 }
 
 
-function restart_calling_script {
-    local caller_command=("${@}")
-    if [[ ${#caller_command[@]} -eq 0 ]]; then
-        debug "${debug_lib_bash_wine}" "no caller command - exit 0"
-        # no parameters passed
-        exit 0
-    else
-        # parameters passed, running the new Version of the calling script
-        debug "${debug_lib_bash_wine}" "calling command : ${@}"
-
-        eval "${caller_command[@]}"
-        debug "${debug_lib_bash_wine}" "after calling command ${@} : exiting with 100"
-        exit 100
-    fi
-}
-
 
 function update_lib_bash_wine {
     clr_green "updating lib_bash_wine"
         (
             # create a subshell to preserve current directory
-            cd /usr/local/lib_bash_wine
+            cd /usr/local/lib_bash_wine  || fail "error in update_lib_bash_wine"
             $(get_sudo) git fetch --all  > /dev/null 2>&1
             $(get_sudo) git reset --hard origin/master  > /dev/null 2>&1
             set_lib_bash_wine_permissions
@@ -94,25 +95,18 @@ function update_lib_bash_wine {
 
 }
 
-function tests {
-	local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-	debug "${debug_lib_bash_wine}" "no tests"
-}
 
 
 if [[ "${0}" == "${BASH_SOURCE}" ]]; then    # if the script is not sourced
-    if is_lib_bash_wine_installed; then
-        if ! is_lib_bash_wine_up_to_date; then
-            debug "${debug_lib_bash_wine}" "lib_bash_wine is not up to date"
-            update_lib_bash_wine
-            debug "${debug_lib_bash_wine}" "call restart_calling_script ${@}"
-            restart_calling_script  "${@}"
-            debug "${debug_lib_bash_wine}" "call restart_calling_script ${@} returned ${?}"
-        else
-            debug "${debug_lib_bash_wine}" "lib_bash_wine is up to date"
-        fi
+    if ! is_lib_bash_wine_installed; then install_lib_bash_wine ; fi
 
+    if ! is_lib_bash_wine_up_to_date; then
+        debug "${debug_lib_bash_wine}" "lib_bash_wine is not up to date"
+        update_lib_bash_wine
+        source "$(readlink -f "${BASH_SOURCE[0]}")"      # source ourself
+        exit 0                                           # exit the old instance
     else
-        install_lib_bash_wine
+        debug "${debug_lib_bash_wine}" "lib_bash_wine is up to date"
     fi
+
 fi
