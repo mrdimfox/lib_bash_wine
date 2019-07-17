@@ -12,23 +12,19 @@ export debug_lib_bash_wine="${debug_lib_bash_wine}"  # set to True for Debug in 
 if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${BASH_SOURCE%/*}"/install_or_update.sh else "${PWD}"/install_or_update.sh ; fi
 
 
+###### IMPORTS
+
+source /usr/local/lib_bash/lib_helpers.sh
+
+# this function will get overwritten by other imports, so we need to define it after importing other libraries !
 function get_my_dir {
-    local mydir
-    mydir="${BASH_SOURCE%/*}"
-    if [[ ! -d "$mydir" ]]; then mydir="$PWD"; fi
-    echo "$mydir"
+    if [[ -d "${BASH_SOURCE%/*}" ]]; then echo "${BASH_SOURCE%/*}"; else echo "${PWD}"; fi
 }
 
+source "$(get_my_dir)"/900_000_lib_bash_wine.sh
 
+###### IMPORTS
 
-function include_dependencies {
-    local mydir
-    mydir=$(if [[ -d "${BASH_SOURCE%/*}" ]]; then echo "${BASH_SOURCE%/*}"; else echo "${PWD}"; fi)
-    source /usr/local/lib_bash/lib_helpers.sh
-    source "${mydir}"/900_000_lib_bash_wine.sh
-}
-
-include_dependencies
 
 function install_libfaudio0_if_not_installed {
     # from linux > 18.x we need libfaudio0
