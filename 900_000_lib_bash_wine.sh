@@ -118,6 +118,13 @@ function get_str_x86_or_x64_from_wine_prefix {
 }
 
 
+function wine_query_reg_value {
+    # $1 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
+    # $2 : the reg_value like "PATH"
+    local reg_key reg_value result
+    result=
+
+}
 
 
 function get_is_wine_path_reg_sz_set {
