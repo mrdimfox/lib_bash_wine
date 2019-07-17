@@ -8,18 +8,22 @@ export bitranox_debug_global="${bitranox_debug_global}"  # set to True for globa
 export debug_lib_bash_wine="${debug_lib_bash_wine}"  # set to True for Debug in lib_bash_wine
 
 
-function update_myself {
-    /usr/local/lib_bash_wine/install_or_update.sh "${@}" || exit 0              # exit old instance after updates
+# call the update script if nout sourced
+if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${BASH_SOURCE%/*}"/install_or_update.sh else "${PWD}"/install_or_update.sh ; fi
+
+
+function get_my_dir {
+    local mydir
+    mydir="${BASH_SOURCE%/*}"
+    if [[ ! -d "$mydir" ]]; then mydir="$PWD"; fi
+    echo "$mydir"
 }
 
-update_myself ${0}
 
 
 function include_dependencies {
-    source /usr/local/lib_bash/lib_color.sh
-    source /usr/local/lib_bash/lib_retry.sh
     source /usr/local/lib_bash/lib_helpers.sh
-    source /usr/local/lib_bash_wine/900_000_lib_bash_wine.sh
+    source "$(get_my_dir)/900_000_lib_bash_wine.sh"
 }
 include_dependencies
 
@@ -81,12 +85,8 @@ function install_wine {
     banner "FINISHED installing WINE and WINETRICKS: ${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}"
 }
 
-function tests {
-	local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-	debug "${debug_lib_bash_wine}" "no tests"
-}
-
 
 if [[ "${0}" == "${BASH_SOURCE}" ]]; then    # if the script is not sourced
-    install_wine
+    # install_wine
+    echo "debug-install wine"
 fi

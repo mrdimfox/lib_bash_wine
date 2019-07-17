@@ -7,12 +7,9 @@ export bitranox_debug_global="${bitranox_debug_global}"  # set to True for globa
 export debug_lib_bash_wine="${debug_lib_bash_wine}"  # set to True for Debug in lib_bash_wine
 
 
-function update_myself {
-    /usr/local/lib_bash_wine/install_or_update.sh "${@}" || exit 0              # exit old instance after updates
-}
+# call the update script if nout sourced
+if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${BASH_SOURCE%/*}"/install_or_update.sh else "${PWD}"/install_or_update.sh ; fi
 
-
-update_myself ${0}
 
 
 

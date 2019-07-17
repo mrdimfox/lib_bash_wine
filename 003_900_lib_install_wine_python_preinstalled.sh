@@ -7,6 +7,11 @@ export bitranox_debug_global="${bitranox_debug_global}"  # set to True for globa
 export debug_lib_bash_wine="${debug_lib_bash_wine}"  # set to True for Debug in lib_bash_wine
 
 
+# call the update script if nout sourced
+if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${BASH_SOURCE%/*}"/install_or_update.sh else "${PWD}"/install_or_update.sh ; fi
+
+
+
 function include_dependencies {
     source /usr/local/lib_bash/lib_color.sh
     source /usr/local/lib_bash/lib_retry.sh
