@@ -123,123 +123,71 @@ function get_str_x86_or_x64_from_wine_prefix {
 }
 
 
-function wine_query_reg_value {
+function wine_get_user_registry_data {
     # $1 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
     # $2 : the reg_subkey like "PATH"
-    local reg_key reg_value result
-    result=""
+    # returns the data, e.g. c:\windows\... ;
+    local reg_key reg_subkey result
+    reg_key="${1}"
+    reg_subkey="${2}"
+    # see https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/reg-query
+    result="$(wine reg query "${reg_key}" /v "${reg_subkey}" | cut -d " " -f 3)"
+    echo "${result}"
+}
 
+function wine_get_user_registry_type {
+    # $1 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
+    # $2 : the reg_subkey like "PATH"
+    # returns the Data Type, e.g. REG_SZ, REG_EXPAND_SZ
+    local reg_key reg_subkey data
+    reg_key="${1}"
+    reg_subkey="${2}"
+    # see https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/reg-query
+    data="$(wine reg query "${reg_key}" /v "${reg_subkey}" | cut -d " " -f 2)"
+    echo "${data}"
 }
 
 
-function is_wine_path_reg_sz_set {
-    local wine_current_reg_path
-    wine_current_reg_path="$(wine reg QUERY "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /v PATH | grep -c REG_SZ)"
-    if [[ "${wine_current_reg_path}" == "0" ]]; then
-        return 1
-    else
-        return 0
-    fi
-}
-
-function is_wine_path_reg_expand_sz_set {
-    local wine_current_reg_path
-    wine_current_reg_path="$(wine reg QUERY "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /v PATH | grep REG_EXPAND_SZ | sed 's/^.*REG_EXPAND_SZ\s*//')"
-    if [[ "${wine_current_reg_path}" == "0" ]]; then
-        return 1
-    else
-        return 0
-    fi
-}
-
-function get_wine_path_reg_sz {
-    local wine_current_reg_path
-    wine_current_reg_path="$(wine reg QUERY "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /v PATH | grep REG_SZ | sed 's/^.*REG_SZ\s*//')"
-    echo "${wine_current_reg_path}"
-}
-
-function get_wine_path_reg_expand_sz {
-    local wine_current_reg_path
-    wine_current_reg_path="$(wine reg QUERY "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /v PATH | grep REG_EXPAND_SZ | sed 's/^.*REG_EXPAND_SZ\s*//')"
-    echo "${wine_current_reg_path}"
+function wine_set_user_registry_data {
+    # $1 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
+    # $2 : the reg_subkey like "PATH"
+    # $3 : the data to write
+   local reg_key reg_subkey data data_type
+    reg_key="${1}"
+    reg_subkey="${2}"
+    data="${3}"
+    data_type="$(wine_get_user_registry_type "${reg_key}" "${reg_subkey}")"
+    wine reg add "${reg_key}" /t "${data_type}" /v "${reg_subkey}" /d "${data}" /f
 }
 
 
-function set_wine_path_reg_sz {
-    # $1: new_wine_path
-    local new_wine_path
-    new_wine_path="${1}"
-    wine reg add "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /t REG_SZ /v PATH /d "${new_wine_path}" /f
+function wine_get_user_registry_path {
+    # returns the path set in the wine registry
+    wine_query_user_registry "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" "PATH"
 }
 
 
-function set_wine_path_reg_expand_sz {
-    # $1: new_wine_path
-    local new_wine_path
-    new_wine_path="${1}"
-    wine reg add "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" /t REG_EXPAND_SZ /v PATH /d "${new_wine_path}" /f
+function wine_set_user_registry_path {
+    # set or replace the registry path
+    # $1: new_path # the new path to set like "C:\\windows\\system;c:/Program Files/PowerShell"
+    local new_path
+    new_path="${1}"
+    wine_set_user_registry_data "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" "PATH" "${new_path}"
 }
 
 
-function get_prepended_path {
-    # $1: path_to_add
-    # $2: current_path
-    local path_to_add current_path prepended_path
+
+function prepend_path_to_wine_registry_path {
+    # $1 : path_to_add
+    # path will not be added if it is already there
+    local path_to_add current_path new_path
     path_to_add="${1}"
-    current_path="${2}"
-    prepended_path="${current_path}"
-    if is_str1_in_str2 "\"${path_to_add}\" \"${current_path}\""; then
-        prepended_path="${path_to_add};${current_path}"
+    current_path="$(wine_get_user_registry_path)"
+    if is_str1_in_str2 "${path_to_add}" "${current_path}"; then
+        new_path="${path_to_add};${current_path}"
+        wine_set_user_registry_path "${new_path}"
     fi
-    echo "${prepended_path}"
 }
-
-
-function prepend_path_to_wine_registry {
-    local add_path current_path_reg_sz new_path_reg_sz current_path_reg_expand_sz new_path_reg_expand_sz
-    add_path="${1}"
-    current_path_reg_sz=""
-    new_path_reg_sz=""
-    current_path_reg_expand_sz=""
-    new_path_reg_expand_sz=""
-
-    if is_wine_path_reg_sz_set; then
-        clr_green "add path_reg_sz to Wine Registry"
-        current_path_reg_sz="$(get_wine_path_reg_sz)"
-        new_path_reg_sz=$(get_prepended_path "${add_path}" "${current_path_reg_sz}")
-        set_wine_path_reg_sz "${new_path_reg_sz}"
-    fi
-
-    if is_wine_path_reg_expand_sz_set; then
-        clr_green "add path_reg_expand_sz to Wine Registry"
-        current_path_reg_expand_sz="$(get_wine_path_reg_expand_sz)"
-        new_path_reg_expand_sz=$(get_prepended_path "${add_path}" "${current_path_reg_expand_sz}")
-        set_wine_path_reg_expand_sz "${new_path_reg_expand_sz}"
-    fi
-    banner "\
-Adding wine paths done:${IFS}\
-original path_reg_sz: ${current_path_reg_sz}${IFS}\
-     new path_reg_sz: ${new_path_reg_sz}${IFS}\
-     original path_reg_expand_sz: ${current_path_reg_expand_sz}${IFS}\
-          new path_reg_expand_sz: ${new_path_reg_expand_sz}"
-}
-
-
-## make it possible to call functions without source include
-# Check if the function exists (bash specific)
-if [[ ! -z "$1" ]]
-    then
-        if declare -f "${1}" > /dev/null
-        then
-          # call arguments verbatim
-          "$@"
-        else
-          # Show a helpful error
-          function_name="${1}"
-          library_name="${0}"
-          fail "\"${function_name}\" is not a known function name of \"${library_name}\""
-        fi
-	fi
 
 
 function fix_wine_permissions {
@@ -249,11 +197,11 @@ function fix_wine_permissions {
     "$(get_sudo)" chgrp -R "${user}" "${WINEPREFIX}"
 }
 
-function tests {
-    # shellcheck disable=SC2164
-	# local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-	# debug "${debug_lib_bash_wine}" "no tests"
-	test_get_prepended_path
+
+function get_gecko_32_bit_msi_name {
+    local wine_prefix
+    wine_prefix="$(get_and_export_wine_prefix_or_default_to_home_wine)"
+    strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi
 }
 
 

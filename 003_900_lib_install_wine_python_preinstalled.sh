@@ -71,7 +71,7 @@ WINEARCH=${wine_arch}"
     unzip -oqq "${decompress_dir}/binaries_${python_version_short}_wine-master/bin/joined_${python_version_short}.zip" -d "${wine_drive_c_dir}"
 
     clr_green "Adding path to wine registry: ${pythonpath_to_add}"
-    prepend_path_to_wine_registry "${pythonpath_to_add}"
+    prepend_path_to_wine_registry_path "${pythonpath_to_add}"
 
     clr_green "Test python"
     wine pip install --user --upgrade pip

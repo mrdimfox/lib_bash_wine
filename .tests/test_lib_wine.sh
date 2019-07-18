@@ -52,8 +52,14 @@ function test {
 
 
     export automatic_overwrite_existing_wine_machine="True"
-    install_32_bit_wine_machine
-    install_64_bit_wine_machine
+    # install_32_bit_wine_machine
+    # install_64_bit_wine_machine
+
+    set_environment_for_32_bit_wine_machine
+    assert_equal "get_gecko_32_bit_msi_name" ""
+
+    set_environment_for_64_bit_wine_machine
+    assert_contains "get_gecko_32_bit_msi_name" "wine_gecko-"
 
 }
 

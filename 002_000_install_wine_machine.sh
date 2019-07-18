@@ -25,6 +25,45 @@ function include_dependencies {
 include_dependencies
 
 
+function install_wine_gecko {
+    # installs the matching wine_gecko on the existing wine machine
+    local wine_prefix wine_arch gecko_32_bit_msi_name
+
+    wine_prefix="$(get_and_export_wine_prefix_or_default_to_home_wine)"
+    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
+    gecko_64_bit_msi_name=""
+    gecko_32_bit_msi_name="$(strings "${wine_arch}/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi)"
+
+    if [[ "${wine_arch}" == "win64" ]]; then
+        gecko_64_bit_msi_name="$(strings "${wine_arch}/windows/syswow64/appwiz.cpl" | grep wine_gecko | grep .msi)"
+    fi
+
+
+
+
+    # strings -a /home/consul/wine/wine32_machine_01/drive_c/windows/system32/appwiz.cpl | grep wine_gecko | grep .msi --> wine_gecko-2.47-x86.msi
+    # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
+    # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi
+    # correct : https://dl.winehq.org/wine/wine-mono/4.9.0/wine-mono-4.9.0.msi
+
+    # Übereinstimmungen in Binärdatei /home/consul/wine/wine32_machine_01/drive_c/windows/system32/appwiz.cpl
+    # Übereinstimmungen in Binärdatei /home/consul/wine/wine64_machine_02/drive_c/windows/syswow64/appwiz.cpl
+    # Übereinstimmungen in Binärdatei /home/consul/wine/wine64_machine_02/drive_c/windows/system32/appwiz.cpl
+
+
+
+}
+
+
+function install_wine_mono {
+    # installs the matching wine-mono on the existing wine machine
+
+
+}
+
+
+
+
 function install_wine_machine {
     local linux_release_name wine_release wine_prefix wine_arch wine_windows_version wine_version_number automatic_overwrite_existing_wine_machine
 
@@ -76,46 +115,37 @@ function install_wine_machine {
     # shellcheck disable=SC1007  # we really set DISPLAY to an empty value
     # DISPLAY= wine non_existing_command.exe
     DISPLAY= winecfg
+    fix_wine_permissions  # it is cheap, just in case
 
-    # todo gecko 2.47 is not installed should be in ${HOME}.cache/wine/wine_gecko-2.47-x86.msi
-    # user.reg
-    # [Software\\Microsoft\\Installer\\Products\\79BDB9BB742C02F47B01B876566F1750\\SourceList] 1563404265
-    #time=1d53cf30c1a0d3e
-    # "LastUsedSource"="n;1;\\\\?\\Z:\\home\\consul\\.cache\\wine\\"
-    # "PackageName"="wine_gecko-2.47-x86.msi"
-    # todo wine-mono is not installed should be in ${HOME}.cache/wine/wine-mono-4.9.0.msi
-    # user.reg
-    # [Software\\Microsoft\\Installer\\Products\\7B5FB551490B356529D163F2481849D3\\SourceList] 1563404256
-    ##time=1d53cf306b9cf0a
-    #"LastUsedSource"="n;1;\\\\?\\Z:\\home\\consul\\.cache\\wine\\"
-    #"PackageName"="wine-mono-4.9.0.msi"
+    banner "Installing wine gecko"
+    install_wine_gecko
+    fix_wine_permissions  # it is cheap, just in case
 
-
-    fix_wine_permissions
-
-    ####  when we use winecfg we need to switch off xvfb
-    # if [[ ${is_xvfb_service_active} == "True" ]]; then
-    #    clr_green " "
-    #    clr_green "restarting xvfb"
-    #    $(get_sudo) service xvfb start
-    #fi
+    banner "Installing wine mono"
+    install_wine_gecko
+    fix_wine_permissions  # it is cheap, just in case
 
     banner "Disable GUI Crash Dialogs"
     winetricks nocrashdialog
+    fix_wine_permissions  # it is cheap, just in case
 
     banner "Set Windows Version to ${wine_windows_version}"
     winetricks -q "${wine_windows_version}"
+    fix_wine_permissions  # it is cheap, just in case
 
     banner "Install common Packages"
 
     banner "install windowscodecs"
     retry winetricks -q windowscodecs
+    fix_wine_permissions  # it is cheap, just in case
 
     banner "install msxml3"
     retry winetricks -q msxml3
+    fix_wine_permissions  # it is cheap, just in case
 
     banner "install msxml6"
     retry winetricks -q msxml6
+    fix_wine_permissions  # it is cheap, just in case
 
     banner "FINISHED installing Wine MachineWine Machine:${IFS}\
             linux_release_name=${linux_release_name}${IFS}\

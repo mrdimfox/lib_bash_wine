@@ -64,8 +64,7 @@ function install_powershell_core {
     unzip -oqq "${decompress_dir}/${zip_file_name}" -d "${powershell_install_dir}"
 
     clr_green "Adding path to wine registry: ${powershell_path_to_add}"
-    # prepend_path_to_wine_registry "\"${powershell_path_to_add}\""
-    prepend_path_to_wine_registry "C:/Program Files/PowerShell"
+    prepend_path_to_wine_registry_path "C:/Program Files/PowerShell"
 
     $(get_sudo) chmod -R 0755 "${powershell_install_dir}"
 

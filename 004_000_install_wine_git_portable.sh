@@ -119,7 +119,7 @@ function install_git_portable {
     $(get_sudo) chmod -R 0755 "${git_install_dir}"
 
     clr_green "Adding path to wine registry: ${git_path_to_add}"
-    prepend_path_to_wine_registry "${git_path_to_add}"
+    prepend_path_to_wine_registry_path "${git_path_to_add}"
 
     clr_green "Test Git"
     wine git --version
@@ -128,11 +128,6 @@ function install_git_portable {
     banner "Finished installing Git Portable:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
 }
 
-function tests {
-    # shellcheck disable=SC2164
-	local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-	debug "${debug_lib_bash_wine}" "no tests"
-}
 
 if [[ "${0}" == "${BASH_SOURCE}" ]]; then    # if the script is not sourced
     install_git_portable
