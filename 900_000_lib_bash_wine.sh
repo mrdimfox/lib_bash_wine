@@ -199,10 +199,35 @@ function fix_wine_permissions {
 
 
 function get_gecko_32_bit_msi_name {
-    local wine_prefix
+    local wine_prefix wine_arch
     wine_prefix="$(get_and_export_wine_prefix_or_default_to_home_wine)"
-    strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi
+    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
+
+    if [[ "${wine_arch}" == "win32" ]]; then
+        strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi
+    elif [[ "${wine_arch}" == "win64" ]]; then
+        strings "${wine_prefix}/drive_c/windows/syswow64/appwiz.cpl" | grep wine_gecko | grep .msi
+    else
+        fail "can not determine WINEARCH from WINEPREFIX ${wine_prefix}"
+    fi
 }
+
+
+function get_gecko_64_bit_msi_name {
+    local wine_prefix wine_arch
+    wine_prefix="$(get_and_export_wine_prefix_or_default_to_home_wine)"
+    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
+
+    if [[ "${wine_arch}" == "win32" ]]; then
+        echo ""
+    elif [[ "${wine_arch}" == "win64" ]]; then
+        strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi
+    else
+        fail "can not determine WINEARCH from WINEPREFIX ${wine_prefix}"
+    fi
+}
+
+
 
 
 ## make it possible to call functions without source include

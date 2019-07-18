@@ -56,10 +56,15 @@ function test {
     # install_64_bit_wine_machine
 
     set_environment_for_32_bit_wine_machine
-    assert_equal "get_gecko_32_bit_msi_name" ""
+    assert_contains "get_gecko_32_bit_msi_name" "wine_gecko-"
+    assert_contains "get_gecko_32_bit_msi_name" "-x86.msi"
+    assert_contains "get_gecko_64_bit_msi_name" ""
+
 
     set_environment_for_64_bit_wine_machine
     assert_contains "get_gecko_32_bit_msi_name" "wine_gecko-"
+    assert_contains "get_gecko_32_bit_msi_name" "-x86_64.msi"
+    assert_contains "get_gecko_32_bit_msi_name" "xyz"
 
 }
 
