@@ -36,6 +36,8 @@ function install_wine_gecko {
 
 
 
+    # --> http://source.winehq.org/winegecko.php?v=2.47-x86 --> redirected to : http://dl.winehq.org/wine/wine-gecko/2.47-x86/wine_gecko-2.47-x86.msi
+
     # strings -a /home/consul/wine/wine32_machine_01/drive_c/windows/system32/appwiz.cpl | grep wine_gecko | grep .msi --> wine_gecko-2.47-x86.msi
     # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
     # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi
@@ -107,20 +109,8 @@ function install_wine_machine {
     fi
 
     mkdir -p "${wine_prefix}"
-    # xvfb-run --auto-servernum winecfg # fails marshal_object couldnt get IPSFactory buffer for interface ...
-
-
-    ####  when we use winecfg we need to switch off xvfb
-    # if [[ ${is_xvfb_service_active} == "True" ]]; then
-    #     clr_green "Stopping xvfb because winecfg crashes if it is enabled"
-    #     "$(cmd "sudo")" service xvfb stop
-    # fi
 
     banner "winecfg for Wine Machine, WINEPREFIX=${wine_prefix}, WINEARCH=${wine_arch}, winetricks_windows_version=${winetricks_windows_version}"
-
-
-    #### winecfg
-    # are we sure that Gecko etc. is installed ??? dunno, it works ...
 
     # shellcheck disable=SC1007  # we really set DISPLAY to an empty value
     # DISPLAY= wine non_existing_command.exe

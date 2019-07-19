@@ -272,6 +272,39 @@ function get_gecko_64_bit_msi_name {
     fi
 }
 
+function get_wine_gecko_32_download_link {
+    # gets the download link
+    # $1 - wine_prefix
+    local wine_prefix gecko_32_bit_msi_name version architecture
+    wine_prefix="${1}"
+    gecko_32_bit_msi_name="$(get_gecko_32_bit_msi_name ${wine_prefix})"
+    version="$(echo "${gecko_32_bit_msi_name}" | cut -d "-" -f 2)"
+    architecture="$(echo "${gecko_32_bit_msi_name}" | cut -d "-" -f 3)"
+    echo "https://source.winehq.org/winegecko.php?v=${version}-${architecture}"
+}
+
+function get_wine_gecko_32_download_link_backup {
+    # gets the download link
+    # $1 - wine_prefix
+    local wine_prefix gecko_32_bit_msi_name version architecture
+    wine_prefix="${1}"
+    gecko_32_bit_msi_name="$(get_gecko_32_bit_msi_name ${wine_prefix})"
+    version="$(echo "${gecko_32_bit_msi_name}" | cut -d "-" -f 2)"
+    architecture="$(echo "${gecko_32_bit_msi_name}" | cut -d "-" -f 3)"
+    echo "https://dl.winehq.org/wine/wine-gecko/${version}/${gecko_32_bit_msi_name}"
+}
+
+
+
+    # --> http://source.winehq.org/winegecko.php?v=2.47-x86 --> redirected to : http://dl.winehq.org/wine/wine-gecko/2.47-x86/wine_gecko-2.47-x86.msi
+
+    # strings -a /home/consul/wine/wine32_machine_01/drive_c/windows/system32/appwiz.cpl | grep wine_gecko | grep .msi --> wine_gecko-2.47-x86.msi
+    # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
+    # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi
+    # correct : https://dl.winehq.org/wine/wine-mono/4.9.0/wine-mono-4.9.0.msi - für beide !!!
+
+
+
 
 function get_wine_mono_msi_name {
     # tested
@@ -283,16 +316,9 @@ function get_wine_mono_msi_name {
 }
 
 
-function get_wine_gecko_32_download_link {
-    local wine_prefix
-    wine_prefix="${1}"
-}
 
 
 
-    # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
-    # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi
-    # correct : https://dl.winehq.org/wine/wine-mono/4.9.0/wine-mono-4.9.0.msi - für beide !!!
 
 
 

@@ -5,69 +5,64 @@ export NO_AT_BRIDGE=1  # get rid of (ssh-askpass:25930): dbind-WARNING **: 18:46
 
 
 source ../900_000_lib_bash_wine.sh
+source ../002_000_install_wine_machine.sh
 
 
-function set_environment_for_32_bit_wine_machine {
-    export wine_release="devel"
-    export WINEPREFIX=${HOME}/wine/wine32_machine_01
-    export WINEARCH="win32"
-    export winetricks_windows_version="win10"
+function set_variable_for_32_bit_wine_machine {
+    global_wine_prefix="${HOME}/wine/wine32_machine_01"
+    global_wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${global_wine_prefix}")"
 }
 
-function set_environment_for_64_bit_wine_machine {
-    export wine_release="devel"
-    export WINEPREFIX=${HOME}/wine/wine64_machine_02
-    export WINEARCH="win64"
-    export winetricks_windows_version="win10"
+function set_variable_for_64_bit_wine_machine {
+    global_wine_prefix="${HOME}/wine/wine64_machine_02"
+    global_wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${global_wine_prefix}")"
 }
 
 function test {
-    local linux_release_name wine_release wine_prefix wine_arch winetricks_windows_version wine_version_number overwrite_existing_wine_machine
+    local linux_release_name wine_release winetricks_windows_version wine_version_number overwrite_existing_wine_machine
     linux_release_name="$(get_linux_release_name)"
-    wine_release="$(get_and_export_wine_release_from_environment_or_default_to_devel)"
-    wine_prefix="$(get_and_export_wine_prefix_from_environment_or_default_to_home_wine)"
-    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    winetricks_windows_version="$(get_and_export_winetricks_windows_version_from_environment_or_default_to_win10)"
+    wine_release="devel"
+    winetricks_windows_version="win10"
     wine_version_number="$(get_wine_version_number)"
-    overwrite_existing_wine_machine="$(printenv overwrite_existing_wine_machine)"
+    overwrite_existing_wine_machine="True"
 
     # make sure lib_bash is properly included
 	assert_pass "is_package_installed apt"
 
     # update libraries
-    ""$(cmd "sudo")"" ../install_or_update.sh
+    "$(cmd "sudo")" ../install_or_update.sh
 
     ### test get gecko 32
-    set_environment_for_32_bit_wine_machine
-    wine_prefix="$(get_and_export_wine_prefix_from_environment_or_default_to_home_wine)"
-    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    assert_contains "get_gecko_32_bit_msi_name ${wine_prefix}" "wine_gecko-"
-    assert_contains "get_gecko_32_bit_msi_name ${wine_prefix}" "-x86.msi"
-    assert_equals "get_gecko_64_bit_msi_name ${wine_prefix}" ""
+    set_variable_for_32_bit_wine_machine
+    assert_contains "get_gecko_32_bit_msi_name ${global_wine_prefix}" "wine_gecko-"
+    assert_contains "get_gecko_32_bit_msi_name ${global_wine_prefix}" "-x86.msi"
+    assert_equal "get_gecko_64_bit_msi_name ${global_wine_prefix}" ""
+    assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "https://source.winehq.org/winegecko.php?v="
+    assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "-x86.msi"
+    assert_contains "get_wine_gecko_32_download_link_backup ${global_wine_prefix}" "https://dl.winehq.org/wine/wine-gecko/"
+    assert_contains "get_wine_gecko_32_download_link_backup ${global_wine_prefix}" "-x86.msi"
 
     ### test get gecko 64
-    set_environment_for_64_bit_wine_machine
-    wine_prefix="$(get_and_export_wine_prefix_from_environment_or_default_to_home_wine)"
-    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    assert_contains "get_gecko_32_bit_msi_name ${wine_prefix}" "wine_gecko-"
-    assert_contains "get_gecko_32_bit_msi_name ${wine_prefix}" "-x86.msi"
-    assert_contains "get_gecko_64_bit_msi_name ${wine_prefix}" "wine_gecko-"
-    assert_contains "get_gecko_64_bit_msi_name ${wine_prefix}" "-x86_64.msi"
+    set_variable_for_64_bit_wine_machine
+    assert_contains "get_gecko_32_bit_msi_name ${global_wine_prefix}" "wine_gecko-"
+    assert_contains "get_gecko_32_bit_msi_name ${global_wine_prefix}" "-x86.msi"
+    assert_contains "get_gecko_64_bit_msi_name ${global_wine_prefix}" "wine_gecko-"
+    assert_contains "get_gecko_64_bit_msi_name ${global_wine_prefix}" "-x86_64.msi"
+    assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "https://source.winehq.org/winegecko.php?v="
+    assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "-x86.msi"
+    assert_contains "get_wine_gecko_32_download_link_backup ${global_wine_prefix}" "https://dl.winehq.org/wine/wine-gecko/"
+    assert_contains "get_wine_gecko_32_download_link_backup ${global_wine_prefix}" "-x86.msi"
+
 
     ### test get wine-mono 32
-    set_environment_for_32_bit_wine_machine
-    wine_prefix="$(get_and_export_wine_prefix_from_environment_or_default_to_home_wine)"
-    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    assert_contains "get_wine_mono_msi_name" "wine-mono"
-    assert_contains "get_wine_mono_msi_name" ".msi"
+    set_variable_for_32_bit_wine_machine
+    assert_contains "get_wine_mono_msi_name ${global_wine_prefix}" "wine-mono"
+    assert_contains "get_wine_mono_msi_name ${global_wine_prefix}" ".msi"
 
     ### test get wine-mono 64
-    set_environment_for_64_bit_wine_machine
-    wine_prefix="$(get_and_export_wine_prefix_from_environment_or_default_to_home_wine)"
-    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    assert_contains "get_wine_mono_msi_name" "wine-mono"
-    assert_contains "get_wine_mono_msi_name" ".msi"
-
+    set_variable_for_64_bit_wine_machine
+    assert_contains "get_wine_mono_msi_name ${global_wine_prefix}" "wine-mono"
+    assert_contains "get_wine_mono_msi_name ${global_wine_prefix}" ".msi"
 
 }
 
