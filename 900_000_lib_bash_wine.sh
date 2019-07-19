@@ -103,20 +103,28 @@ function get_and_export_winetricks_windows_version_from_environment_or_default_t
     echo "${winetricks_windows_version}"
 }
 
+
+## todo get windows ProductName
 ## HKEY_LOCAL_MACHINE\Software\Wow6432Node\Microsoft\Windows NT\CurrentVersion
 ## Software\\Microsoft\\Windows NT\\CurrentVersion
 ## "ProductName"="Microsoft Windows 10" --> sometimes wrong
 ## "CurrentVersion"="10.0" --> sometimes wring
 
 
-
+function get_and_export_overwrite_existing_wine_machine_from_environment_or_default_to_false {
+    local overwrite_existing_wine_machine
+    overwrite_existing_wine_machine="$(printenv overwrite_existing_wine_machine)"
+    if [[ -z "${overwrite_existing_wine_machine}" ]]; then overwrite_existing_wine_machine="False"; fi
+    export overwrite_existing_wine_machine="${overwrite_existing_wine_machine}"
+    echo "${overwrite_existing_wine_machine}"
+}
 
 
 
 function is_overwrite_existing_wine_machine {
-    local automatic_overwrite_existing_wine_machine
-    automatic_overwrite_existing_wine_machine="$(printenv automatic_overwrite_existing_wine_machine)"
-    if [[ "${automatic_overwrite_existing_wine_machine}" == "True" ]]; then
+    local overwrite_existing_wine_machine
+    overwrite_existing_wine_machine="$(printenv overwrite_existing_wine_machine)"
+    if [[ "${overwrite_existing_wine_machine}" == "True" ]]; then
         return 0
     else
         return 1

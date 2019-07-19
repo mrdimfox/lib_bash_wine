@@ -70,9 +70,9 @@ function install_wine_machine {
     # $3 : wine_arch                                    # [win32|win64]
     # $4 : winetricks_windows_version                   # [win7|win10....] - see wintricks list-all | grep version
     # $5 : user                                         # printenv USER
-    # $6 : automatic_overwrite_existing_wine_machine    # ["True"|"False"]
+    # $6 : overwrite_existing_wine_machine    # ["True"|"False"]
 
-    local linux_release_name wine_release wine_prefix wine_arch winetricks_windows_version wine_version_number automatic_overwrite_existing_wine_machine user
+    local linux_release_name wine_release wine_prefix wine_arch winetricks_windows_version wine_version_number overwrite_existing_wine_machine user
 
     banner "Install Wine Machine"
     wine_release="${1}"
@@ -80,7 +80,7 @@ function install_wine_machine {
     wine_arch="${3}"
     winetricks_windows_version="${4}"
     user="${5}"
-    automatic_overwrite_existing_wine_machine="${6}"
+    overwrite_existing_wine_machine="${6}"
 
     linux_release_name="$(get_linux_release_name)"
     wine_version_number="$(get_wine_version_number)"
@@ -96,9 +96,9 @@ function install_wine_machine {
             winetricks_windows_version=${winetricks_windows_version}${IFS}\
 
             # this is only for display - otherwise use function is_overwrite_existing_wine_machine
-            automatic_overwrite_existing_wine_machine=${automatic_overwrite_existing_wine_machine}"
-            if [[ "${automatic_overwrite_existing_wine_machine}" != "True" ]]; then
-                 automatic_overwrite_existing_wine_machine="False"
+            overwrite_existing_wine_machine=${overwrite_existing_wine_machine}"
+            if [[ "${overwrite_existing_wine_machine}" != "True" ]]; then
+                 overwrite_existing_wine_machine="False"
             fi
 
     if is_overwrite_existing_wine_machine; then
@@ -174,7 +174,7 @@ if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
     wine_arch="$(get_and_export_wine_arch_from_environment_or_default_to_win64)"
     winetricks_windows_version="$(get_and_export_winetricks_windows_version_from_environment_or_default_to_win10)"
     user="$(printenv USER)"
-    automatic_overwrite_existing_wine_machine=
+    overwrite_existing_wine_machine="$(get_and_export_overwrite_existing_wine_machine_from_environment_or_default_to_false)"
 
-    install_wine_machine "${wine_release}" "${wine_prefix}" "${wine_arch}" "${winetricks_windows_version}" "${user}" "${automatic_overwrite_existing_wine_machine}"
+    install_wine_machine "${wine_release}" "${wine_prefix}" "${wine_arch}" "${winetricks_windows_version}" "${user}" "${overwrite_existing_wine_machine}"
 fi

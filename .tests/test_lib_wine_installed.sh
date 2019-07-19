@@ -22,14 +22,14 @@ function set_environment_for_64_bit_wine_machine {
 }
 
 function test {
-    local linux_release_name wine_release wine_prefix wine_arch winetricks_windows_version wine_version_number automatic_overwrite_existing_wine_machine
+    local linux_release_name wine_release wine_prefix wine_arch winetricks_windows_version wine_version_number overwrite_existing_wine_machine
     linux_release_name="$(get_linux_release_name)"
     wine_release="$(get_and_export_wine_release_from_environment_or_default_to_devel)"
     wine_prefix="$(get_and_export_wine_prefix_from_environment_or_default_to_home_wine)"
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
     winetricks_windows_version="$(get_and_export_winetricks_windows_version_from_environment_or_default_to_win10)"
     wine_version_number="$(get_wine_version_number)"
-    automatic_overwrite_existing_wine_machine="$(printenv automatic_overwrite_existing_wine_machine)"
+    overwrite_existing_wine_machine="$(printenv overwrite_existing_wine_machine)"
 
     # make sure lib_bash is properly included
 	assert_pass "is_package_installed apt"
