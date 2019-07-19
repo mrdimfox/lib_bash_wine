@@ -77,8 +77,8 @@ function get_latest_download_link_for_git_portable {
 function install_git_portable {
 
     local linux_release_name=$(get_linux_release_name)                                  # @lib_bash/bash_helpers
-    local wine_release=$(get_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
-    local wine_prefix=$(get_and_export_wine_prefix_or_default_to_home_wine)     # @lib_bash_wine
+    local wine_release=$(get_and_export_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
+    local wine_prefix=$(get_and_export_wine_prefix_from_environment_or_default_to_home_wine)     # @lib_bash_wine
     local wine_arch=$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")          # @lib_bash_wine
     local wine_version_number=$(get_wine_version_number)  # @lib_bash_wine
 
@@ -113,13 +113,13 @@ function install_git_portable {
 
     clr_green "Unzip Git Portable Binaries Master to ${git_path_to_add}"
 
-    $(get_sudo) rm -Rf "${git_install_dir}"
+    "$(cmd "sudo")" rm -Rf "${git_install_dir}"
     # see : https://sevenzip.osdn.jp/chm/cmdline/switches/index.htm
     7z e ${decompress_dir}/${portable_git_filename} -o"${git_install_dir}" -y -bb0 -bd
-    $(get_sudo) chmod -R 0755 "${git_install_dir}"
+    "$(cmd "sudo")" chmod -R 0755 "${git_install_dir}"
 
     clr_green "Adding path to wine registry: ${git_path_to_add}"
-    prepend_path_to_wine_registry_path "${git_path_to_add}"
+    prepend_path_to_wine_registry_path "${wine_prefix}" "${git_path_to_add}"
 
     clr_green "Test Git"
     wine git --version

@@ -35,8 +35,8 @@ function install_wine_python_preinstalled {
     python_directory_prefix="${3}"
 
     linux_release_name="$(get_linux_release_name)"
-    wine_release="$(get_wine_release_from_environment_or_default_to_devel)"
-    wine_prefix="$(get_and_export_wine_prefix_or_default_to_home_wine)"
+    wine_release="$(get_and_export_wine_release_from_environment_or_default_to_devel)"
+    wine_prefix="$(get_and_export_wine_prefix_from_environment_or_default_to_home_wine)"
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
     wine_version_number="$(get_wine_version_number)"
 
@@ -71,7 +71,7 @@ WINEARCH=${wine_arch}"
     unzip -oqq "${decompress_dir}/binaries_${python_version_short}_wine-master/bin/joined_${python_version_short}.zip" -d "${wine_drive_c_dir}"
 
     clr_green "Adding path to wine registry: ${pythonpath_to_add}"
-    prepend_path_to_wine_registry_path "${pythonpath_to_add}"
+    prepend_path_to_wine_registry_path "${wine_prefix}" "${pythonpath_to_add}"
 
     clr_green "Test python"
     wine pip install --user --upgrade pip

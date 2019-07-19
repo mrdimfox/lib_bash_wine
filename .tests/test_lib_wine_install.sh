@@ -11,14 +11,14 @@ function set_environment_for_32_bit_wine_machine {
     export wine_release="devel"
     export WINEPREFIX=${HOME}/wine/wine32_machine_01
     export WINEARCH="win32"
-    export wine_windows_version="win10"
+    export winetricks_windows_version="win10"
 }
 
 function set_environment_for_64_bit_wine_machine {
     export wine_release="devel"
     export WINEPREFIX=${HOME}/wine/wine64_machine_02
     export WINEARCH="win64"
-    export wine_windows_version="win10"
+    export winetricks_windows_version="win10"
 }
 
 
@@ -38,33 +38,32 @@ function install_64_bit_wine_machine {
 
 
 function test {
+    local linux_release_name wine_release wine_prefix wine_arch winetricks_windows_version wine_version_number automatic_overwrite_existing_wine_machine
+    linux_release_name="$(get_linux_release_name)"
+    wine_release="$(get_and_export_wine_release_from_environment_or_default_to_devel)"
+    wine_prefix="$(get_and_export_wine_prefix_from_environment_or_default_to_home_wine)"
+    wine_arch="$(get_and_export_wine_arch_from_environment_or_default_to_win64)"
+    winetricks_windows_version="$(get_and_export_winetricks_windows_version_from_environment_or_default_to_win10)"
+    wine_version_number="$(get_wine_version_number)"
+    automatic_overwrite_existing_wine_machine="$(printenv automatic_overwrite_existing_wine_machine)"
+
 	# dummy_test 2>/dev/null || clr_green "no tests in ${BASH_SOURCE[0]}"
 
     # make sure lib_bash is properly included
-    assert_equal "get_sudo" "/usr/bin/sudo"
 	assert_pass "is_package_installed apt"
 
     # update libraries
-    "$(get_sudo)" ../install_or_update.sh
+    ""$(cmd "sudo")"" ../install_or_update.sh
 
 	set_environment_for_32_bit_wine_machine
-	assert_equal "get_and_export_wine_prefix_or_default_to_home_wine" "/home/consul/wine/wine32_machine_01"
+	assert_equal "get_and_export_wine_prefix_from_environment_or_default_to_home_wine" "/home/consul/wine/wine32_machine_01"
 
 
+    automatic_overwrite_existing_wine_machine=True
     export automatic_overwrite_existing_wine_machine="True"
-    # install_32_bit_wine_machine
-    # install_64_bit_wine_machine
 
-    set_environment_for_32_bit_wine_machine
-    assert_contains "get_gecko_32_bit_msi_name" "wine_gecko-"
-    assert_contains "get_gecko_32_bit_msi_name" "-x86.msi"
-    assert_contains "get_gecko_64_bit_msi_name" ""
-
-
-    set_environment_for_64_bit_wine_machine
-    assert_contains "get_gecko_32_bit_msi_name" "wine_gecko-"
-    assert_contains "get_gecko_32_bit_msi_name" "-x86_64.msi"
-    assert_contains "get_gecko_32_bit_msi_name" "xyz"
+    install_32_bit_wine_machine
+    install_64_bit_wine_machine
 
 }
 

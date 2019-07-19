@@ -30,8 +30,8 @@ include_dependencies  # me need to do that via a function to have local scope of
 function install_powershell_core {
 
     local linux_release_name=$(get_linux_release_name)                                  # @lib_bash/bash_helpers
-    local wine_release=$(get_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
-    local wine_prefix=$(get_and_export_wine_prefix_or_default_to_home_wine)     # @lib_bash_wine
+    local wine_release=$(get_and_export_wine_release_from_environment_or_default_to_devel) # @lib_bash_wine
+    local wine_prefix=$(get_and_export_wine_prefix_from_environment_or_default_to_home_wine)     # @lib_bash_wine
     local wine_arch=$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")          # @lib_bash_wine
     local wine_version_number=$(get_wine_version_number)  # @lib_bash_wine
 
@@ -54,7 +54,7 @@ function install_powershell_core {
             ZIP=${zip_file_name}
             "
 
-    $(get_sudo) rm -Rf "${powershell_install_dir}"
+    "$(cmd "sudo")" rm -Rf "${powershell_install_dir}"
     mkdir -p "${powershell_install_dir}"
 
     clr_green "Download Powershell ${powershell_version} ${str_32_or_64_bit} Bit"
@@ -64,9 +64,9 @@ function install_powershell_core {
     unzip -oqq "${decompress_dir}/${zip_file_name}" -d "${powershell_install_dir}"
 
     clr_green "Adding path to wine registry: ${powershell_path_to_add}"
-    prepend_path_to_wine_registry_path "C:/Program Files/PowerShell"
+    prepend_path_to_wine_registry_path "${wine_prefix}" "C:/Program Files/PowerShell"
 
-    $(get_sudo) chmod -R 0755 "${powershell_install_dir}"
+    "$(cmd "sudo")" chmod -R 0755 "${powershell_install_dir}"
 
     banner "Test Powershell ${powershell_version}"
     wine pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"

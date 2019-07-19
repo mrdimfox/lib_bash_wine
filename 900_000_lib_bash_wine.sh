@@ -21,14 +21,63 @@ function include_dependencies {
 include_dependencies  # we need to do that via a function to have local scope of my_dir
 
 
-function get_wine_release_from_environment_or_default_to_devel {
+function wine_get_registry_data {
+    # $1 wine_prefix
+    # $2 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
+    #                    or "HKEY_CURRENT_USER\\...."
+    # $3 : the reg_subkey like "PATH"
+    # returns the data, e.g. c:\windows\... ;
+    local reg_key reg_subkey result wine_prefix wine_arch
+    wine_prefix="${1}"
+    reg_key="${2}"
+    reg_subkey="${3}"
+    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
+    # see https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/reg-query
+    result="$(WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine reg query "${reg_key}" /v "${reg_subkey}" | cut -d " " -f 3)"
+    echo "${result}"
+}
+
+function wine_get_registry_data_type {
+    # $1 wine_prefix
+    # $2 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
+    # $3 : the reg_subkey like "PATH"
+    # returns the Data Type, e.g. REG_SZ, REG_EXPAND_SZ
+    local reg_key reg_subkey data wine_prefix wine_arch
+    wine_prefix="${1}"
+    reg_key="${2}"
+    reg_subkey="${3}"
+    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
+    # see https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/reg-query
+    data="$(WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine reg query "${reg_key}" /v "${reg_subkey}" | cut -d " " -f 2)"
+    echo "${data}"
+}
+
+
+function wine_set_registry_data {
+    # $1 : wine_prefix
+    # $2 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
+    # $3 : the reg_subkey like "PATH"
+    # $4 : the data to write
+   local reg_key reg_subkey data data_type wine_prefix wine_arch
+    wine_prefix="${1}"
+    reg_key="${2}"
+    reg_subkey="${3}"
+    data="${4}"
+    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
+    data_type="$(wine_get_registry_data_type "${wine_prefix}" "${reg_key}" "${reg_subkey}")"
+    WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine reg add "${reg_key}" /t "${data_type}" /v "${reg_subkey}" /d "${data}" /f
+}
+
+
+function get_and_export_wine_release_from_environment_or_default_to_devel {
     local wine_release
     wine_release="$(printenv wine_release)"
     if [[ -z "${wine_release}" ]]; then wine_release="devel"; fi
+    export wine_release="${wine_release}"
     echo "${wine_release}"
 }
 
-function get_and_export_wine_prefix_or_default_to_home_wine {
+function get_and_export_wine_prefix_from_environment_or_default_to_home_wine {
     ## set wine prefix to ${HOME}/.wine if not given by environment variable
     local wine_prefix
     wine_prefix="$(printenv WINEPREFIX)"
@@ -37,7 +86,7 @@ function get_and_export_wine_prefix_or_default_to_home_wine {
     echo "${wine_prefix}"
 }
 
-function get_and_export_wine_arch_or_default_to_win64 {
+function get_and_export_wine_arch_from_environment_or_default_to_win64 {
     local wine_arch
     wine_arch="$(printenv WINEARCH)"
     if [[ -z ${wine_arch} ]]; then wine_arch="win64"; fi
@@ -46,12 +95,22 @@ function get_and_export_wine_arch_or_default_to_win64 {
 }
 
 
-function get_wine_windows_version_or_default_to_win10 {
-    local wine_windows_version
-    wine_windows_version="$(printenv wine_windows_version)"
-    if [[ -z "${wine_windows_version}" ]]; then wine_windows_version="win10"; fi
-    echo "${wine_windows_version}"
+function get_and_export_winetricks_windows_version_from_environment_or_default_to_win10 {
+    local winetricks_windows_version
+    winetricks_windows_version="$(printenv winetricks_windows_version)"
+    if [[ -z "${winetricks_windows_version}" ]]; then winetricks_windows_version="win10"; fi
+    export winetricks_windows_version="${winetricks_windows_version}"
+    echo "${winetricks_windows_version}"
 }
+
+## HKEY_LOCAL_MACHINE\Software\Wow6432Node\Microsoft\Windows NT\CurrentVersion
+## Software\\Microsoft\\Windows NT\\CurrentVersion
+## "ProductName"="Microsoft Windows 10" --> sometimes wrong
+## "CurrentVersion"="10.0" --> sometimes wring
+
+
+
+
 
 
 function is_overwrite_existing_wine_machine {
@@ -76,10 +135,10 @@ function get_and_export_wine_arch_from_wine_prefix {
     wine_arch="$( grep "#arch=" "${wine_prefix}/system.reg" | cut -d "=" -f 2)"
     if [[ "${wine_arch}" != "win32" ]] && [[ "${wine_arch}" != "win64" ]]; then
         fail "\
-FAILED: get_and_export_wine_arch_from_wine_prefix{IFS}\
-CALLER: ${0}{IFS}\
-ERROR : WINEARCH for WINEPREFIX=${wine_prefix} can not be determined{IFS}\
-wine_arch=${wine_arch}"
+        FAILED: get_and_export_wine_arch_from_wine_prefix{IFS}\
+        CALLER: ${0}{IFS}\
+        ERROR : WINEARCH for WINEPREFIX=${wine_prefix} can not be determined{IFS}\
+        wine_arch=${wine_arch}"
     fi
     export WINEARCH="${wine_arch}"
     echo "${wine_arch}"
@@ -97,11 +156,12 @@ function get_str_32_or_64_from_wine_prefix {
     elif [[ ${wine_arch} == "win64" ]]; then
         echo "64"
     else
-        fail "FAILED: get_str_32_or_64_from_wine_prefix{IFS}\
-              CALLER: ${0}{IFS}\
-              ERROR : str_32_or_64 can not be determined{IFS}\
-              wine_prefix=${wine_prefix}{IFS}\
-              wine_arch=${wine_arch}"
+        fail "\
+        FAILED: get_str_32_or_64_from_wine_prefix{IFS}\
+        CALLER: ${0}{IFS}\
+        ERROR : str_32_or_64 can not be determined{IFS}\
+        wine_prefix=${wine_prefix}{IFS}\
+        wine_arch=${wine_arch}"
     fi
 }
 
@@ -123,109 +183,108 @@ function get_str_x86_or_x64_from_wine_prefix {
 }
 
 
-function wine_get_user_registry_data {
-    # $1 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
-    # $2 : the reg_subkey like "PATH"
-    # returns the data, e.g. c:\windows\... ;
-    local reg_key reg_subkey result
-    reg_key="${1}"
-    reg_subkey="${2}"
-    # see https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/reg-query
-    result="$(wine reg query "${reg_key}" /v "${reg_subkey}" | cut -d " " -f 3)"
-    echo "${result}"
-}
-
-function wine_get_user_registry_type {
-    # $1 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
-    # $2 : the reg_subkey like "PATH"
-    # returns the Data Type, e.g. REG_SZ, REG_EXPAND_SZ
-    local reg_key reg_subkey data
-    reg_key="${1}"
-    reg_subkey="${2}"
-    # see https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/reg-query
-    data="$(wine reg query "${reg_key}" /v "${reg_subkey}" | cut -d " " -f 2)"
-    echo "${data}"
-}
-
-
-function wine_set_user_registry_data {
-    # $1 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
-    # $2 : the reg_subkey like "PATH"
-    # $3 : the data to write
-   local reg_key reg_subkey data data_type
-    reg_key="${1}"
-    reg_subkey="${2}"
-    data="${3}"
-    data_type="$(wine_get_user_registry_type "${reg_key}" "${reg_subkey}")"
-    wine reg add "${reg_key}" /t "${data_type}" /v "${reg_subkey}" /d "${data}" /f
-}
-
-
-function wine_get_user_registry_path {
+function wine_get_registry_path {
+    # $1: wine_prefix
     # returns the path set in the wine registry
-    wine_query_user_registry "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" "PATH"
+    local wine_prefix
+    wine_prefix="${1}"
+    wine_get_registry_data "${wine_prefix}" "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" "PATH"
 }
 
 
-function wine_set_user_registry_path {
+function wine_set_registry_path {
     # set or replace the registry path
-    # $1: new_path # the new path to set like "C:\\windows\\system;c:/Program Files/PowerShell"
-    local new_path
-    new_path="${1}"
-    wine_set_user_registry_data "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" "PATH" "${new_path}"
+    # $1: wine_prefix
+    # $2: new_path # the new path to set like "C:\\windows\\system;c:/Program Files/PowerShell"
+    local new_path wine_prefix
+    wine_prefix="${1}"
+    new_path="${2}"
+    wine_set_registry_data "${wine_prefix}" "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" "PATH" "${new_path}"
 }
 
 
 
 function prepend_path_to_wine_registry_path {
-    # $1 : path_to_add
+    # $1 : wine_prefix
+    # $2 : path_to_add
     # path will not be added if it is already there
-    local path_to_add current_path new_path
-    path_to_add="${1}"
-    current_path="$(wine_get_user_registry_path)"
+    local path_to_add current_path new_path wine_prefix
+    wine_prefix="${1}"
+    path_to_add="${2}"
+    current_path="$(wine_get_registry_path "${wine_prefix}")"
     if is_str1_in_str2 "${path_to_add}" "${current_path}"; then
         new_path="${path_to_add};${current_path}"
-        wine_set_user_registry_path "${new_path}"
+        wine_set_registry_path "${wine_prefix}" "${new_path}"
     fi
 }
 
 
 function fix_wine_permissions {
-    local user
-    user="$(printenv USER)"
-    "$(get_sudo)" chown -R "${user}" "${WINEPREFIX}"
-    "$(get_sudo)" chgrp -R "${user}" "${WINEPREFIX}"
+    # $1: user
+    # $2: wine_prefix
+    local user wine_prefix
+    user="${1}"
+    wine_prefix="${2}"
+    
+    if is_str1_in_str2 "${user}" "${wine_prefix}"; then
+        ""$(cmd "sudo")"" chown -R "${user}" "${wine_prefix}"
+        ""$(cmd "sudo")"" chgrp -R "${user}" "${wine_prefix}"
+    else
+        fail "the USER ${user} and WINEPREFIX ${wine_prefix} dont match together"
+    fi
 }
 
 
 function get_gecko_32_bit_msi_name {
+    # tested
+    # $1: wine_prefix
     local wine_prefix wine_arch
-    wine_prefix="$(get_and_export_wine_prefix_or_default_to_home_wine)"
+    wine_prefix="${1}"
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
 
     if [[ "${wine_arch}" == "win32" ]]; then
         strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi
-    elif [[ "${wine_arch}" == "win64" ]]; then
-        strings "${wine_prefix}/drive_c/windows/syswow64/appwiz.cpl" | grep wine_gecko | grep .msi
     else
-        fail "can not determine WINEARCH from WINEPREFIX ${wine_prefix}"
+        strings "${wine_prefix}/drive_c/windows/syswow64/appwiz.cpl" | grep wine_gecko | grep .msi
     fi
 }
 
 
 function get_gecko_64_bit_msi_name {
+    # tested
+    # $1: wine_prefix
     local wine_prefix wine_arch
-    wine_prefix="$(get_and_export_wine_prefix_or_default_to_home_wine)"
+    wine_prefix="${1}"
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
 
     if [[ "${wine_arch}" == "win32" ]]; then
         echo ""
-    elif [[ "${wine_arch}" == "win64" ]]; then
-        strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi
     else
-        fail "can not determine WINEARCH from WINEPREFIX ${wine_prefix}"
+        strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi
     fi
 }
+
+
+function get_wine_mono_msi_name {
+    # tested
+    # $1: wine_prefix
+    local wine_prefix
+    wine_prefix="${1}"
+
+    strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine-mono | grep .msi
+}
+
+
+function get_wine_gecko_32_download_link {
+    local wine_prefix
+    wine_prefix="${1}"
+}
+
+
+
+    # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
+    # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi
+    # correct : https://dl.winehq.org/wine/wine-mono/4.9.0/wine-mono-4.9.0.msi - für beide !!!
 
 
 

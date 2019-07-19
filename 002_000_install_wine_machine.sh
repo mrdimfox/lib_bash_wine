@@ -27,24 +27,19 @@ include_dependencies
 
 function install_wine_gecko {
     # installs the matching wine_gecko on the existing wine machine
-    local wine_prefix wine_arch gecko_32_bit_msi_name
-
-    wine_prefix="$(get_and_export_wine_prefix_or_default_to_home_wine)"
+    # $1 : wine_prefix
+    local wine_prefix wine_arch gecko_32_bit_msi_name gecko_64_bit_msi_name
+    wine_prefix="${1}"
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    gecko_64_bit_msi_name=""
-    gecko_32_bit_msi_name="$(strings "${wine_arch}/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi)"
-
-    if [[ "${wine_arch}" == "win64" ]]; then
-        gecko_64_bit_msi_name="$(strings "${wine_arch}/windows/syswow64/appwiz.cpl" | grep wine_gecko | grep .msi)"
-    fi
-
+    gecko_32_bit_msi_name="$(get_gecko_32_bit_msi_name "${wine_prefix}")"
+    gecko_64_bit_msi_name="$(get_gecko_64_bit_msi_name "${wine_prefix}")"
 
 
 
     # strings -a /home/consul/wine/wine32_machine_01/drive_c/windows/system32/appwiz.cpl | grep wine_gecko | grep .msi --> wine_gecko-2.47-x86.msi
     # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
     # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi
-    # correct : https://dl.winehq.org/wine/wine-mono/4.9.0/wine-mono-4.9.0.msi
+    # correct : https://dl.winehq.org/wine/wine-mono/4.9.0/wine-mono-4.9.0.msi - für beide !!!
 
     # Übereinstimmungen in Binärdatei /home/consul/wine/wine32_machine_01/drive_c/windows/system32/appwiz.cpl
     # Übereinstimmungen in Binärdatei /home/consul/wine/wine64_machine_02/drive_c/windows/syswow64/appwiz.cpl
@@ -57,6 +52,11 @@ function install_wine_gecko {
 
 function install_wine_mono {
     # installs the matching wine-mono on the existing wine machine
+    # $1: wine_prefix
+    local wine_prefix wine_arch wine_mono_msi_name
+    wine_prefix="${1}"
+    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
+    wine_mono_msi_name="$(get_wine_mono_msi_name)"
 
 
 }
@@ -65,17 +65,27 @@ function install_wine_mono {
 
 
 function install_wine_machine {
-    local linux_release_name wine_release wine_prefix wine_arch wine_windows_version wine_version_number automatic_overwrite_existing_wine_machine
+    # $1 : wine_release                                 # [stable|devel|staging]
+    # $2 : wine_prefix                                  # "${HOME}/wine/my_wine_01"
+    # $3 : wine_arch                                    # [win32|win64]
+    # $4 : winetricks_windows_version                   # [win7|win10....] - see wintricks list-all | grep version
+    # $5 : user                                         # printenv USER
+    # $6 : automatic_overwrite_existing_wine_machine    # ["True"|"False"]
+
+    local linux_release_name wine_release wine_prefix wine_arch winetricks_windows_version wine_version_number automatic_overwrite_existing_wine_machine user
 
     banner "Install Wine Machine"
+    wine_release="${1}"
+    wine_prefix="${2}"
+    wine_arch="${3}"
+    winetricks_windows_version="${4}"
+    user="${5}"
+    automatic_overwrite_existing_wine_machine="${6}"
 
     linux_release_name="$(get_linux_release_name)"
-    wine_release="$(get_wine_release_from_environment_or_default_to_devel)"
-    wine_prefix="$(get_and_export_wine_prefix_or_default_to_home_wine)"
-    wine_arch="$(get_and_export_wine_arch_or_default_to_win64)"
-    wine_windows_version="$(get_wine_windows_version_or_default_to_win10)"
     wine_version_number="$(get_wine_version_number)"
-    automatic_overwrite_existing_wine_machine="$(printenv automatic_overwrite_existing_wine_machine)"
+
+
 
     banner "Setting up Wine Machine:${IFS}\
             linux_release_name=${linux_release_name}${IFS}\
@@ -83,7 +93,7 @@ function install_wine_machine {
             wine_version=${wine_version_number}${IFS}\
             WINEPREFIX=${wine_prefix}${IFS}\
             WINEARCH=${wine_arch}${IFS}\
-            wine_windows_version=${wine_windows_version}${IFS}\
+            winetricks_windows_version=${winetricks_windows_version}${IFS}\
 
             # this is only for display - otherwise use function is_overwrite_existing_wine_machine
             automatic_overwrite_existing_wine_machine=${automatic_overwrite_existing_wine_machine}"
@@ -93,7 +103,7 @@ function install_wine_machine {
 
     if is_overwrite_existing_wine_machine; then
         banner_warning "Overwrite the old Wineprefix"
-        $(get_sudo) rm -Rf "${wine_prefix}"
+        "$(cmd "sudo")" rm -Rf "${wine_prefix}"
     fi
 
     mkdir -p "${wine_prefix}"
@@ -103,10 +113,10 @@ function install_wine_machine {
     ####  when we use winecfg we need to switch off xvfb
     # if [[ ${is_xvfb_service_active} == "True" ]]; then
     #     clr_green "Stopping xvfb because winecfg crashes if it is enabled"
-    #     $(get_sudo) service xvfb stop
+    #     "$(cmd "sudo")" service xvfb stop
     # fi
 
-    banner "winecfg for Wine Machine, WINEPREFIX=${wine_prefix}, WINEARCH=${wine_arch}, wine_windows_version=${wine_windows_version}"
+    banner "winecfg for Wine Machine, WINEPREFIX=${wine_prefix}, WINEARCH=${wine_arch}, winetricks_windows_version=${winetricks_windows_version}"
 
 
     #### winecfg
@@ -114,38 +124,38 @@ function install_wine_machine {
 
     # shellcheck disable=SC1007  # we really set DISPLAY to an empty value
     # DISPLAY= wine non_existing_command.exe
-    DISPLAY= winecfg
-    fix_wine_permissions  # it is cheap, just in case
+    DISPLAY= WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winecfg
+    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "Installing wine gecko"
-    install_wine_gecko
-    fix_wine_permissions  # it is cheap, just in case
+    install_wine_gecko "${wine_prefix}"
+    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "Installing wine mono"
-    install_wine_gecko
-    fix_wine_permissions  # it is cheap, just in case
+    install_wine_mono "${wine_prefix}"
+    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "Disable GUI Crash Dialogs"
-    winetricks nocrashdialog
-    fix_wine_permissions  # it is cheap, just in case
+    WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks nocrashdialog
+    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
-    banner "Set Windows Version to ${wine_windows_version}"
-    winetricks -q "${wine_windows_version}"
-    fix_wine_permissions  # it is cheap, just in case
+    banner "Set Windows Version to ${winetricks_windows_version}"
+    WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q "${winetricks_windows_version}"
+    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "Install common Packages"
 
     banner "install windowscodecs"
-    retry winetricks -q windowscodecs
-    fix_wine_permissions  # it is cheap, just in case
+    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs
+    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "install msxml3"
-    retry winetricks -q msxml3
-    fix_wine_permissions  # it is cheap, just in case
+    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml3
+    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "install msxml6"
-    retry winetricks -q msxml6
-    fix_wine_permissions  # it is cheap, just in case
+    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml6
+    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "FINISHED installing Wine MachineWine Machine:${IFS}\
             linux_release_name=${linux_release_name}${IFS}\
@@ -153,13 +163,18 @@ function install_wine_machine {
             wine_version=${wine_version_number}${IFS}\
             WINEPREFIX=${wine_prefix}${IFS}\
             WINEARCH=${wine_arch}${IFS}\
-            wine_windows_version=${wine_windows_version}${IFS}\
+            winetricks_windows_version=${winetricks_windows_version}${IFS}\
             wine_path_reg_sz=$(get_wine_path_reg_sz)${IFS}\
             wine_path_reg_expand_sz=$(get_wine_path_reg_expand_sz)"
 }
 
 if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
-    install_wine_machine
+    wine_release="$(get_and_export_wine_release_from_environment_or_default_to_devel)"
+    wine_prefix="$(get_and_export_wine_prefix_from_environment_or_default_to_home_wine)"
+    wine_arch="$(get_and_export_wine_arch_from_environment_or_default_to_win64)"
+    winetricks_windows_version="$(get_and_export_winetricks_windows_version_from_environment_or_default_to_win10)"
+    user="$(printenv USER)"
+    automatic_overwrite_existing_wine_machine=
+
+    install_wine_machine "${wine_release}" "${wine_prefix}" "${wine_arch}" "${winetricks_windows_version}" "${user}" "${automatic_overwrite_existing_wine_machine}"
 fi
-
-
