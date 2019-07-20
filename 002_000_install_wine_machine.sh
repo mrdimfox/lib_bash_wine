@@ -137,7 +137,7 @@ function install_wine_machine {
     banner "Install common Packages"
 
     banner "install windowscodecs"
-    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs
+    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs --optout
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "install msxml3"
