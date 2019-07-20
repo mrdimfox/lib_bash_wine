@@ -21,7 +21,7 @@ function include_dependencies {
 include_dependencies  # we need to do that via a function to have local scope of my_dir
 
 
-function wine_get_registry_data {
+function get_wine_registry_data {
     # $1 wine_prefix
     # $2 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
     #                    or "HKEY_CURRENT_USER\\...."
@@ -37,7 +37,7 @@ function wine_get_registry_data {
     echo "${result}"
 }
 
-function wine_get_registry_data_type {
+function get_wine_registry_data_type {
     # $1 wine_prefix
     # $2 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
     # $3 : the reg_subkey like "PATH"
@@ -53,7 +53,7 @@ function wine_get_registry_data_type {
 }
 
 
-function wine_set_registry_data {
+function set_wine_registry_data {
     # $1 : wine_prefix
     # $2 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
     # $3 : the reg_subkey like "PATH"
@@ -64,7 +64,7 @@ function wine_set_registry_data {
     reg_subkey="${3}"
     data="${4}"
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    data_type="$(wine_get_registry_data_type "${wine_prefix}" "${reg_key}" "${reg_subkey}")"
+    data_type="$(get_wine_registry_data_type "${wine_prefix}" "${reg_key}" "${reg_subkey}")"
     WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine reg add "${reg_key}" /t "${data_type}" /v "${reg_subkey}" /d "${data}" /f
 }
 
@@ -179,23 +179,23 @@ function get_str_x86_or_x64_from_wine_prefix {
 }
 
 
-function wine_get_registry_path {
+function get_wine_registry_path {
     # $1: wine_prefix
     # returns the path set in the wine registry
     local wine_prefix
     wine_prefix="${1}"
-    wine_get_registry_data "${wine_prefix}" "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" "PATH"
+    get_wine_registry_data "${wine_prefix}" "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" "PATH"
 }
 
 
-function wine_set_registry_path {
+function set_wine_registry_path {
     # set or replace the registry path
     # $1: wine_prefix
     # $2: new_path # the new path to set like "C:\\windows\\system;c:/Program Files/PowerShell"
     local new_path wine_prefix
     wine_prefix="${1}"
     new_path="${2}"
-    wine_set_registry_data "${wine_prefix}" "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" "PATH" "${new_path}"
+    set_wine_registry_data "${wine_prefix}" "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment" "PATH" "${new_path}"
 }
 
 
@@ -207,10 +207,10 @@ function prepend_path_to_wine_registry_path {
     local path_to_add current_path new_path wine_prefix
     wine_prefix="${1}"
     path_to_add="${2}"
-    current_path="$(wine_get_registry_path "${wine_prefix}")"
+    current_path="$(get_wine_registry_path "${wine_prefix}")"
     if is_str1_in_str2 "${path_to_add}" "${current_path}"; then
         new_path="${path_to_add};${current_path}"
-        wine_set_registry_path "${wine_prefix}" "${new_path}"
+        set_wine_registry_path "${wine_prefix}" "${new_path}"
     fi
 }
 

@@ -28,9 +28,14 @@ function run_tests {
 
     set_variable_for_32_bit_wine_machine
     install_wine_machine "${wine_release}" "${global_wine_prefix}" "${global_wine_arch}" "${winetricks_windows_version}" "${user}" "${overwrite_existing_wine_machine}"
+    # do it again with overwrite = False to check if we can upgrade an existing wine machine
+    install_wine_machine "${wine_release}" "${global_wine_prefix}" "${global_wine_arch}" "${winetricks_windows_version}" "${user}" "False"
+
 
     set_variable_for_64_bit_wine_machine
     install_wine_machine "${wine_release}" "${global_wine_prefix}" "${global_wine_arch}" "${winetricks_windows_version}" "${user}" "${overwrite_existing_wine_machine}"
+    # do it again with overwrite = False to check if we can upgrade an existing wine machine
+    install_wine_machine "${wine_release}" "${global_wine_prefix}" "${global_wine_arch}" "${winetricks_windows_version}" "${user}" "False"
 
 }
 

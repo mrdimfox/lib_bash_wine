@@ -132,30 +132,35 @@ function install_wine_machine {
     # install_wine_mono "${wine_prefix}"
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
+    banner "run winecfg again to install gecko and mono"
+    DISPLAY= WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winecfg
+    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
+
+
     banner "Disable GUI Crash Dialogs"
     WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks nocrashdialog
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "Set Windows Version to ${winetricks_windows_version}"
-    WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q "${winetricks_windows_version}"
+    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q "${winetricks_windows_version}"
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "Install common Packages"
 
     banner "install windowscodecs"
-    export WINEPREFIX="${wine_prefix}"
-    export WINEARCH="${wine_arch}"
-    retry winetricks -q windowscodecs --optout
+    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs --optout
+    # winetricks -q windowscodecs sets the windows version back to windows2000
+    # bug reported under https://github.com/Winetricks/winetricks/issues/1283
+    # so we need to set it back to what it was.
+    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q "${winetricks_windows_version}"
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "install msxml3"
-    export WINEPREFIX="${wine_prefix}"
-    export WINEARCH="${wine_arch}"
-    retry winetricks -q msxml3
+    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml3 --optout
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "install msxml6"
-    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml6
+    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml6 --optout
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "FINISHED installing Wine MachineWine Machine:${IFS}\
@@ -165,8 +170,7 @@ function install_wine_machine {
             WINEPREFIX=${wine_prefix}${IFS}\
             WINEARCH=${wine_arch}${IFS}\
             winetricks_windows_version=${winetricks_windows_version}${IFS}\
-            wine_path_reg_sz=$(get_wine_path_reg_sz)${IFS}\
-            wine_path_reg_expand_sz=$(get_wine_path_reg_expand_sz)"
+            wine_path=$(get_wine_path_reg_sz)"
 }
 
 if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
