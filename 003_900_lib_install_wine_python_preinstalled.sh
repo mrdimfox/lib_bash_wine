@@ -55,7 +55,7 @@ WINEARCH=${wine_arch}"
 
     banner "Downloading ${python_version_doc} Binaries from https://github.com/bitranox/binaries_${python_version_short}_wine/archive/master.zip"
 
-    retry_nofail wget -nc --no-check-certificate -O "${decompress_dir}/binaries_${python_version_short}_wine-master.zip" "https://github.com/bitranox/binaries_${python_version_short}_wine/archive/master.zip"
+    retry_nofail wget -q -nc --no-check-certificate -O "${decompress_dir}/binaries_${python_version_short}_wine-master.zip" "https://github.com/bitranox/binaries_${python_version_short}_wine/archive/master.zip"
     clr_green "Unzip ${python_version_doc} Master to ${decompress_dir}"
     unzip -oqq "${decompress_dir}/binaries_${python_version_short}_wine-master.zip" -d "${decompress_dir}"
     clr_green "Joining Multipart Zip for ${wine_arch} to ${decompress_dir}/binaries_${python_version_short}_wine-master/bin"

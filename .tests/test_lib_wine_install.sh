@@ -37,7 +37,7 @@ function install_64_bit_wine_machine {
 }
 
 
-function test {
+function run_tests {
     local linux_release_name wine_release wine_prefix wine_arch winetricks_windows_version wine_version_number overwrite_existing_wine_machine
     linux_release_name="$(get_linux_release_name)"
     wine_release="$(get_and_export_wine_release_from_environment_or_default_to_devel)"
@@ -67,4 +67,4 @@ function test {
 
 }
 
-test
+run_tests

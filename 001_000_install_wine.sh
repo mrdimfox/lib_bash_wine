@@ -49,7 +49,7 @@ function install_wine {
 
     clr_green "add Wine Keys"
     "$(cmd "sudo")" rm -f ./winehq.key*
-    retry "$(cmd "sudo")" wget https://dl.winehq.org/wine-builds/winehq.key
+    retry "$(cmd "sudo")" wget -q https://dl.winehq.org/wine-builds/winehq.key
     "$(cmd "sudo")" apt-key add winehq.key
     "$(cmd "sudo")" apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${linux_release_name} main"
     install_libfaudio0_if_not_installed
@@ -77,7 +77,7 @@ function install_wine {
 
     clr_green "Install latest Winetricks"
     "$(cmd "sudo")" rm -f /usr/bin/winetricks
-    retry "$(cmd "sudo")" wget --directory-prefix=/usr/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
+    retry "$(cmd "sudo")" wget -q --directory-prefix=/usr/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
     "$(cmd "sudo")" chmod +x /usr/bin/winetricks
     retry "$(cmd "sudo")" winetricks -q --self-update
 

@@ -59,7 +59,7 @@ function install_powershell_core {
 
     clr_green "Download Powershell ${powershell_version} ${str_32_or_64_bit} Bit"
 
-    retry_nofail wget -nc --no-check-certificate -O "${decompress_dir}/${zip_file_name}" "https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/${zip_file_name}"
+    retry_nofail wget -q -nc --no-check-certificate -O "${decompress_dir}/${zip_file_name}" "https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/${zip_file_name}"
 
     unzip -oqq "${decompress_dir}/${zip_file_name}" -d "${powershell_install_dir}"
 
@@ -74,12 +74,6 @@ function install_powershell_core {
 
 
 
-}
-
-function tests {
-    # shellcheck disable=SC2164
-	local my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
-	debug "${debug_lib_bash_wine}" "no tests"
 }
 
 if [[ "${0}" == "${BASH_SOURCE}" ]]; then    # if the script is not sourced

@@ -18,7 +18,7 @@ function set_variable_for_64_bit_wine_machine {
     global_wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${global_wine_prefix}")"
 }
 
-function test {
+function run_tests {
     local linux_release_name wine_release winetricks_windows_version wine_version_number overwrite_existing_wine_machine
     linux_release_name="$(get_linux_release_name)"
     wine_release="devel"
@@ -62,6 +62,14 @@ is_msi_file_in_winecache {
     set_variable_for_32_bit_wine_machine
     assert_contains "get_gecko_32_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "wine_gecko-"
     assert_contains "get_gecko_32_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "-x86.msi"
+    rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
+    assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}"
+    assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}" # try a second time - it is already there
+    assert_pass "test [[ -f ${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}") ]]"
+    # rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
+
+
+
 
     ### test get gecko 64
     set_variable_for_64_bit_wine_machine
@@ -83,4 +91,4 @@ is_msi_file_in_winecache {
 
 }
 
-test
+run_tests
