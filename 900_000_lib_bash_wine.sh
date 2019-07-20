@@ -243,7 +243,7 @@ function fix_wine_permissions {
 }
 
 
-function get_gecko_32_bit_msi_name {
+function get_gecko_32_bit_msi_name_from_winearch {
     # tested
     # $1: wine_prefix
     local wine_prefix wine_arch
@@ -258,7 +258,7 @@ function get_gecko_32_bit_msi_name {
 }
 
 
-function get_gecko_64_bit_msi_name {
+function get_gecko_64_bit_msi_name_from_winearch {
     # tested
     # $1: wine_prefix
     local wine_prefix wine_arch
@@ -290,59 +290,28 @@ function get_gecko_architecture_from_msi_filename {
 }
 
 
-function get_wine_gecko_32_download_link {
-    # gets the download link or blank if not found
+function get_wine_gecko_download_link_from_msi_filename {
+    # gets the download link
     # correct Link1: https://source.winehq.org/winegecko.php?v=2.47&arch=x86
     # correct Link2: https://source.winehq.org/winegecko.php?v=2.47&arch=x86_64
     # there is another paramter: # &winev=????, not used here, https://github.com/wine-mirror/wine/blob/master/dlls/appwiz.cpl/addons.c
 
-    # $1 - wine_prefix
-    local wine_prefix gecko_32_bit_msi_name version architecture
-    wine_prefix="${1}"
-    gecko_32_bit_msi_name="$(get_gecko_32_bit_msi_name ${wine_prefix})"
-    if [[ -z "${gecko_32_bit_msi_name}" ]]; then echo "" && return 0; fi
-    version="$(get_gecko_version_from_msi_filename "${gecko_32_bit_msi_name}")"
-    architecture="$(get_gecko_architecture_from_msi_filename "${gecko_32_bit_msi_name}")"
+    # $1 - gecko_msi_name
+    local gecko_msi_name version architecture
+    gecko_msi_name="${1}"
+    version="$(get_gecko_version_from_msi_filename "${gecko_msi_name}")"
+    architecture="$(get_gecko_architecture_from_msi_filename "${gecko_msi_name}")"
     echo "https://source.winehq.org/winegecko.php?v=${version}&arch=${architecture}"
 }
 
-function get_wine_gecko_32_download_link_backup {
-    # gets the download link or blank if not found
-    # correct Link2: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
-    # $1 - wine_prefix
-    local wine_prefix gecko_32_bit_msi_name version
-    wine_prefix="${1}"
-    gecko_32_bit_msi_name="$(get_gecko_32_bit_msi_name ${wine_prefix})"
-    if [[ -z "${gecko_32_bit_msi_name}" ]]; then echo "" && return 0; fi
-    version="$(get_gecko_version_from_msi_filename "${gecko_32_bit_msi_name}")"
-    echo "https://dl.winehq.org/wine/wine-gecko/${version}/${gecko_32_bit_msi_name}"
-}
-
-
-function get_wine_gecko_64_download_link {
-    # gets the download link or blank if not found
-    # correct Link2: https://source.winehq.org/winegecko.php?v=2.47&arch=x86_64
-    # there is another paramter: # &winev=????, not used here, https://github.com/wine-mirror/wine/blob/master/dlls/appwiz.cpl/addons.c
-
-    # $1 - wine_prefix
-    local wine_prefix gecko_64_bit_msi_name version architecture
-    wine_prefix="${1}"
-    gecko_64_bit_msi_name="$(get_gecko_64_bit_msi_name ${wine_prefix})"
-    if [[ -z "${gecko_64_bit_msi_name}" ]]; then echo "" && return 0; fi
-    version="$(get_gecko_version_from_msi_filename "${gecko_64_bit_msi_name}")"
-    architecture="$(get_gecko_architecture_from_msi_filename "${gecko_64_bit_msi_name}")"
-    echo "https://source.winehq.org/winegecko.php?v=${version}&arch=${architecture}"
-}
-
-function get_wine_gecko_64_download_link_backup {
+function get_wine_gecko_download_backup_link_from_msi_filename {
     # gets the download link
-    # $1 - wine_prefix
-    local wine_prefix gecko_64_bit_msi_name version
-    wine_prefix="${1}"
-    gecko_64_bit_msi_name="$(get_gecko_64_bit_msi_name ${wine_prefix})"
-    if [[ -z "${gecko_64_bit_msi_name}" ]]; then echo "" && return 0; fi
-    version="$(get_gecko_version_from_msi_filename "${gecko_64_bit_msi_name}")"
-    echo "https://dl.winehq.org/wine/wine-gecko/${version}/${gecko_64_bit_msi_name}"
+    # correct Link2: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
+    # $1 - gecko_msi_name
+    local gecko_msi_name version
+    gecko_msi_name="${1}"
+    version="$(get_gecko_version_from_msi_filename "${gecko_msi_name}")"
+    echo "https://dl.winehq.org/wine/wine-gecko/${version}/${gecko_msi_name}"
 }
 
 
