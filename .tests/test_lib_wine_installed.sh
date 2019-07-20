@@ -38,7 +38,7 @@ function test {
     assert_equal "get_gecko_architecture_from_msi_filename wine_gecko-2.47-x86.msi" "x86"
     assert_equal "get_gecko_architecture_from_msi_filename wine_gecko-2.47-x86_64.msi" "x86_64"
     assert_equal "get_wine_gecko_download_link_from_msi_filename wine_gecko-2.47-x86.msi" "https://source.winehq.org/winegecko.php?v=2.47&arch=x86"
-    assert_equal "get_wine_gecko_download_backup_link_from_msi_filename wine_gecko-2.47-x86.msi" "https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi"
+    assert_equal "get_wine_gecko_download_backup_link_from_msi_filename wine_gecko-2.47-x86.msi" "https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi   "
 
     ### test get gecko 32
     set_variable_for_32_bit_wine_machine
