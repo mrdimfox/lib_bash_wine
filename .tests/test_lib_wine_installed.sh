@@ -34,7 +34,7 @@ function test {
 
 
     ### test library
-    assert_equal "get_wine_cache_directory_for_user some_user" "2.47"
+    assert_equal "get_wine_cache_directory_for_user ${USER}" "${USER}/home/cache/.wine"
 
     ### test get gecko commons
     assert_equal "get_gecko_version_from_msi_filename wine_gecko-2.47-x86.msi" "2.47"
