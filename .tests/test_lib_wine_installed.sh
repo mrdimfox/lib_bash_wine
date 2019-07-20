@@ -32,13 +32,22 @@ function test {
     # update libraries
     "$(cmd "sudo")" ../install_or_update.sh
 
+
+    ### test get gecko commons
+    assert_equal "get_gecko_version_from_msi_filename wine_gecko-2.47-x86.msi" "2.47"
+    assert_equal "get_gecko_architecture_from_msi_filename wine_gecko-2.47-x86.msi" "x86"
+    assert_equal "get_gecko_architecture_from_msi_filename wine_gecko-2.47-x86_64.msi" "x86_64"
+
     ### test get gecko 32
     set_variable_for_32_bit_wine_machine
     assert_contains "get_gecko_32_bit_msi_name ${global_wine_prefix}" "wine_gecko-"
     assert_contains "get_gecko_32_bit_msi_name ${global_wine_prefix}" "-x86.msi"
     assert_equal "get_gecko_64_bit_msi_name ${global_wine_prefix}" ""
+
     assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "https://source.winehq.org/winegecko.php?v="
-    assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "-x86.msi"
+    assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "&arch="
+    assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "x86"
+
     assert_contains "get_wine_gecko_32_download_link_backup ${global_wine_prefix}" "https://dl.winehq.org/wine/wine-gecko/"
     assert_contains "get_wine_gecko_32_download_link_backup ${global_wine_prefix}" "-x86.msi"
 
@@ -48,10 +57,16 @@ function test {
     assert_contains "get_gecko_32_bit_msi_name ${global_wine_prefix}" "-x86.msi"
     assert_contains "get_gecko_64_bit_msi_name ${global_wine_prefix}" "wine_gecko-"
     assert_contains "get_gecko_64_bit_msi_name ${global_wine_prefix}" "-x86_64.msi"
+
     assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "https://source.winehq.org/winegecko.php?v="
-    assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "-x86.msi"
+    assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "&arch="
+    assert_contains "get_wine_gecko_32_download_link ${global_wine_prefix}" "x86"
+
     assert_contains "get_wine_gecko_32_download_link_backup ${global_wine_prefix}" "https://dl.winehq.org/wine/wine-gecko/"
     assert_contains "get_wine_gecko_32_download_link_backup ${global_wine_prefix}" "-x86.msi"
+
+
+
 
 
     ### test get wine-mono 32
