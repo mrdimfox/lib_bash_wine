@@ -38,20 +38,19 @@ function test {
     assert_equal "get_gecko_architecture_from_msi_filename wine_gecko-2.47-x86.msi" "x86"
     assert_equal "get_gecko_architecture_from_msi_filename wine_gecko-2.47-x86_64.msi" "x86_64"
     assert_equal "get_wine_gecko_download_link_from_msi_filename wine_gecko-2.47-x86.msi" "https://source.winehq.org/winegecko.php?v=2.47&arch=x86"
-    assert_equal "get_wine_gecko_download_backup_link_from_msi_filename wine_gecko-2.47-x86.msi" "https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi   "
+    assert_equal "get_wine_gecko_download_backup_link_from_msi_filename wine_gecko-2.47-x86.msi" "https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi"
 
     ### test get gecko 32
     set_variable_for_32_bit_wine_machine
-    assert_contains "get_gecko_32_bit_msi_name_from_winearch ${global_wine_prefix}" "wine_gecko-"
-    assert_contains "get_gecko_32_bit_msi_name_from_winearch ${global_wine_prefix}" "-x86.msi"
-    assert_equal "get_gecko_64_bit_msi_name_from_winearch ${global_wine_prefix}" ""
+    assert_contains "get_gecko_32_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "wine_gecko-"
+    assert_contains "get_gecko_32_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "-x86.msi"
 
     ### test get gecko 64
     set_variable_for_64_bit_wine_machine
-    assert_contains "get_gecko_32_bit_msi_name_from_winearch ${global_wine_prefix}" "wine_gecko-"
-    assert_contains "get_gecko_32_bit_msi_name_from_winearch ${global_wine_prefix}" "-x86.msi"
-    assert_contains "get_gecko_64_bit_msi_name_from_winearch ${global_wine_prefix}" "wine_gecko-"
-    assert_contains "get_gecko_64_bit_msi_name_from_winearch ${global_wine_prefix}" "-x86_64.msi"
+    assert_contains "get_gecko_32_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "wine_gecko-"
+    assert_contains "get_gecko_32_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "-x86.msi"
+    assert_contains "get_gecko_64_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "wine_gecko-"
+    assert_contains "get_gecko_64_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "-x86_64.msi"
 
 
     ### test get wine-mono 32

@@ -243,33 +243,46 @@ function fix_wine_permissions {
 }
 
 
-function get_gecko_32_bit_msi_name_from_winearch {
+function get_gecko_32_bit_msi_name_from_wine_prefix {
     # tested
     # $1: wine_prefix
-    local wine_prefix wine_arch
+    local wine_prefix wine_arch msi_file_name
     wine_prefix="${1}"
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
 
     if [[ "${wine_arch}" == "win32" ]]; then
-        strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi
+        msi_file_name="$(strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi)"
     else
-        strings "${wine_prefix}/drive_c/windows/syswow64/appwiz.cpl" | grep wine_gecko | grep .msi
+        msi_file_name="$(strings "${wine_prefix}/drive_c/windows/syswow64/appwiz.cpl" | grep wine_gecko | grep .msi)"
+    fi
+
+    if [[ -z "${msi_file_name}" ]]; then
+        fail "can not determine 32 Bit MSI File Name for wine prefix ${wine_prefix}"
+    else
+        echo "${msi_file_name}"
     fi
 }
 
 
-function get_gecko_64_bit_msi_name_from_winearch {
+function get_gecko_64_bit_msi_name_from_wine_prefix {
     # tested
     # $1: wine_prefix
-    local wine_prefix wine_arch
+    local wine_prefix wine_arch msi_file_name
     wine_prefix="${1}"
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
 
     if [[ "${wine_arch}" == "win32" ]]; then
-        echo ""
+        fail "can not get the Gecko 64 Bit msi Filename from a 32 Bit wine machine"
     else
-        strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi
+        msi_file_name="$(strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi)"
     fi
+
+    if [[ -z "${msi_file_name}" ]]; then
+        fail "can not determine 32 Bit MSI File Name for wine prefix ${wine_prefix}"
+    else
+        echo "${msi_file_name}"
+    fi
+
 }
 
 
@@ -315,17 +328,39 @@ function get_wine_gecko_download_backup_link_from_msi_filename {
 }
 
 
+function is_msi_file_in_winecache {
+    echo "stub is_msi_file_in_winecache"
+}
+
+function download_msi_file_to_winecache {
+    echo "stub download_msi_file_to_winecache"
+}
 
 
-    # correct Link1: https://source.winehq.org/winegecko.php?v=2.47&arch=x86
-    # correct Link2: https://source.winehq.org/winegecko.php?v=2.47&arch=x86_64
+
+function download_gecko_msi_files {
+    # $1 - wine_prefix
+    local wineprefix winearch gecko_msi_name_32 gecko_msi_name_64
+    wine_prefix="${1}"
+
+    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
 
 
-    # &winev=????  # see : https://github.com/wine-mirror/wine/blob/master/dlls/appwiz.cpl/addons.c
+    gecko_msi_name_32="$(get_gecko_32_bit_msi_name_from_wine_prefix "${wine_prefix}")"
+    if ! is_msi_file_in_winecache; then
+        download_msi_file_to_winecache
+    fi
 
-    # correct Link2: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
-    # correct Link2: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi
-    # correct Link2: https://dl.winehq.org/wine/wine-mono/4.9.0/wine-mono-4.9.0.msi
+
+    if [[ "${wine_arch}" == "win64" ]]; then
+        gecko_msi_name_64="$(get_gecko_64_bit_msi_name_from_wine_prefix "${wine_prefix}")"
+        if ! is_msi_file_in_winecache; then
+            download_msi_file_to_winecache
+        fi
+    fi
+
+}
+
 
 
 
