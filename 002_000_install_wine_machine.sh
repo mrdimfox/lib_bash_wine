@@ -143,12 +143,15 @@ function install_wine_machine {
     banner "Install common Packages"
 
     banner "install windowscodecs"
-    # retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs --optout
-    WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs --optout
+    export WINEPREFIX="${wine_prefix}"
+    export WINEARCH="${wine_arch}"
+    retry winetricks -q windowscodecs --optout
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "install msxml3"
-    retry WINEPREFIX="\"${wine_prefix}\"" WINEARCH="\"${wine_arch}\"" winetricks -q msxml3
+    export WINEPREFIX="${wine_prefix}"
+    export WINEARCH="${wine_arch}"
+    retry winetricks -q msxml3
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "install msxml6"
