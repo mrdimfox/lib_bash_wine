@@ -59,7 +59,7 @@ function install_powershell_core {
 
     clr_green "Download Powershell ${powershell_version} ${str_32_or_64_bit} Bit"
 
-    retry_nofail wget -q -nc --no-check-certificate -O "${decompress_dir}/${zip_file_name}" "https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/${zip_file_name}"
+    retry_nofail wget -nv -c -nc --no-check-certificate -O "${decompress_dir}/${zip_file_name}" "https://github.com/PowerShell/PowerShell/releases/download/v${powershell_version}/${zip_file_name}"
 
     unzip -oqq "${decompress_dir}/${zip_file_name}" -d "${powershell_install_dir}"
 

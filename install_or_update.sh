@@ -67,10 +67,9 @@ function is_lib_bash_wine_installed {
 
 # this checks the install directory version - but it might be installed for testing somewere else - that will not be updated.
 function is_lib_bash_wine_up_to_date {
-    local git_remote_hash=""
-    local git_local_hash=""
+    local git_remote_hash git_local_hash
     git_remote_hash=$(git --no-pager ls-remote --quiet https://github.com/bitranox/lib_bash_wine.git | grep HEAD | awk '{print $1;}' )
-    git_local_hash=$( $(command -v sudo 2>/dev/null) cat /usr/local/lib_bash_wine/.git/refs/heads/master)
+    git_local_hash=$(cat /usr/local/lib_bash_wine/.git/refs/heads/master)
     if [[ "${git_remote_hash}" == "${git_local_hash}" ]]; then
         return 0
     else

@@ -285,7 +285,7 @@ function download_msi_file_to_winecache {
     "$(cmd "sudo")" mkdir -p "${wine_cache_directory}"
     "$(cmd "sudo")" chmod -R 0775 "${wine_cache_directory}"
 
-    retry "$(cmd "sudo")" wget -q -O "${wine_cache_directory}/${msi_file_name}" "${download_link}"
+    retry "$(cmd "sudo")" wget -nv -c -O "${wine_cache_directory}/${msi_file_name}" "${download_link}"
 
     "$(cmd "sudo")" chmod -R 0775 "${wine_cache_directory}"
     "$(cmd "sudo")" chown -R "${username}.${username}" "${wine_cache_directory}"

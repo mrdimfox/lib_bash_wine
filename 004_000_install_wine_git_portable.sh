@@ -32,7 +32,7 @@ include_dependencies  # we need to do that via a function to have local scope of
 function download_latest_portable_git_html {
     # $1: decompress_dir
     local decompress_dir="${1}"
-    retry wget -q -O ${decompress_dir}/latest_portable_git.html https://github.com/git-for-windows/git/releases/latest
+    retry wget -nv -c -O ${decompress_dir}/latest_portable_git.html https://github.com/git-for-windows/git/releases/latest
 }
 
 function get_portable_git_filename {
@@ -106,7 +106,7 @@ function install_git_portable {
 
     banner "Downloading latest Git Portable Binaries from ${latest_download_link_for_git_portable}"
     if [[ ! -f ${decompress_dir}/${portable_git_filename} ]]; then
-        retry wget -q -nc --no-check-certificate -O ${decompress_dir}/${portable_git_filename} ${latest_download_link_for_git_portable}
+        retry wget -nv -c -nc --no-check-certificate -O ${decompress_dir}/${portable_git_filename} ${latest_download_link_for_git_portable}
     else
         clr_green "file ${decompress_dir}/${portable_git_filename} does already exist"
     fi
