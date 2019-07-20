@@ -53,7 +53,7 @@ function test {
 	assert_pass "is_package_installed apt"
 
     # update libraries
-    ""$(cmd "sudo")"" ../install_or_update.sh
+    "$(cmd "sudo")" ../install_or_update.sh
 
 	set_environment_for_32_bit_wine_machine
 	assert_equal "get_and_export_wine_prefix_from_environment_or_default_to_home_wine" "/home/consul/wine/wine32_machine_01"

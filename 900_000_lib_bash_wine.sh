@@ -235,8 +235,8 @@ function fix_wine_permissions {
     wine_prefix="${2}"
     
     if is_str1_in_str2 "${user}" "${wine_prefix}"; then
-        ""$(cmd "sudo")"" chown -R "${user}" "${wine_prefix}"
-        ""$(cmd "sudo")"" chgrp -R "${user}" "${wine_prefix}"
+        "$(cmd "sudo")" chown -R "${user}" "${wine_prefix}"
+        "$(cmd "sudo")" chgrp -R "${user}" "${wine_prefix}"
     else
         fail "the USER ${user} and WINEPREFIX ${wine_prefix} dont match together"
     fi
@@ -331,46 +331,74 @@ function get_wine_gecko_download_backup_link_from_msi_filename {
 
 function get_wine_cache_directory_for_user {
     # $1 username
-    local username homedirectory
+    # returns /home/<user>/.cache/wine - may sound trivial but this returns the REAL home directory of that user
+    # not just string replacement
+    local username homedirectory wine_cache_directory
     username="${1}"
-    homedirectory=get_home_directory_from_username "${username}"
+    homedirectory="$(get_home_directory_from_username "${username}")"
     wine_cache_directory="${homedirectory}/.cache/wine"
     echo ${wine_cache_directory}
 }
 
 
 function is_msi_file_in_winecache {
-    echo "stub is_msi_file_in_winecache"
+    # returns true if the file is in the wine cache for the given user
+    # $1: username
+    # $2: msi_file_name (without path)
+    local username msi_file_name wine_cache_directory
+    username="${1}"
+    msi_file_name="${2}"
+    wine_cache_directory="$(get_wine_cache_directory_for_user "${username}")"
+    if [[ -f "${wine_cache_directory}/${msi_file_name}" ]]; then
+        return 0
+    else
+        return 1
+    fi
 }
 
-function download_msi_file_to_winecache {
-    echo "stub download_msi_file_to_winecache"
-    # create if not exist
-    # set permissions directory 0755
 
-    # set permissions filed 0755
+function download_msi_file_to_winecache {
+    # $1: username
+    # $2: download_link
+    # $3: msi_file_name (without path)
+
+    local username download_link msi_file_name wine_cache_directory
+    username="${1}"
+    download_link="${2}"
+    msi_file_name="${3}"
+
+    wine_cache_directory="$(get_wine_cache_directory_for_user "${username}")"
+    "$(cmd "sudo")" mkdir -p "${wine_cache_directory}"
+    "$(cmd "sudo")" chmod -R 0775 "${wine_cache_directory}"
+
+    retry "$(cmd "sudo")" wget -O "${wine_cache_directory}/${msi_file_name}" "${download_link}"
+
+    "$(cmd "sudo")" chmod -R 0775 "${wine_cache_directory}"
+    "$(cmd "sudo")" chown -R "${username}.${username}" "${wine_cache_directory}"
 }
 
 
 
 function download_gecko_msi_files {
     # $1 - wine_prefix
-    local wineprefix winearch gecko_msi_name_32 gecko_msi_name_64
+    # $2 - username
+    local wineprefix username winearch gecko_msi_name_32 gecko_msi_name_64
     wine_prefix="${1}"
+    username="${2}"
 
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
 
 
     gecko_msi_name_32="$(get_gecko_32_bit_msi_name_from_wine_prefix "${wine_prefix}")"
-    if ! is_msi_file_in_winecache "${wine_prefix}" "${gecko_msi_name_32}"; then
-        download_msi_file_to_winecache "${wine_prefix}" "${gecko_msi_name_32}"
+    if ! is_msi_file_in_winecache "${username}" "${gecko_msi_name_32}"; then
+        download_msi_file_to_winecache "${wine_prefix}" "${username}" "${gecko_msi_name_32}"
     fi
 
 
     if [[ "${wine_arch}" == "win64" ]]; then
         gecko_msi_name_64="$(get_gecko_64_bit_msi_name_from_wine_prefix "${wine_prefix}")"
-        if ! is_msi_file_in_winecache "${wine_prefix}" "${gecko_msi_name_64}"; then
-            download_msi_file_to_winecache "${wine_prefix}" "${gecko_msi_name_64}"
+        if ! is_msi_file_in_winecache "${username}" "${gecko_msi_name_64}"; then
+            download_msi_file_to_winecache "${wine_prefix}" "${username}" "${gecko_msi_name_64}"
         fi
     fi
 

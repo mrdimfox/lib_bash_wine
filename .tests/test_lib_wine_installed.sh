@@ -34,7 +34,22 @@ function test {
 
 
     ### test library
-    assert_equal "get_wine_cache_directory_for_user ${USER}" "${USER}/home/cache/.wine"
+    assert_equal "get_wine_cache_directory_for_user ${USER}" "/home/${USER}/.cache/wine"
+    assert_fail "is_msi_file_in_winecache ${USER} some_file"
+    echo "test" > "${HOME}/.cache/wine/test.txt"
+    assert_pass "is_msi_file_in_winecache ${USER} test.txt"
+    rm -f "${HOME}/.cache/wine/test.txt"
+    assert_pass "download_msi_file_to_winecache ${USER} https://dl.winehq.org/robots.txt test.txt"
+    assert_pass "is_msi_file_in_winecache ${USER} test.txt"
+    rm -f "${HOME}/.cache/wine/test.txt"
+
+
+
+is_msi_file_in_winecache {
+    # returns true if the file is in the wine cache for the given user
+    # $1: username
+    # $2: msi_file_name (without path)
+
 
     ### test get gecko commons
     assert_equal "get_gecko_version_from_msi_filename wine_gecko-2.47-x86.msi" "2.47"
