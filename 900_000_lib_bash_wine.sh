@@ -328,12 +328,27 @@ function get_wine_gecko_download_backup_link_from_msi_filename {
 }
 
 
+
+function get_wine_cache_directory_for_user {
+    # $1 username
+    local username homedirectory
+    username="${1}"
+    homedirectory=get_home_directory_from_username "${username}"
+    wine_cache_directory="${homedirectory}/.cache/wine"
+    echo ${wine_cache_directory}
+}
+
+
 function is_msi_file_in_winecache {
     echo "stub is_msi_file_in_winecache"
 }
 
 function download_msi_file_to_winecache {
     echo "stub download_msi_file_to_winecache"
+    # create if not exist
+    # set permissions directory 0755
+
+    # set permissions filed 0755
 }
 
 
@@ -347,15 +362,15 @@ function download_gecko_msi_files {
 
 
     gecko_msi_name_32="$(get_gecko_32_bit_msi_name_from_wine_prefix "${wine_prefix}")"
-    if ! is_msi_file_in_winecache; then
-        download_msi_file_to_winecache
+    if ! is_msi_file_in_winecache "${wine_prefix}" "${gecko_msi_name_32}"; then
+        download_msi_file_to_winecache "${wine_prefix}" "${gecko_msi_name_32}"
     fi
 
 
     if [[ "${wine_arch}" == "win64" ]]; then
         gecko_msi_name_64="$(get_gecko_64_bit_msi_name_from_wine_prefix "${wine_prefix}")"
-        if ! is_msi_file_in_winecache; then
-            download_msi_file_to_winecache
+        if ! is_msi_file_in_winecache "${wine_prefix}" "${gecko_msi_name_64}"; then
+            download_msi_file_to_winecache "${wine_prefix}" "${gecko_msi_name_64}"
         fi
     fi
 
