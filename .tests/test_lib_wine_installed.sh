@@ -40,7 +40,7 @@ function test {
 
     ### test get gecko 32
     set_variable_for_32_bit_wine_machine
-    assert_contains "get_gecko_32_bit_msi_name ${global_wine_prefix}" "wine_gecko-"
+    assert_contains "get_gecko__32_bit_msi_name ${global_wine_prefix}" "wine_gecko-"
     assert_contains "get_gecko_32_bit_msi_name ${global_wine_prefix}" "-x86.msi"
     assert_equal "get_gecko_64_bit_msi_name ${global_wine_prefix}" ""
 
