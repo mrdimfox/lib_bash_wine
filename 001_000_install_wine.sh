@@ -31,16 +31,12 @@ function install_libfaudio0_if_not_installed {
 
 }
 
-function fallback_to_mono_bionic_version {
-    echo "deb https://download.mono-project.com/repo/ubuntu stable-bionic main" | "$(cmd "sudo")" tee /etc/apt/sources.list.d/mono-official-stable.list
-    "$(cmd "sudo")" apt-get update
-}
-
 function install_wine {
+    # $1: wine release
     local linux_release_name wine_release wine_version_number
+    wine_release="${1}"
 
     linux_release_name=$(get_linux_release_name)
-    wine_release=$(get_and_export_wine_release_from_environment_or_default_to_devel)
 
     banner "Installing WINE and WINETRICKS: ${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}"
 
@@ -51,6 +47,7 @@ function install_wine {
     "$(cmd "sudo")" rm -f ./winehq.key*
     retry "$(cmd "sudo")" wget -nv -c https://dl.winehq.org/wine-builds/winehq.key
     "$(cmd "sudo")" apt-key add winehq.key
+    "$(cmd "sudo")" rm -f ./winehq.key*
     "$(cmd "sudo")" apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ ${linux_release_name} main"
     install_libfaudio0_if_not_installed
 
@@ -65,16 +62,6 @@ function install_wine {
     wine_version_number="$(get_wine_version_number)"
     clr_green "Wine Version ${wine_version_number} installed on ${linux_release_name}"
 
-    clr_green "Install mono complete"
-    retry "$(cmd "sudo")" apt-get install gnupg ca-certificates
-    retry "$(cmd "sudo")" apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
-    echo "deb https://download.mono-project.com/repo/ubuntu stable-${linux_release_name} main" | "$(cmd "sudo")" tee /etc/apt/sources.list.d/mono-official-stable.list
-    "$(cmd "sudo")" apt-get update || fallback_to_mono_bionic_version
-    retry "$(cmd "sudo")" apt-get install mono-devel -y
-    retry "$(cmd "sudo")" apt-get install mono-dbg -y
-    retry "$(cmd "sudo")" apt-get install mono-xsp4 -y
-    linux_update   # @lib_bash/bash_helpers
-
     clr_green "Install latest Winetricks"
     "$(cmd "sudo")" rm -f /usr/bin/winetricks
     retry "$(cmd "sudo")" wget -nv -c --directory-prefix=/usr/bin/ https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks
@@ -86,5 +73,6 @@ function install_wine {
 
 
 if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
-    install_wine
+    wine_release=$(get_and_export_wine_release_from_environment_or_default_to_devel)
+    install_wine "${wine_release}"
 fi

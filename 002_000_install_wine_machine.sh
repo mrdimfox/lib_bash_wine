@@ -25,6 +25,7 @@ function include_dependencies {
 include_dependencies
 
 
+
 function install_wine_gecko {
     # installs the matching wine_gecko on the existing wine machine
     # $1 : wine_prefix
@@ -118,11 +119,11 @@ function install_wine_machine {
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "Installing wine gecko"
-    install_wine_gecko "${wine_prefix}"
+    # install_wine_gecko "${wine_prefix}"
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "Installing wine mono"
-    install_wine_mono "${wine_prefix}"
+    # install_wine_mono "${wine_prefix}"
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "Disable GUI Crash Dialogs"

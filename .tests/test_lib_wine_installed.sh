@@ -64,7 +64,7 @@ is_msi_file_in_winecache {
     assert_contains "get_gecko_32_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "-x86.msi"
 
     # test gecko download 32
-    clr-green "test download 32 Bit Gecko for 32 Bit Wine"
+    clr_green "test download 32 Bit Gecko for 32 Bit Wine"
     rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}"
     assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}" # try a second time - it is already there
@@ -82,7 +82,7 @@ is_msi_file_in_winecache {
     assert_contains "get_gecko_64_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "-x86_64.msi"
 
     # test gecko download 32
-    clr-green "test download 32 Bit Gecko for 64 Bit Wine"
+    clr_green "test download 32 Bit Gecko for 64 Bit Wine"
     rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}"
     assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}" # try a second time - it is already there
@@ -90,7 +90,7 @@ is_msi_file_in_winecache {
     rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
 
     # test gecko download 64
-    clr-green "test download 64 Bit Gecko for 64 Bit Wine"
+    clr_green "test download 64 Bit Gecko for 64 Bit Wine"
     rm -f "${HOME}/.cache/wine/$(get_gecko_64_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}"
     assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}" # try a second time - it is already there
