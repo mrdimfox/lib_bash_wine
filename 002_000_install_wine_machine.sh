@@ -89,6 +89,11 @@ function install_wine_machine {
     wine_version_number="$(get_wine_version_number)"
 
 
+    # this is only for display - otherwise use function is_overwrite_existing_wine_machine
+    if [[ "${overwrite_existing_wine_machine}" != "True" ]]; then
+         overwrite_existing_wine_machine="False"
+    fi
+
 
     banner "Setting up Wine Machine:${IFS}\
             linux_release_name=${linux_release_name}${IFS}\
@@ -97,17 +102,18 @@ function install_wine_machine {
             WINEPREFIX=${wine_prefix}${IFS}\
             WINEARCH=${wine_arch}${IFS}\
             winetricks_windows_version=${winetricks_windows_version}${IFS}\
-
-            # this is only for display - otherwise use function is_overwrite_existing_wine_machine
             overwrite_existing_wine_machine=${overwrite_existing_wine_machine}"
-            if [[ "${overwrite_existing_wine_machine}" != "True" ]]; then
-                 overwrite_existing_wine_machine="False"
-            fi
 
-    if is_overwrite_existing_wine_machine; then
-        banner_warning "Overwrite the old Wineprefix"
-        "$(cmd "sudo")" rm -Rf "${wine_prefix}"
+
+    if [[ "${overwrite_existing_wine_machine}" == "True" ]] && [[ -d ${wine_prefix} ]]; then
+         banner_warning "Overwriting old Wine Machine ${wine_prefix}"
+         if [[ "${wine_prefix}" == "/home/${user}"* ]]; then
+            "$(cmd "sudo")" rm -Rf ${wine_prefix}
+         else
+            fail "can not remove wineprefix ${wine_prefix} because it does not belong to user ${user}"
+         fi
     fi
+
 
     mkdir -p "${wine_prefix}"
 
@@ -137,11 +143,12 @@ function install_wine_machine {
     banner "Install common Packages"
 
     banner "install windowscodecs"
-    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs --optout
+    # retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs --optout
+    WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs --optout
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "install msxml3"
-    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml3
+    retry WINEPREFIX="\"${wine_prefix}\"" WINEARCH="\"${wine_arch}\"" winetricks -q msxml3
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "install msxml6"

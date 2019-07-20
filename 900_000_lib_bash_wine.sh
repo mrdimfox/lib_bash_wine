@@ -120,18 +120,6 @@ function get_and_export_overwrite_existing_wine_machine_from_environment_or_defa
 }
 
 
-
-function is_overwrite_existing_wine_machine {
-    local overwrite_existing_wine_machine
-    overwrite_existing_wine_machine="$(printenv overwrite_existing_wine_machine)"
-    if [[ "${overwrite_existing_wine_machine}" == "True" ]]; then
-        return 0
-    else
-        return 1
-    fi
-}
-
-
 function get_wine_version_number {
     wine --version
 }
