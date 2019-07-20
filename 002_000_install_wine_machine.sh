@@ -29,24 +29,20 @@ include_dependencies
 function install_wine_gecko {
     # installs the matching wine_gecko on the existing wine machine
     # $1 : wine_prefix
-    local wine_prefix wine_arch gecko_32_bit_msi_name gecko_64_bit_msi_name
+    # $2: username
+    local wine_prefix username wine_arch gecko_32_bit_msi_name gecko_64_bit_msi_name
     wine_prefix="${1}"
+    username="${2}"
+    download_gecko_msi_files "${wine_prefix}" "${username}"
+
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    gecko_32_bit_msi_name="$(get_gecko_32_bit_msi_name "${wine_prefix}")"
-    gecko_64_bit_msi_name="$(get_gecko_64_bit_msi_name "${wine_prefix}")"
+    gecko_32_bit_msi_name="$(get_gecko_32_bit_msi_name_from_wine_prefix "${wine_prefix}")"
+    WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${gecko_32_bit_msi_name}"
 
-
-
-    # --> http://source.winehq.org/winegecko.php?v=2.47-x86 --> redirected to : http://dl.winehq.org/wine/wine-gecko/2.47-x86/wine_gecko-2.47-x86.msi
-
-    # strings -a /home/consul/wine/wine32_machine_01/drive_c/windows/system32/appwiz.cpl | grep wine_gecko | grep .msi --> wine_gecko-2.47-x86.msi
-    # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
-    # correct: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86_64.msi
-    # correct : https://dl.winehq.org/wine/wine-mono/4.9.0/wine-mono-4.9.0.msi - für beide !!!
-
-    # Übereinstimmungen in Binärdatei /home/consul/wine/wine32_machine_01/drive_c/windows/system32/appwiz.cpl
-    # Übereinstimmungen in Binärdatei /home/consul/wine/wine64_machine_02/drive_c/windows/syswow64/appwiz.cpl
-    # Übereinstimmungen in Binärdatei /home/consul/wine/wine64_machine_02/drive_c/windows/system32/appwiz.cpl
+    if [[ "${wine_arch}" == "win64" ]]; then
+        gecko_64_bit_msi_name="$(get_gecko_64_bit_msi_name_from_wine_prefix "${wine_prefix}")"
+        WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${gecko_32_bit_msi_name}"
+    fi
 
 
 
@@ -131,11 +127,6 @@ function install_wine_machine {
     banner "Installing wine mono"
     # install_wine_mono "${wine_prefix}"
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
-
-    banner "run winecfg again to install gecko and mono"
-    DISPLAY= WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winecfg
-    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
-
 
     banner "Disable GUI Crash Dialogs"
     WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks nocrashdialog

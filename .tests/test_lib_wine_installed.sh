@@ -44,13 +44,6 @@ function run_tests {
     rm -f "${HOME}/.cache/wine/test.txt"
 
 
-
-is_msi_file_in_winecache {
-    # returns true if the file is in the wine cache for the given user
-    # $1: username
-    # $2: msi_file_name (without path)
-
-
     ### test get gecko commons
     assert_equal "get_gecko_version_from_msi_filename wine_gecko-2.47-x86.msi" "2.47"
     assert_equal "get_gecko_architecture_from_msi_filename wine_gecko-2.47-x86.msi" "x86"
@@ -71,6 +64,10 @@ is_msi_file_in_winecache {
     assert_pass "test -f ${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
 
+    install_wine_gecko "${global_wine_prefix}" "${USER}"
+    # installs the matching wine_gecko on the existing wine machine
+    # $1 : wine_prefix
+    # $2: username
 
 
 
@@ -97,6 +94,7 @@ is_msi_file_in_winecache {
     assert_pass "test -f ${HOME}/.cache/wine/$(get_gecko_64_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     rm -f "${HOME}/.cache/wine/$(get_gecko_64_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
 
+    install_wine_gecko "${global_wine_prefix}" "${USER}"
 
 
     ### test get wine-mono 32
