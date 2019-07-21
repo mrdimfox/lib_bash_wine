@@ -80,6 +80,7 @@ function install_wine_machine {
     # DISPLAY= wine non_existing_command.exe
     DISPLAY= WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winecfg
     fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
+    wait_for_system_reg_to_be_created "${wine_prefix}"
 
     banner "Installing wine mono"
     install_wine_mono "${wine_prefix}" "${user}"
@@ -122,7 +123,7 @@ function install_wine_machine {
             WINEPREFIX=${wine_prefix}${IFS}\
             WINEARCH=${wine_arch}${IFS}\
             winetricks_windows_version=${winetricks_windows_version}${IFS}\
-            wine_path=$(get_wine_path_reg_sz)"
+            wine_path=$(get_wine_registry_path "${wine_prefix}")"
 }
 
 if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced

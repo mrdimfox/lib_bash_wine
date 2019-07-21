@@ -1,11 +1,12 @@
 #!/bin/bash
 
-export SUDO_ASKPASS="$(command -v ssh-askpass)"
+sudo_askpass="$(command -v ssh-askpass)"
+export SUDO_ASKPASS="${sudo_askpass}"
 export NO_AT_BRIDGE=1  # get rid of (ssh-askpass:25930): dbind-WARNING **: 18:46:12.019: Couldn't register with accessibility bus: Did not receive a reply.
 
 source ../900_000_lib_bash_wine.sh
 source ../002_000_install_wine_machine.sh
-"$(cmd sudo)"../install_or_update.sh
+
 
 function set_variable_for_32_bit_wine_machine {
     global_wine_prefix="${HOME}/wine/wine32_machine_01"
@@ -20,7 +21,7 @@ function set_variable_for_64_bit_wine_machine {
 function run_tests {
 
 
-    local linux_release_name wine_release winetricks_windows_version overwrite_existing_wine_machine
+    local wine_release winetricks_windows_version overwrite_existing_wine_machine
     wine_release="devel"
     winetricks_windows_version="win10"
     user="$(printenv USER)"

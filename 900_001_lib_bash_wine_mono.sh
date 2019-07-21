@@ -10,7 +10,6 @@ if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${
 
 function include_dependencies {
     local my_dir
-    # shellcheck disable=SC2164
     my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
     source /usr/local/lib_bash/lib_helpers.sh
     source "${my_dir}/900_000_lib_bash_wine.sh"
@@ -22,6 +21,7 @@ include_dependencies
 function get_mono_msi_name_from_wine_prefix {
     # tested
     # $1: wine_prefix
+    # returns : wine-mono-4.9.0.msi
     local wine_prefix
     wine_prefix="${1}"
 
@@ -30,108 +30,79 @@ function get_mono_msi_name_from_wine_prefix {
 
 
 function get_mono_version_from_msi_filename {
-    # returns the version e.g. "2.47"
-    # $1 : gecko_msi_name e.g. "wine_gecko-2.47-x86.msi", or "wine_gecko-2.47-x86.msi"
+    # returns the version e.g. "4.9.0"
+    # $1 : mono_msi_name e.g. "wine-mono-4.9.0.msi"
     local mono_msi_name
     mono_msi_name="${1}"
-    echo "${mono_msi_name}" | cut -d "-" -f 2
-}
-
-function get_gecko_architecture_from_msi_filename {
-    # returns the version e.g. "x86" or "x86_64"
-    # $1 : gecko_msi_name e.g. "wine_gecko-2.47-x86.msi", or "wine_gecko-2.47-x86_64.msi"
-    local gecko_msi_name
-    gecko_msi_name="${1}"
-    echo "${gecko_msi_name}" | cut -d "-" -f 3 | cut -d "." -f 1
+    echo "${mono_msi_name}" | cut -d "-" -f 3 | sed "s/.msi//g"
 }
 
 
-function get_wine_gecko_download_link_from_msi_filename {
+function get_wine_mono_download_link_from_msi_filename {
     # gets the download link
-    # correct Link1: https://source.winehq.org/winegecko.php?v=2.47&arch=x86
-    # correct Link2: https://source.winehq.org/winegecko.php?v=2.47&arch=x86_64
+    # correct Link1: https://source.winehq.org/winemono.php?v=4.9.0
+    # correct Link2: https://dl.winehq.org/wine/wine-mono/4.9.0/wine-mono-4.9.0.msi
     # there is another parameter: # &winev=????, not used here, https://github.com/wine-mirror/wine/blob/master/dlls/appwiz.cpl/addons.c
 
-    # $1 - gecko_msi_name
-    local gecko_msi_name version architecture
-    gecko_msi_name="${1}"
-    version="$(get_gecko_version_from_msi_filename "${gecko_msi_name}")"
-    architecture="$(get_gecko_architecture_from_msi_filename "${gecko_msi_name}")"
-    echo "https://source.winehq.org/winegecko.php?v=${version}&arch=${architecture}"
+    # $1 - mono_msi_name
+    local mono_msi_name version
+    mono_msi_name="${1}"
+    version="$(get_mono_version_from_msi_filename "${mono_msi_name}")"
+    echo "https://source.winehq.org/winemono.php?v=${version}"
 }
 
-function get_wine_gecko_download_backup_link_from_msi_filename {
+function get_wine_mono_download_backup_link_from_msi_filename {
     # gets the download link
-    # correct Link2: https://dl.winehq.org/wine/wine-gecko/2.47/wine_gecko-2.47-x86.msi
-    # $1 - gecko_msi_name
-    local gecko_msi_name version
-    gecko_msi_name="${1}"
-    version="$(get_gecko_version_from_msi_filename "${gecko_msi_name}")"
-    echo "https://dl.winehq.org/wine/wine-gecko/${version}/${gecko_msi_name}"
+    # correct Link2: https://dl.winehq.org/wine/wine-mono/4.9.0/wine-mono-4.9.0.msi
+    # $1 - mono_msi_name
+    local mono_msi_name version
+    mono_msi_name="${1}"
+    version="$(get_mono_version_from_msi_filename "${mono_msi_name}")"
+    echo "https://dl.winehq.org/wine/wine-mono/${version}/${mono_msi_name}"
 }
 
-function download_gecko_msi_files {
+function download_mono_msi_files {
     # $1 - wine_prefix
     # $2 - username
-    local wineprefix username wine_arch gecko_msi_name_32 gecko_msi_name_64 download_link backup_download_link wine_cache_directory
+    local wine_prefix username wine_arch mono_msi_name download_link backup_download_link wine_cache_directory
     wine_prefix="${1}"
     username="${2}"
 
     fail_if_wine_prefix_is_not_matching_user_home "${wine_prefix}" "${username}"
 
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    gecko_msi_name_32="$(get_mono_msi_name_from_wine_prefix "${wine_prefix}")"
+    mono_msi_name="$(get_mono_msi_name_from_wine_prefix "${wine_prefix}")"
 
-    if ! is_msi_file_in_winecache "${username}" "${gecko_msi_name_32}"; then
-        download_link="$(get_wine_gecko_download_link_from_msi_filename "${gecko_msi_name_32}")"
-        backup_download_link="$(get_wine_gecko_download_backup_link_from_msi_filename "${gecko_msi_name_32}")"
+    if ! is_msi_file_in_winecache "${username}" "${mono_msi_name}"; then
+        download_link="$(get_wine_mono_download_link_from_msi_filename "${mono_msi_name}")"
+        backup_download_link="$(get_wine_mono_download_backup_link_from_msi_filename "${mono_msi_name}")"
         wine_cache_directory="$(get_wine_cache_directory_for_user)"
-        download_msi_file_to_winecache "${username}" "${download_link}" "${gecko_msi_name_32}"
-        if [[ ! -f "${wine_cache_directory}/${gecko_msi_name_32}" ]]; then
-            download_msi_file_to_winecache "${username}" "${backup_download_link}" "${gecko_msi_name_32}"
+        download_msi_file_to_winecache "${username}" "${download_link}" "${mono_msi_name}"
+        if [[ ! -f "${wine_cache_directory}/${mono_msi_name}" ]]; then
+            download_msi_file_to_winecache "${username}" "${backup_download_link}" "${mono_msi_name}"
         fi
     fi
-
-
-    if [[ "${wine_arch}" == "win64" ]]; then
-        gecko_msi_name_64="$(get_mono_msi_name_from_wine_prefix "${wine_prefix}")"
-        if ! is_msi_file_in_winecache "${username}" "${gecko_msi_name_64}"; then
-            download_link="$(get_wine_gecko_download_link_from_msi_filename "${gecko_msi_name_64}")"
-            backup_download_link="$(get_wine_gecko_download_backup_link_from_msi_filename "${gecko_msi_name_64}")"
-            download_msi_file_to_winecache "${username}" "${download_link}" "${gecko_msi_name_64}"
-            if [[ ! -f "${wine_cache_directory}/${gecko_msi_name_64}" ]]; then
-                download_msi_file_to_winecache "${username}" "${backup_download_link}" "${gecko_msi_name_64}"
-            fi
-        fi
-    fi
-
 }
 
 
-function install_wine_gecko {
+function install_wine_mono {
     # installs the matching wine_gecko on the existing wine machine
     # $1 : wine_prefix
     # $2 : username
 
-    local wine_prefix username wine_arch gecko_32_bit_msi_name gecko_64_bit_msi_name dbg wine_cache_directory
+    local wine_prefix username wine_arch mono_msi_name gecko_64_bit_msi_name dbg wine_cache_directory
     dbg="True"
     wine_prefix="${1}"
     username="${2}"
 
     fail_if_wine_prefix_is_not_matching_user_home "${wine_prefix}" "${username}"
-    download_gecko_msi_files "${wine_prefix}" "${username}"
+    download_mono_msi_files "${wine_prefix}" "${username}"
 
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    gecko_32_bit_msi_name="$(get_mono_msi_name_from_wine_prefix "${wine_prefix}")"
+    mono_msi_name="$(get_mono_msi_name_from_wine_prefix "${wine_prefix}")"
     wine_cache_directory="$(get_wine_cache_directory_for_user "${username}")"
-    debug "${dbg}" "Installing 32 Bit Gecko: WINEPREFIX=${wine_prefix} WINEARCH=${wine_arch} wine msiexec /i ${wine_cache_directory}/${gecko_32_bit_msi_name}"
-    WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${wine_cache_directory}/${gecko_32_bit_msi_name}"
-
-    if [[ "${wine_arch}" == "win64" ]]; then
-        gecko_64_bit_msi_name="$(get_mono_msi_name_from_wine_prefix "${wine_prefix}")"
-        debug "${dbg}" "Installing 64 Bit Gecko: WINEPREFIX=${wine_prefix} WINEARCH=${wine_arch} wine msiexec /i ${wine_cache_directory}/${gecko_64_bit_msi_name}"
-        WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${wine_cache_directory}/${gecko_64_bit_msi_name}"
-    fi
+    debug "${dbg}" "Installing 32 Bit Mono: WINEPREFIX=${wine_prefix} WINEARCH=${wine_arch} wine msiexec /i ${wine_cache_directory}/${mono_msi_name}"
+    WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${wine_cache_directory}/${mono_msi_name}"
 }
 
 

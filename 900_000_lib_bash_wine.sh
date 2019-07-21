@@ -303,6 +303,18 @@ function download_msi_file_to_winecache {
     "$(cmd "sudo")" chown -R "${username}.${username}" "${wine_cache_directory}"
 }
 
+function wait_for_system_reg_to_be_created {
+    # winecfg needs some time to write the system.reg - we need to wait for it.
+    # $1: wine_prefix
+    local wine_prefix
+    wine_prefix="${1}"
+    while [[ ! -f "${wine_prefix}/system.reg" ]]; do
+        clr_blue "wait for winecfg to finish creating system.reg"
+        sleep 1
+    done
+    sleep 1
+}
+
 
 ## make it possible to call functions without source include
 call_function_from_commandline "${0}" "${@}"

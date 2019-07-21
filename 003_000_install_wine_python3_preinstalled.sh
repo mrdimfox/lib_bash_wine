@@ -30,3 +30,15 @@ if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
     install_wine_python_preinstalled "python37" "Python 3.7" "c:\\Python37"
 fi
 
+
+# TARGET : /home/consul/wine/wine32_machine_01/drive_c/users/Public
+# chmod 0775
+
+
+
+# https://www.python.org/ftp/python/3.7.4/python-3.7.4.exe
+
+
+# get latest release number :
+# https://www.python.org/downloads/windows/
+# grep Latest Python 3 Release
