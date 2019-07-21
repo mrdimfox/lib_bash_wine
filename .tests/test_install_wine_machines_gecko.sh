@@ -19,13 +19,12 @@ function set_variable_for_64_bit_wine_machine {
 }
 
 function run_tests {
-    local linux_release_name wine_release winetricks_windows_version wine_version_number overwrite_existing_wine_machine delete_cached_files user
-    delete_cached_files="False"
+    local linux_release_name wine_release winetricks_windows_version wine_version_number delete_cached_files user
+    delete_cached_files="True"
     linux_release_name="$(get_linux_release_name)"
     wine_release="devel"
     winetricks_windows_version="win10"
     wine_version_number="$(get_wine_version_number)"
-    overwrite_existing_wine_machine="True"
 
     user="$(printenv USER)"
 
@@ -79,25 +78,24 @@ function run_tests {
     assert_contains "get_gecko_64_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "-x86_64.msi"
 
     clr_green "test download 32 Bit Gecko for 64 Bit Wine"
-    set_variable_for_32_bit_wine_machine
     if [[ "${delete_cached_files}" == "True" ]]; then rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"; fi
-    assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}"
-    assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}" # try a second time - it is already there
+    assert_pass "download_gecko_msi_files ${global_wine_prefix} ${user}"
+    assert_pass "download_gecko_msi_files ${global_wine_prefix} ${user}" # try a second time - it is already there
     assert_pass "test -f ${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     if [[ "${delete_cached_files}" == "True" ]]; then rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"; fi
 
 
-    clr_green "test download 32/64 Bit Gecko for 64 Bit Wine"
+    clr_green "test download 64 Bit Gecko for 64 Bit Wine"
     set_variable_for_64_bit_wine_machine
     if [[ "${delete_cached_files}" == "True" ]]; then rm -f "${HOME}/.cache/wine/$(get_gecko_64_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"; fi
-    assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}"
-    assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}" # try a second time - it is already there
+    assert_pass "download_gecko_msi_files ${global_wine_prefix} ${user}"
+    assert_pass "download_gecko_msi_files ${global_wine_prefix} ${user}" # try a second time - it is already there
     assert_pass "test -f ${HOME}/.cache/wine/$(get_gecko_64_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     if [[ "${delete_cached_files}" == "True" ]]; then rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"; fi
     if [[ "${delete_cached_files}" == "True" ]]; then rm -f "${HOME}/.cache/wine/$(get_gecko_64_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"; fi
 
     clr_green "test install gecko32 & gecko64 for 64 Bit Wine"
-    install_wine_gecko "${global_wine_prefix}" "${USER}"
+    install_wine_gecko "${global_wine_prefix}" "${user}"
 
 }
 

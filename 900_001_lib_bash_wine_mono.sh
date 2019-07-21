@@ -19,7 +19,7 @@ function include_dependencies {
 include_dependencies
 
 
-function get_wine_mono_msi_name {
+function get_mono_msi_name_from_wine_prefix {
     # tested
     # $1: wine_prefix
     local wine_prefix
@@ -29,12 +29,12 @@ function get_wine_mono_msi_name {
 }
 
 
-function get_gecko_version_from_msi_filename {
+function get_mono_version_from_msi_filename {
     # returns the version e.g. "2.47"
     # $1 : gecko_msi_name e.g. "wine_gecko-2.47-x86.msi", or "wine_gecko-2.47-x86.msi"
-    local gecko_msi_name
-    gecko_msi_name="${1}"
-    echo "${gecko_msi_name}" | cut -d "-" -f 2
+    local mono_msi_name
+    mono_msi_name="${1}"
+    echo "${mono_msi_name}" | cut -d "-" -f 2
 }
 
 function get_gecko_architecture_from_msi_filename {
@@ -80,7 +80,7 @@ function download_gecko_msi_files {
     fail_if_wine_prefix_is_not_matching_user_home "${wine_prefix}" "${username}"
 
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    gecko_msi_name_32="$(get_wine_mono_msi_name "${wine_prefix}")"
+    gecko_msi_name_32="$(get_mono_msi_name_from_wine_prefix "${wine_prefix}")"
 
     if ! is_msi_file_in_winecache "${username}" "${gecko_msi_name_32}"; then
         download_link="$(get_wine_gecko_download_link_from_msi_filename "${gecko_msi_name_32}")"
@@ -94,7 +94,7 @@ function download_gecko_msi_files {
 
 
     if [[ "${wine_arch}" == "win64" ]]; then
-        gecko_msi_name_64="$(get_wine_mono_msi_name "${wine_prefix}")"
+        gecko_msi_name_64="$(get_mono_msi_name_from_wine_prefix "${wine_prefix}")"
         if ! is_msi_file_in_winecache "${username}" "${gecko_msi_name_64}"; then
             download_link="$(get_wine_gecko_download_link_from_msi_filename "${gecko_msi_name_64}")"
             backup_download_link="$(get_wine_gecko_download_backup_link_from_msi_filename "${gecko_msi_name_64}")"
@@ -122,13 +122,13 @@ function install_wine_gecko {
     download_gecko_msi_files "${wine_prefix}" "${username}"
 
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    gecko_32_bit_msi_name="$(get_wine_mono_msi_name "${wine_prefix}")"
+    gecko_32_bit_msi_name="$(get_mono_msi_name_from_wine_prefix "${wine_prefix}")"
     wine_cache_directory="$(get_wine_cache_directory_for_user "${username}")"
     debug "${dbg}" "Installing 32 Bit Gecko: WINEPREFIX=${wine_prefix} WINEARCH=${wine_arch} wine msiexec /i ${wine_cache_directory}/${gecko_32_bit_msi_name}"
     WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${wine_cache_directory}/${gecko_32_bit_msi_name}"
 
     if [[ "${wine_arch}" == "win64" ]]; then
-        gecko_64_bit_msi_name="$(get_wine_mono_msi_name "${wine_prefix}")"
+        gecko_64_bit_msi_name="$(get_mono_msi_name_from_wine_prefix "${wine_prefix}")"
         debug "${dbg}" "Installing 64 Bit Gecko: WINEPREFIX=${wine_prefix} WINEARCH=${wine_arch} wine msiexec /i ${wine_cache_directory}/${gecko_64_bit_msi_name}"
         WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${wine_cache_directory}/${gecko_64_bit_msi_name}"
     fi

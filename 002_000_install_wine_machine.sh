@@ -4,7 +4,7 @@ sudo_askpass="$(command -v ssh-askpass)"
 export SUDO_ASKPASS="${sudo_askpass}"
 export NO_AT_BRIDGE=1  # get rid of (ssh-askpass:25930): dbind-WARNING **: 18:46:12.019: Couldn't register with accessibility bus: Did not receive a reply.
 
-# call the update script if nout sourced
+# call the update script if not sourced
 if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${BASH_SOURCE%/*}"/install_or_update.sh else "${PWD}"/install_or_update.sh ; fi
 
 
@@ -16,6 +16,7 @@ function include_dependencies {
     my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
     source /usr/local/lib_bash/lib_helpers.sh
     source "${my_dir}/900_000_lib_bash_wine.sh"
+    source "${my_dir}/900_001_lib_bash_wine_mono.sh"
     source "${my_dir}/900_002_lib_bash_wine_gecko.sh"
 }
 
@@ -27,7 +28,7 @@ function install_wine_machine {
     # $1 : wine_release                                 # [stable|devel|staging]
     # $2 : wine_prefix                                  # "${HOME}/wine/my_wine_01"
     # $3 : wine_arch                                    # [win32|win64]
-    # $4 : winetricks_windows_version                   # [win7|win10....] - see wintricks list-all | grep version
+    # $4 : winetricks_windows_version                   # [win7|win10....] - see winetricks list-all | grep version
     # $5 : user                                         # printenv USER
     # $6 : overwrite_existing_wine_machine    # ["True"|"False"]
 
