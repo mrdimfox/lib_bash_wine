@@ -18,12 +18,13 @@ function set_variable_for_64_bit_wine_machine {
 }
 
 function run_tests {
+
+
     local linux_release_name wine_release winetricks_windows_version overwrite_existing_wine_machine
     wine_release="devel"
     winetricks_windows_version="win10"
     user="$(printenv USER)"
     overwrite_existing_wine_machine="True"
-
 
     set_variable_for_32_bit_wine_machine
     install_wine_machine "${wine_release}" "${global_wine_prefix}" "${global_wine_arch}" "${winetricks_windows_version}" "${user}" "${overwrite_existing_wine_machine}"

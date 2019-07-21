@@ -16,48 +16,10 @@ function include_dependencies {
     my_dir="$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )"  # this gives the full path, even for sourced scripts
     source /usr/local/lib_bash/lib_helpers.sh
     source "${my_dir}/900_000_lib_bash_wine.sh"
+    source "${my_dir}/900_002_lib_bash_wine_gecko.sh"
 }
 
 include_dependencies
-
-
-
-function install_wine_gecko {
-    # installs the matching wine_gecko on the existing wine machine
-    # $1 : wine_prefix
-    # $2: username
-    local wine_prefix username wine_arch gecko_32_bit_msi_name gecko_64_bit_msi_name dbg
-    dbg="True"
-    wine_prefix="${1}"
-    username="${2}"
-    download_gecko_msi_files "${wine_prefix}" "${username}"
-
-    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    gecko_32_bit_msi_name="$(get_gecko_32_bit_msi_name_from_wine_prefix "${wine_prefix}")"
-    debug "${dbg}" "Installing 32 Bit Gecko, wine_arch=${wine_arch}"
-    WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${gecko_32_bit_msi_name}"
-
-    if [[ "${wine_arch}" == "win64" ]]; then
-        gecko_64_bit_msi_name="$(get_gecko_64_bit_msi_name_from_wine_prefix "${wine_prefix}")"
-        debug "${dbg}" "Installing 64 Bit Gecko, wine_arch=${wine_arch}"
-        WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${gecko_64_bit_msi_name}"
-    fi
-
-
-}
-
-
-function install_wine_mono {
-    # installs the matching wine-mono on the existing wine machine
-    # $1: wine_prefix
-    local wine_prefix wine_arch wine_mono_msi_name
-    wine_prefix="${1}"
-    wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    wine_mono_msi_name="$(get_wine_mono_msi_name)"
-
-
-}
-
 
 
 
@@ -116,23 +78,23 @@ function install_wine_machine {
     # shellcheck disable=SC1007  # we really set DISPLAY to an empty value
     # DISPLAY= wine non_existing_command.exe
     DISPLAY= WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winecfg
-    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
-
-    banner "Installing wine gecko"
-    install_wine_gecko "${wine_prefix}"
-    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
     banner "Installing wine mono"
-    # install_wine_mono "${wine_prefix}"
-    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
+    install_wine_mono "${wine_prefix}" "${user}"
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
+
+    banner "Installing wine gecko"
+    install_wine_gecko "${wine_prefix}" "${user}"
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
     banner "Disable GUI Crash Dialogs"
     WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks nocrashdialog
-    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
     banner "Set Windows Version to ${winetricks_windows_version}"
     retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q "${winetricks_windows_version}"
-    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
     banner "Install common Packages"
 
@@ -142,15 +104,15 @@ function install_wine_machine {
     # bug reported under https://github.com/Winetricks/winetricks/issues/1283
     # so we need to set it back to what it was.
     retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q "${winetricks_windows_version}"
-    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
     banner "install msxml3"
     retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml3 --optout
-    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
     banner "install msxml6"
     retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml6 --optout
-    fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
     banner "FINISHED installing Wine MachineWine Machine:${IFS}\
             linux_release_name=${linux_release_name}${IFS}\
