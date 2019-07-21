@@ -4,10 +4,6 @@ sudo_askpass="$(command -v ssh-askpass)"
 export SUDO_ASKPASS="${sudo_askpass}"
 export NO_AT_BRIDGE=1  # get rid of (ssh-askpass:25930): dbind-WARNING **: 18:46:12.019: Couldn't register with accessibility bus: Did not receive a reply.
 
-export bitranox_debug_global="${bitranox_debug_global}"  # set to True for global Debug
-export debug_lib_bash_wine="${debug_lib_bash_wine}"  # set to True for Debug in lib_bash_wine
-
-
 # call the update script if nout sourced
 if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${BASH_SOURCE%/*}"/install_or_update.sh else "${PWD}"/install_or_update.sh ; fi
 
@@ -30,20 +26,22 @@ function install_wine_gecko {
     # installs the matching wine_gecko on the existing wine machine
     # $1 : wine_prefix
     # $2: username
-    local wine_prefix username wine_arch gecko_32_bit_msi_name gecko_64_bit_msi_name
+    local wine_prefix username wine_arch gecko_32_bit_msi_name gecko_64_bit_msi_name dbg
+    dbg="True"
     wine_prefix="${1}"
     username="${2}"
     download_gecko_msi_files "${wine_prefix}" "${username}"
 
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
     gecko_32_bit_msi_name="$(get_gecko_32_bit_msi_name_from_wine_prefix "${wine_prefix}")"
+    debug "${dbg}" "Installing 32 Bit Gecko, wine_arch=${wine_arch}"
     WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${gecko_32_bit_msi_name}"
 
     if [[ "${wine_arch}" == "win64" ]]; then
         gecko_64_bit_msi_name="$(get_gecko_64_bit_msi_name_from_wine_prefix "${wine_prefix}")"
-        WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${gecko_32_bit_msi_name}"
+        debug "${dbg}" "Installing 64 Bit Gecko, wine_arch=${wine_arch}"
+        WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine msiexec /i "${gecko_64_bit_msi_name}"
     fi
-
 
 
 }
@@ -104,7 +102,7 @@ function install_wine_machine {
     if [[ "${overwrite_existing_wine_machine}" == "True" ]] && [[ -d ${wine_prefix} ]]; then
          banner_warning "Overwriting old Wine Machine ${wine_prefix}"
          if [[ "${wine_prefix}" == "/home/${user}"* ]]; then
-            "$(cmd "sudo")" rm -Rf ${wine_prefix}
+            "$(cmd "sudo")" rm -Rf "${wine_prefix}"
          else
             fail "can not remove wineprefix ${wine_prefix} because it does not belong to user ${user}"
          fi
@@ -121,7 +119,7 @@ function install_wine_machine {
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "Installing wine gecko"
-    # install_wine_gecko "${wine_prefix}"
+    install_wine_gecko "${wine_prefix}"
     fix_wine_permissions "${user}" "${wine_prefix}" # it is cheap, just in case
 
     banner "Installing wine mono"

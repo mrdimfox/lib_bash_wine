@@ -64,10 +64,8 @@ function run_tests {
     assert_pass "test -f ${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
 
+    clr_green "test install gecko32 for 32 Bit wine"
     install_wine_gecko "${global_wine_prefix}" "${USER}"
-    # installs the matching wine_gecko on the existing wine machine
-    # $1 : wine_prefix
-    # $2: username
 
 
 
@@ -78,7 +76,6 @@ function run_tests {
     assert_contains "get_gecko_64_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "wine_gecko-"
     assert_contains "get_gecko_64_bit_msi_name_from_wine_prefix ${global_wine_prefix}" "-x86_64.msi"
 
-    # test gecko download 32
     clr_green "test download 32 Bit Gecko for 64 Bit Wine"
     rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}"
@@ -86,7 +83,6 @@ function run_tests {
     assert_pass "test -f ${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     rm -f "${HOME}/.cache/wine/$(get_gecko_32_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
 
-    # test gecko download 64
     clr_green "test download 64 Bit Gecko for 64 Bit Wine"
     rm -f "${HOME}/.cache/wine/$(get_gecko_64_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     assert_pass "download_gecko_msi_files ${global_wine_prefix} ${USER}"
@@ -94,6 +90,7 @@ function run_tests {
     assert_pass "test -f ${HOME}/.cache/wine/$(get_gecko_64_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
     rm -f "${HOME}/.cache/wine/$(get_gecko_64_bit_msi_name_from_wine_prefix "${global_wine_prefix}")"
 
+    clr_green "test install gecko32 & gecko64 for 64 Bit Wine"
     install_wine_gecko "${global_wine_prefix}" "${USER}"
 
 

@@ -4,10 +4,6 @@ sudo_askpass="$(command -v ssh-askpass)"
 export SUDO_ASKPASS="${sudo_askpass}"
 export NO_AT_BRIDGE=1  # get rid of (ssh-askpass:25930): dbind-WARNING **: 18:46:12.019: Couldn't register with accessibility bus: Did not receive a reply.
 
-export bitranox_debug_global="${bitranox_debug_global}"  # set to True for global Debug
-export debug_lib_bash_wine="True"  # set to True for Debug in lib_bash_wine
-# export debug_lib_bash_wine="${debug_lib_bash_wine}"  # set to True for Debug in lib_bash_wine
-
 # call the update script if nout sourced
 if [[ "${0}" == "${BASH_SOURCE[0]}" ]] && [[ -d "${BASH_SOURCE%/*}" ]]; then "${BASH_SOURCE%/*}"/install_or_update.sh else "${PWD}"/install_or_update.sh ; fi
 
@@ -265,7 +261,8 @@ function download_msi_file_to_winecache {
     # $2: download_link
     # $3: msi_file_name (without path)
 
-    local username download_link msi_file_name wine_cache_directory
+    local username download_link msi_file_name wine_cache_directory dbg
+    dbg="False"
     username="${1}"
     download_link="${2}"
     msi_file_name="${3}"
@@ -274,9 +271,9 @@ function download_msi_file_to_winecache {
     "$(cmd "sudo")" mkdir -p "${wine_cache_directory}"
     "$(cmd "sudo")" chmod -R 0775 "${wine_cache_directory}"
 
-    debug "${debug_lib_bash_wine}" "wine_cache_directory = ${wine_cache_directory}, msi_file_name=${msi_file_name}, download_link=${download_link},"
+    debug "${dbg}" "wine_cache_directory = ${wine_cache_directory}, msi_file_name=${msi_file_name}, download_link=${download_link},"
 
-    retry "$(cmd "sudo")" wget -nv -c -O "${wine_cache_directory}/${msi_file_name}" "${download_link}"
+    retry "$(cmd "sudo")" wget -nv -c -O "${wine_cache_directory}/${msi_file_name}" '${download_link}'    # we need additional quotes in the link, because of possible "&" in the link
 
     "$(cmd "sudo")" chmod -R 0775 "${wine_cache_directory}"
     "$(cmd "sudo")" chown -R "${username}.${username}" "${wine_cache_directory}"
@@ -371,24 +368,21 @@ function get_wine_gecko_download_backup_link_from_msi_filename {
 function download_gecko_msi_files {
     # $1 - wine_prefix
     # $2 - username
-    local wineprefix username winearch gecko_msi_name_32 gecko_msi_name_64 download_link backup_download_link
+    local wineprefix username winearch gecko_msi_name_32 gecko_msi_name_64 download_link backup_download_link wine_cache_directory
     wine_prefix="${1}"
     username="${2}"
 
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
-    debug "${debug_lib_bash_wine}" "wine_arch = ${wine_arch}"
-
     gecko_msi_name_32="$(get_gecko_32_bit_msi_name_from_wine_prefix "${wine_prefix}")"
-
-    debug "${debug_lib_bash_wine}" "gecko_msi_name_32 = ${gecko_msi_name_32}"
 
     if ! is_msi_file_in_winecache "${username}" "${gecko_msi_name_32}"; then
         download_link="$(get_wine_gecko_download_link_from_msi_filename "${gecko_msi_name_32}")"
-        debug "${debug_lib_bash_wine}" "download_link = ${download_link}"
         backup_download_link="$(get_wine_gecko_download_backup_link_from_msi_filename "${gecko_msi_name_32}")"
-        debug "${debug_lib_bash_wine}" "backup_download_link = ${backup_download_link}"
-        download_msi_file_to_winecache "${username}" "${download_link}" "${gecko_msi_name_32}" || \
-        download_msi_file_to_winecache "${username}" "${backup_download_link}" "${gecko_msi_name_32}"
+        wine_cache_directory="$(get_wine_cache_directory_for_user)"
+        download_msi_file_to_winecache "${username}" "${download_link}" "${gecko_msi_name_32}"
+        if [[ ! -f "${wine_cache_directory}/${gecko_msi_name_32}" ]]; then
+            download_msi_file_to_winecache "${username}" "${backup_download_link}" "${gecko_msi_name_32}"
+        fi
     fi
 
 
@@ -397,8 +391,10 @@ function download_gecko_msi_files {
         if ! is_msi_file_in_winecache "${username}" "${gecko_msi_name_64}"; then
             download_link="$(get_wine_gecko_download_link_from_msi_filename "${gecko_msi_name_64}")"
             backup_download_link="$(get_wine_gecko_download_backup_link_from_msi_filename "${gecko_msi_name_64}")"
-            download_msi_file_to_winecache "${username}" "${download_link}" "${gecko_msi_name_64}" || \
-            download_msi_file_to_winecache "${username}" "${backup_download_link}" "${gecko_msi_name_64}"
+            download_msi_file_to_winecache "${username}" "${download_link}" "${gecko_msi_name_64}"
+            if [[ ! -f "${wine_cache_directory}/${gecko_msi_name_64}" ]]; then
+                download_msi_file_to_winecache "${username}" "${backup_download_link}" "${gecko_msi_name_64}"
+            fi
         fi
     fi
 
