@@ -18,6 +18,23 @@ function include_dependencies {
 include_dependencies  # we need to do that via a function to have local scope of my_dir
 
 
+function get_and_export_wine_arch_from_wine_prefix {
+    # $1: wine_prefix
+    local wine_prefix wine_arch
+    wine_prefix="${1}"
+    wine_arch="$( grep "#arch=" "${wine_prefix}/system.reg" | cut -d "=" -f 2)"
+    if [[ "${wine_arch}" != "win32" ]] && [[ "${wine_arch}" != "win64" ]]; then
+        fail "\
+        FAILED: get_and_export_wine_arch_from_wine_prefix${IFS}\
+        CALLER: ${0}${IFS}\
+        ERROR : WINEARCH for WINEPREFIX=${wine_prefix} can not be determined${IFS}\
+        wine_arch=${wine_arch}"
+    fi
+    export WINEARCH="${wine_arch}"
+    echo "${wine_arch}"
+}
+
+
 function get_wine_registry_data {
     # $1 wine_prefix
     # $2 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
@@ -30,7 +47,7 @@ function get_wine_registry_data {
     reg_subkey="${3}"
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
     # see https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/reg-query
-    result="$(WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine reg query "${reg_key}" /v "${reg_subkey}" | cut -d " " -f 3)"
+    result="$(WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" wine reg query '${reg_key}' /v '${reg_subkey}' | cut -d " " -f 3)"
     echo "${result}"
 }
 
@@ -120,23 +137,6 @@ function get_and_export_overwrite_existing_wine_machine_from_environment_or_defa
 function get_wine_version_number {
     wine --version
 }
-
-function get_and_export_wine_arch_from_wine_prefix {
-    # $1: wine_prefix
-    local wine_prefix wine_arch
-    wine_prefix="${1}"
-    wine_arch="$( grep "#arch=" "${wine_prefix}/system.reg" | cut -d "=" -f 2)"
-    if [[ "${wine_arch}" != "win32" ]] && [[ "${wine_arch}" != "win64" ]]; then
-        fail "\
-        FAILED: get_and_export_wine_arch_from_wine_prefix{IFS}\
-        CALLER: ${0}{IFS}\
-        ERROR : WINEARCH for WINEPREFIX=${wine_prefix} can not be determined{IFS}\
-        wine_arch=${wine_arch}"
-    fi
-    export WINEARCH="${wine_arch}"
-    echo "${wine_arch}"
-}
-
 
 function get_str_32_or_64_from_wine_prefix {
     # $1: wine_prefix
