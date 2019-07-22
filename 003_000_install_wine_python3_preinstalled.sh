@@ -31,14 +31,35 @@ if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
 fi
 
 
-# TARGET : /home/consul/wine/wine32_machine_01/drive_c/users/Public
-# chmod 0775
 
-
-
-# https://www.python.org/ftp/python/3.7.4/python-3.7.4.exe
+# https://docs.python.org/3/using/windows.html
 
 
 # get latest release number :
 # https://www.python.org/downloads/windows/
 # grep Latest Python 3 Release
+# download the file
+
+# TARGET : /home/consul/.cache/wine
+# chmod 0775
+
+# windowscodecs : first builtin, then native --> winetricks alldlls=builtin
+# section [Software\\Wine\\DllOverrides] 1563781801
+# user.reg : "*msxml3"="native" -->  "*msxml3"="builtin,native"
+
+#### python 3.7
+# options see : https://docs.python.org/3/using/windows.html
+# wine /home/consul/.cache/wine/python-3.7.4.exe /passive InstallAllUsers=1  PrependPath=1  DefaultAllUsersTargetDir=<dir>
+# wine python --version
+
+
+# most tests pass - later if needed !
+# wine /home/consul/wine/wine32_machine_01/drive_c/Program Files/Python37-32/Tools/scripts/run_tests.py
+
+
+# python-3.7.4.exe /passive InstallAllUsers=1  PrependPath=1
+
+
+# https://www.python.org/ftp/python/3.7.4/python-3.7.4.exe /passive InstallAllUsers=1  PrependPath=1
+
+

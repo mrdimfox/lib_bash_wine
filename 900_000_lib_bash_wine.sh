@@ -55,7 +55,7 @@ function set_wine_registry_data {
     # $2 : the reg_key like "HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"
     # $3 : the reg_subkey like "PATH"
     # $4 : the data to write
-   local reg_key reg_subkey data data_type wine_prefix wine_arch
+    local reg_key reg_subkey data data_type wine_prefix wine_arch
     wine_prefix="${1}"
     reg_key="${2}"
     reg_subkey="${3}"

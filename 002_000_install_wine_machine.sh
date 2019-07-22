@@ -100,21 +100,22 @@ function install_wine_machine {
 
     banner "Install common Packages"
 
-    banner "install windowscodecs"
-    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs --optout
-    # winetricks -q windowscodecs sets the windows version back to windows2000
-    # bug reported under https://github.com/Winetricks/winetricks/issues/1283
-    # so we need to set it back to what it was.
-    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q "${winetricks_windows_version}"
-    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-    banner "install msxml3"
-    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml3 --optout
-    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
+#    banner "install windowscodecs (needs to be set to builtin,native for python3)"
+#    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs --optout
+#    # winetricks -q windowscodecs sets the windows version back to windows2000
+#    # bug reported under https://github.com/Winetricks/winetricks/issues/1283
+#    # so we need to set it back to what it was.
+#    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q "${winetricks_windows_version}"
+#    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-    banner "install msxml6"
-    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml6 --optout
-    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
+#    banner "install msxml3"
+#    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml3 --optout
+#    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
+
+#    banner "install msxml6"
+#    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml6 --optout
+#    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
     banner "FINISHED installing Wine MachineWine Machine:${IFS}\
             linux_release_name=${linux_release_name}${IFS}\
