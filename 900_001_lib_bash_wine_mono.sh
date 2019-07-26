@@ -25,7 +25,7 @@ function get_mono_msi_name_from_wine_prefix {
     local wine_prefix
     wine_prefix="${1}"
 
-    strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine-mono | grep .msi
+    strings "${wine_prefix}"/drive_c/windows/system32/appwiz.cpl | grep wine-mono | grep .msi
 }
 
 
@@ -72,6 +72,7 @@ function download_mono_msi_files {
 
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
     mono_msi_name="$(get_mono_msi_name_from_wine_prefix "${wine_prefix}")"
+    clr_blue "mono_msi_name=${mono_msi_name}"
 
     if ! is_msi_file_in_winecache "${username}" "${mono_msi_name}"; then
         download_link="$(get_wine_mono_download_link_from_msi_filename "${mono_msi_name}")"
