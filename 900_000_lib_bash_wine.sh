@@ -309,7 +309,7 @@ function wait_for_system_reg_to_be_created {
     local wine_prefix
     wine_prefix="${1}"
     while [[ ! -f "${wine_prefix}/system.reg" ]]; do
-        clr_blue "wait for winecfg to finish creating system.reg"
+        clr_blue "wait for winecfg to finish creating ${wine_prefix}/system.reg"
         sleep 1
     done
     sleep 1
