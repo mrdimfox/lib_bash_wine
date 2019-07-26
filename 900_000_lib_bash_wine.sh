@@ -257,8 +257,8 @@ function fix_wine_permissions {
     "$(cmd "sudo")" chown -R "${user}"."${user}" "${wine_prefix}"
     "$(cmd "sudo")" chmod -R 0775 "${wine_prefix}"
 
-    "$(cmd "sudo")" chown -R "${user}"."${user}" "${wine_cache_directory}"
-    "$(cmd "sudo")" chmod -R 0775 "${wine_cache_directory}"
+    "$(cmd "sudo")" chown -R "${user}"."${user}" "${wine_cache_directory}" &>/dev/null
+    "$(cmd "sudo")" chmod -R 0775 "${wine_cache_directory}"  &>/dev/null
 }
 
 
