@@ -78,15 +78,13 @@ function install_wine_machine {
 
     # shellcheck disable=SC1007  # we really set DISPLAY to an empty value
     # DISPLAY= wine non_existing_command.exe
-    export WINEPREFIX="${wine_prefix}"
-    export WINEARCH="${wine_arch}"
-    DISPLAY= WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winecfg     # TODO - error on travis
-    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
+    DISPLAY= WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winecfg
     wait_for_file_to_be_created "${wine_prefix}"/system.reg
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-    # banner "Installing wine mono on ${wine_prefix}"
-    # install_wine_mono "${wine_prefix}" "${user}"
-    # fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
+    banner "Installing wine mono on ${wine_prefix}"
+    install_wine_mono "${wine_prefix}" "${user}"
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
     banner "Installing wine gecko on ${wine_prefix}"
     install_wine_gecko "${wine_prefix}" "${user}"

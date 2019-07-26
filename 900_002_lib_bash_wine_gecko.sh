@@ -27,9 +27,9 @@ function get_gecko_32_bit_msi_name_from_wine_prefix {
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
 
     if [[ "${wine_arch}" == "win32" ]]; then
-        msi_file_name="$(strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi)"
+        msi_file_name="$(eval strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi)"
     else
-        msi_file_name="$(strings "${wine_prefix}/drive_c/windows/syswow64/appwiz.cpl" | grep wine_gecko | grep .msi)"
+        msi_file_name="$(eval strings "${wine_prefix}/drive_c/windows/syswow64/appwiz.cpl" | grep wine_gecko | grep .msi)"
     fi
 
     if [[ -z "${msi_file_name}" ]]; then
@@ -50,7 +50,7 @@ function get_gecko_64_bit_msi_name_from_wine_prefix {
     if [[ "${wine_arch}" == "win32" ]]; then
         fail "can not get the Gecko 64 Bit msi Filename from a 32 Bit wine machine"
     else
-        msi_file_name="$(strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi)"
+        msi_file_name="$(eval strings "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine_gecko | grep .msi)"
     fi
 
     if [[ -z "${msi_file_name}" ]]; then
