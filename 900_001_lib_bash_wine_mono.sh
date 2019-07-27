@@ -24,8 +24,9 @@ function get_mono_msi_name_from_wine_prefix {
     # returns : wine-mono-4.9.0.msi
     local wine_prefix mono_msi_file_name
     wine_prefix="${1}"
-    mono_msi_file_name="$($(cmd "strings") "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine-mono | grep .msi)"
-    clr_blue "mono_msi_file_name= ${mono_msi_file_name}"
+    # | grep wine-mono | grep .msi
+    # mono_msi_file_name="$($(cmd "strings") "${wine_prefix}/drive_c/windows/system32/appwiz.cpl")"
+    "$(cmd "strings")" "${wine_prefix}/drive_c/windows/system32/appwiz.cpl"
     echo "${mono_msi_file_name}"
 }
 
