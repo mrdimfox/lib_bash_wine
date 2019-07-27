@@ -82,13 +82,13 @@ function install_wine_machine {
     wait_for_file_to_be_created "${wine_prefix}"/system.reg
     fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-    # banner "Installing wine mono on ${wine_prefix}"
-    # install_wine_mono "${wine_prefix}" "${user}"
-    # fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
+    banner "Installing wine mono on ${wine_prefix}"
+    install_wine_mono "${wine_prefix}" "${user}"
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-    # banner "Installing wine gecko on ${wine_prefix}"
-    # install_wine_gecko "${wine_prefix}" "${user}"
-    # fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
+    banner "Installing wine gecko on ${wine_prefix}"
+    install_wine_gecko "${wine_prefix}" "${user}"
+    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
     banner "Disable GUI Crash Dialogs on ${wine_prefix}"
     WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks nocrashdialog

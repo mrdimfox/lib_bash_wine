@@ -24,10 +24,9 @@ function get_mono_msi_name_from_wine_prefix {
     # returns : wine-mono-4.9.0.msi
     local wine_prefix mono_msi_file_name
     wine_prefix="${1}"
-    # | grep wine-mono | grep .msi
-    # mono_msi_file_name="$($(cmd "strings") "${wine_prefix}/drive_c/windows/system32/appwiz.cpl")"
-    '/usr/bin/strings' -n 12 "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine-mono | grep .msi
-    # echo "${mono_msi_file_name}"
+    # todo - does not work on travis xenial !
+    $(cmd "strings") -n 12 "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine-mono | grep .msi
+
 }
 
 
