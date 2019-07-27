@@ -97,7 +97,7 @@ function update_lib_bash_wine {
 
 
 if [[ "${0}" == "${BASH_SOURCE[0]}" ]]; then    # if the script is not sourced
-    if ! is_lib_bash_wine_installed; then install_lib_bash_wine ; fi
+    if ! is_lib_bash_wine_installed; then install_lib_bash_wine ; fi   # if it is just downloaded but not installed at the right place !!!
 
     if ! is_lib_bash_wine_up_to_date; then
         update_lib_bash_wine
