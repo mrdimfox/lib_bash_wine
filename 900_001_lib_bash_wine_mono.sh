@@ -26,7 +26,7 @@ function get_mono_msi_name_from_wine_prefix {
     wine_prefix="${1}"
     # | grep wine-mono | grep .msi
     # mono_msi_file_name="$($(cmd "strings") "${wine_prefix}/drive_c/windows/system32/appwiz.cpl")"
-    '/usr/bin/strings' "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine-mono | grep .msi
+    '/usr/bin/strings' -n 12 "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep wine-mono | grep .msi
     # echo "${mono_msi_file_name}"
 }
 
