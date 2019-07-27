@@ -24,16 +24,8 @@ function get_mono_msi_name_from_wine_prefix {
     # returns : wine-mono-4.9.0.msi
     local wine_prefix mono_msi_file_name
     wine_prefix="${1}"
-    # strings is a environment variable in travis, so we can not reach the command strings !!!!
-    cmd_strings="$(cmd "strings")"
-    clr_blue "command for strings = ${cmd_strings}"
-    if [[ -f "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" ]]; then
-        clr_blue "File exists"
-    else
-        clr_red "File does not exists"
-    fi
-
     mono_msi_file_name="$($(cmd "strings") "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep "wine-mono" | grep ".msi")"
+    clr_blue "mono_msi_file_name= ${mono_msi_file_name}"
     echo "${mono_msi_file_name}"
 }
 
