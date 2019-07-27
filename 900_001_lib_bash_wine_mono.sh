@@ -22,12 +22,11 @@ function get_mono_msi_name_from_wine_prefix {
     # tested
     # $1: wine_prefix
     # returns : wine-mono-4.9.0.msi
-    local wine_prefix mono_msi_file_name
+    local wine_prefix mono_msi_file_name cmd_strings
     wine_prefix="${1}"
     # strings is a environment variable in travis, so we can not reach the command strings !!!!
     cmd_strings="$(cmd "strings")"
-    clr_blue "${cmd_strings}"
-    mono_msi_file_name="$("$(cmd "strings")" "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep "wine-mono" | grep ".msi")"
+    mono_msi_file_name="$(${cmd_strings} "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep "wine-mono" | grep ".msi")"
     echo "${mono_msi_file_name}"
 }
 
