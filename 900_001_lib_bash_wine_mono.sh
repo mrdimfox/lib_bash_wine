@@ -25,7 +25,9 @@ function get_mono_msi_name_from_wine_prefix {
     local wine_prefix mono_msi_file_name
     wine_prefix="${1}"
     # strings is a environment variable in travis, so we can not reach the command strings !!!!
-    mono_msi_file_name=$("$(cmd "strings")" "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep "wine-mono" | grep ".msi")
+    cmd_strings="$(cmd "strings")"
+    clr_blue "${cmd_strings}"
+    mono_msi_file_name="$("$(cmd "strings")" "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep "wine-mono" | grep ".msi")"
     echo "${mono_msi_file_name}"
 }
 
