@@ -45,7 +45,7 @@ function install_powershell_core {
 
     local zip_file_name="PowerShell-${powershell_version}-win-${str_x86_or_x64}.zip"
 
-    banner "Installing Powershell Core Version ${powershell_version}:${IFS}\
+    banner_level "Installing Powershell Core Version ${powershell_version}:${IFS}\
             ${IFS}linux_release_name=${linux_release_name}${IFS}\
             wine_release=${wine_release}${IFS}\
             wine_version=${wine_version_number}${IFS}\
@@ -68,9 +68,9 @@ function install_powershell_core {
 
     "$(cmd "sudo")" chmod -R 0755 "${powershell_install_dir}"
 
-    banner "Test Powershell ${powershell_version}"
+    banner_level "Test Powershell ${powershell_version}"
     wine pwsh -ExecutionPolicy unrestricted -Command "get-executionpolicy"
-    banner "Finished installing Powershell Core:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}powershell_core_version=${powershell_version}"
+    banner_level "Finished installing Powershell Core:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}${IFS}powershell_core_version=${powershell_version}"
 
 
 

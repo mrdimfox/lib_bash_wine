@@ -43,7 +43,7 @@ function install_wine_python_preinstalled {
     wine_drive_c_dir="${wine_prefix}/drive_c"
     decompress_dir="${HOME}/bitranox_decompress"
 
-    banner "\
+    banner_level "\
 Installing {$python_version_doc}:${IFS}\
 linux_release_name=${linux_release_name}${IFS}\
 wine_release=${wine_release}${IFS}\
@@ -53,7 +53,7 @@ WINEARCH=${wine_arch}"
 
     mkdir -p "${decompress_dir}"  # here we dont need sudo because its the home directory
 
-    banner "Downloading ${python_version_doc} Binaries from https://github.com/bitranox/binaries_${python_version_short}_wine/archive/master.zip"
+    banner_level "Downloading ${python_version_doc} Binaries from https://github.com/bitranox/binaries_${python_version_short}_wine/archive/master.zip"
 
     retry_nofail wget -nv -c -nc --no-check-certificate -O "${decompress_dir}/binaries_${python_version_short}_wine-master.zip" "https://github.com/bitranox/binaries_${python_version_short}_wine/archive/master.zip"
     clr_green "Unzip ${python_version_doc} Master to ${decompress_dir}"
@@ -76,8 +76,8 @@ WINEARCH=${wine_arch}"
     clr_green "Test python"
     wine pip install --user --upgrade pip
 
-    banner "You might remove the directory ${decompress_dir} if You have space issues${IFS}and dont plan to install some more wine machines"
-    banner "Finished installing {$python_version_doc}:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
+    banner_level "You might remove the directory ${decompress_dir} if You have space issues${IFS}and dont plan to install some more wine machines"
+    banner_level "Finished installing {$python_version_doc}:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
 
 }
 

@@ -34,7 +34,7 @@ function install_wine {
 
     linux_release_name=$(get_linux_release_name)
 
-    banner "Installing WINE and WINETRICKS: ${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}"
+    banner_level "Installing WINE and WINETRICKS: ${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}"
 
     clr_green "add 386 Architecture"
     retry "$(cmd "sudo")" dpkg --add-architecture i386
@@ -64,7 +64,7 @@ function install_wine {
     "$(cmd "sudo")" chmod +x /usr/bin/winetricks
     retry "$(cmd "sudo")" winetricks -q --self-update
 
-    banner "FINISHED installing WINE and WINETRICKS: ${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}"
+    banner_level "FINISHED installing WINE and WINETRICKS: ${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}"
 }
 
 

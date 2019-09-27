@@ -32,7 +32,7 @@ function install_wine_machine {
 
     local linux_release_name wine_release wine_prefix wine_arch winetricks_windows_version wine_version_number overwrite_existing_wine_machine user
 
-    banner "Install Wine Machine"
+    banner_level "Install Wine Machine"
     wine_release="${1}"
     wine_prefix="${2}"
     wine_arch="${3}"
@@ -50,7 +50,7 @@ function install_wine_machine {
     fi
 
 
-    banner "Setting up Wine Machine:${IFS}\
+    banner_level "Setting up Wine Machine:${IFS}\
             linux_release_name=${linux_release_name}${IFS}\
             wine_release=${wine_release}${IFS}\
             wine_version=${wine_version_number}${IFS}\
@@ -72,7 +72,7 @@ function install_wine_machine {
 
     mkdir -p "${wine_prefix}"
 
-    banner "winecfg for Wine Machine, WINEPREFIX=${wine_prefix}, WINEARCH=${wine_arch}, winetricks_windows_version=${winetricks_windows_version}"
+    banner_level "winecfg for Wine Machine, WINEPREFIX=${wine_prefix}, WINEARCH=${wine_arch}, winetricks_windows_version=${winetricks_windows_version}"
 
     # shellcheck disable=SC1007  # we really set DISPLAY to an empty value
     # DISPLAY= wine non_existing_command.exe
@@ -80,26 +80,26 @@ function install_wine_machine {
     wait_for_file_to_be_created "${wine_prefix}"/system.reg
     fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-    banner "Installing wine mono on ${wine_prefix}"
+    banner_level "Installing wine mono on ${wine_prefix}"
     install_wine_mono "${wine_prefix}" "${user}"
     fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-    banner "Installing wine gecko on ${wine_prefix}"
+    banner_level "Installing wine gecko on ${wine_prefix}"
     install_wine_gecko "${wine_prefix}" "${user}"
     fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-    banner "Disable GUI Crash Dialogs on ${wine_prefix}"
+    banner_level "Disable GUI Crash Dialogs on ${wine_prefix}"
     WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks nocrashdialog
     fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-    banner "Set Windows Version on ${wine_prefix} to ${winetricks_windows_version}"
+    banner_level "Set Windows Version on ${wine_prefix} to ${winetricks_windows_version}"
     retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q "${winetricks_windows_version}"
     fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-    banner "Install common Packages"
+    banner_level "Install common Packages"
 
 
-#    banner "install windowscodecs (needs to be set to builtin,native for python3)"
+#    banner_level "install windowscodecs (needs to be set to builtin,native for python3)"
 #    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q windowscodecs --optout
 #    # winetricks -q windowscodecs sets the windows version back to windows2000
 #    # bug reported under https://github.com/Winetricks/winetricks/issues/1283
@@ -107,15 +107,15 @@ function install_wine_machine {
 #    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q "${winetricks_windows_version}"
 #    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-#    banner "install msxml3"
+#    banner_level "install msxml3"
 #    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml3 --optout
 #    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-#    banner "install msxml6"
+#    banner_level "install msxml6"
 #    retry WINEPREFIX="${wine_prefix}" WINEARCH="${wine_arch}" winetricks -q msxml6 --optout
 #    fix_wine_permissions "${wine_prefix}" "${user}" # it is cheap, just in case
 
-    banner "FINISHED installing Wine MachineWine Machine:${IFS}\
+    banner_level "FINISHED installing Wine MachineWine Machine:${IFS}\
             linux_release_name=${linux_release_name}${IFS}\
             wine_release=${wine_release}${IFS}\
             wine_version=${wine_version_number}${IFS}\
