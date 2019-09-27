@@ -94,7 +94,7 @@ function install_git_portable {
     local latest_download_link_for_git_portable=$(get_latest_download_link_for_git_portable ${decompress_dir} ${str_32_or_64_bit})
     local portable_git_filename=$(get_portable_git_filename ${decompress_dir} ${str_32_or_64_bit})
 
-    banner_level "Installing or upgrading latest PortableGit:${IFS}\
+    banner "Installing or upgrading latest PortableGit:${IFS}\
     Portable Git Version=${portable_git_version}${IFS}\
     linux_release_name=${linux_release_name}${IFS}\
     wine_release=${wine_release}${IFS}\
@@ -104,7 +104,7 @@ function install_git_portable {
 
     mkdir -p ${decompress_dir}  # here we dont need sudo because its the home directory
 
-    banner_level "Downloading latest Git Portable Binaries from ${latest_download_link_for_git_portable}"
+    banner "Downloading latest Git Portable Binaries from ${latest_download_link_for_git_portable}"
     if [[ ! -f ${decompress_dir}/${portable_git_filename} ]]; then
         retry wget -nv -c -nc --no-check-certificate -O ${decompress_dir}/${portable_git_filename} ${latest_download_link_for_git_portable}
     else
@@ -124,8 +124,8 @@ function install_git_portable {
     clr_green "Test Git"
     wine git --version
 
-    banner_level "You might remove the directory ${decompress_dir} if You have space issues${IFS}and dont plan to install some more wine machines"
-    banner_level "Finished installing Git Portable:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
+    banner "You might remove the directory ${decompress_dir} if You have space issues${IFS}and dont plan to install some more wine machines"
+    banner "Finished installing Git Portable:${IFS}linux_release_name=${linux_release_name}${IFS}wine_release=${wine_release}${IFS}wine_version=${wine_version_number}${IFS}WINEPREFIX=${wine_prefix}${IFS}WINEARCH=${wine_arch}"
 }
 
 
