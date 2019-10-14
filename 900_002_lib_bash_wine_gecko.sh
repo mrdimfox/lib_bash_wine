@@ -27,10 +27,8 @@ function get_gecko_32_bit_msi_name_from_wine_prefix {
     wine_arch="$(get_and_export_wine_arch_from_wine_prefix "${wine_prefix}")"
 
     if [[ "${wine_arch}" == "win32" ]]; then
-        # strings is a environment variable in travis, so we can not reach the command strings !!!!
         msi_file_name="$("$(cmd "strings")" "${wine_prefix}/drive_c/windows/system32/appwiz.cpl" | grep "wine_gecko" | grep ".msi")"
     else
-        # strings is a environment variable in travis, so we can not reach the command strings !!!!
         msi_file_name="$("$(cmd "strings")" "${wine_prefix}/drive_c/windows/syswow64/appwiz.cpl" | grep "wine_gecko" | grep ".msi")"
     fi
 
