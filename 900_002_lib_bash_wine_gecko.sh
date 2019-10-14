@@ -76,7 +76,7 @@ function get_gecko_architecture_from_msi_filename {
     # $1 : gecko_msi_name e.g. "wine_gecko-2.47-x86.msi", or "wine_gecko-2.47-x86_64.msi"
     local gecko_msi_name
     gecko_msi_name="${1}"
-    echo "${gecko_msi_name}" | cut -d "-" -f 3 | cut -d "." -f 1
+    echo "${gecko_msi_name}" | cut -d "-" -f 3 | cut -d "." -f 1sdf
 }
 
 
