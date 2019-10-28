@@ -59,8 +59,8 @@ function run_tests {
     # test mono download 32
     clr_green "test download mono for 32 Bit Wine"
     if [[ "${delete_cached_files}" == "True" ]]; then rm -f "${HOME}/.cache/wine/$(get_mono_msi_name_from_wine_prefix "${global_wine_prefix}")"; fi
-    assert_pass "download_latest_mono_msi_files_from_github ${global_wine_prefix} ${user}"
-    assert_pass "download_latest_mono_msi_files_from_github ${global_wine_prefix} ${user}" # try a second time - it is already there
+    assert_pass "download_mono_msi_files ${global_wine_prefix} ${user}"
+    assert_pass "download_mono_msi_files ${global_wine_prefix} ${user}" # try a second time - it is already there
     assert_pass "test -f ${HOME}/.cache/wine/$(get_mono_msi_name_from_wine_prefix "${global_wine_prefix}")"
     if [[ "${delete_cached_files}" == "True" ]]; then rm -f "${HOME}/.cache/wine/$(get_mono_msi_name_from_wine_prefix "${global_wine_prefix}")"; fi
 
@@ -76,8 +76,8 @@ function run_tests {
 
     clr_green "test download mono for 64 Bit Wine"
     if [[ "${delete_cached_files}" == "True" ]]; then rm -f "${HOME}/.cache/wine/$(get_mono_msi_name_from_wine_prefix "${global_wine_prefix}")"; fi
-    assert_pass "download_latest_mono_msi_files_from_github ${global_wine_prefix} ${user}"
-    assert_pass "download_latest_mono_msi_files_from_github ${global_wine_prefix} ${user}" # try a second time - it is already there
+    assert_pass "download_mono_msi_files ${global_wine_prefix} ${user}"
+    assert_pass "download_mono_msi_files ${global_wine_prefix} ${user}" # try a second time - it is already there
     assert_pass "test -f ${HOME}/.cache/wine/$(get_mono_msi_name_from_wine_prefix "${global_wine_prefix}")"
     if [[ "${delete_cached_files}" == "True" ]]; then rm -f "${HOME}/.cache/wine/$(get_mono_msi_name_from_wine_prefix "${global_wine_prefix}")"; fi
 
