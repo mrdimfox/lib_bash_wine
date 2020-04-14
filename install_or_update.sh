@@ -17,7 +17,7 @@ function set_lib_bash_permissions {
 function install_lib_bash {
     echo "installing lib_bash"
     $(command -v sudo 2>/dev/null) rm -fR /usr/local/lib_bash
-    $(command -v sudo 2>/dev/null) git clone https://github.com/bitranox/lib_bash.git /usr/local/lib_bash > /dev/null 2>&1
+    $(command -v sudo 2>/dev/null) git clone https://github.com/mrdimfox/lib_bash.git /usr/local/lib_bash > /dev/null 2>&1
     set_lib_bash_permissions
 }
 
@@ -64,7 +64,7 @@ function is_lib_bash_wine_installed {
 # this checks the install directory version - but it might be installed for testing somewere else - that will not be updated.
 function is_lib_bash_wine_up_to_date {
     local git_remote_hash git_local_hash
-    git_remote_hash=$(git --no-pager ls-remote --quiet https://github.com/bitranox/lib_bash_wine.git | grep HEAD | awk '{print $1;}' )
+    git_remote_hash=$(git --no-pager ls-remote --quiet https://github.com/mrdimfox/lib_bash_wine.git | grep HEAD | awk '{print $1;}' )
     git_local_hash=$(cat /usr/local/lib_bash_wine/.git/refs/heads/master)
     if [[ "${git_remote_hash}" == "${git_local_hash}" ]]; then
         return 0
@@ -76,7 +76,7 @@ function is_lib_bash_wine_up_to_date {
 function install_lib_bash_wine {
     clr_green "installing lib_bash_wine"
     "$(cmd "sudo")" rm -fR /usr/local/lib_bash_wine
-    "$(cmd "sudo")" git clone https://github.com/bitranox/lib_bash_wine.git /usr/local/lib_bash_wine > /dev/null 2>&1
+    "$(cmd "sudo")" git clone https://github.com/mrdimfox/lib_bash_wine.git /usr/local/lib_bash_wine > /dev/null 2>&1
     set_lib_bash_wine_permissions
 }
 
